@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { NumberInput } from "@mantine/core";
 import { Prisma } from "@prisma/client";
 import type { GetServerSideProps, NextPage } from "next";
 
@@ -7,7 +8,7 @@ type HomeProps = {
 };
 
 const Home: NextPage<HomeProps> = ({ userCount }) => {
-  return <pre>{JSON.stringify(userCount, null, 2)}</pre>;
+  return <NumberInput value={userCount._count} />;
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
