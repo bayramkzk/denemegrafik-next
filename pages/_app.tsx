@@ -7,6 +7,7 @@ import { useHotkeys } from "@mantine/hooks";
 import { getCookie, setCookie } from "cookies-next";
 import { GetServerSidePropsContext } from "next";
 import { AppProps } from "next/app";
+import Head from "next/head";
 import { useState } from "react";
 
 export default function App(props: AppProps & { colorScheme: ColorScheme }) {
@@ -28,18 +29,24 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
   useHotkeys([["mod+J", () => toggleColorScheme()]]);
 
   return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
-    >
-      <MantineProvider
-        theme={{ colorScheme }}
-        withGlobalStyles
-        withNormalizeCSS
+    <>
+      <Head>
+        <title>Deneme Grafik</title>
+      </Head>
+
+      <ColorSchemeProvider
+        colorScheme={colorScheme}
+        toggleColorScheme={toggleColorScheme}
       >
-        <Component {...pageProps} />
-      </MantineProvider>
-    </ColorSchemeProvider>
+        <MantineProvider
+          theme={{ colorScheme }}
+          withGlobalStyles
+          withNormalizeCSS
+        >
+          <Component {...pageProps} />
+        </MantineProvider>
+      </ColorSchemeProvider>
+    </>
   );
 }
 
