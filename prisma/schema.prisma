@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Permission {
+  SUPERADMIN
+  ADMIN
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  hash      String
+  name      String
+  schoolId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  school School @relation(fields: [schoolId], references: [id])
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  citizenId String   @unique
+  hash      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student Student @relation(fields: [citizenId], references: [citizenId])
+}
+
+model Student {
+  id        Int      @id @default(autoincrement())
+  citizenId String   @unique
+  name      String
+  classId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User?
+  class   Class        @relation(fields: [classId], references: [id])
+  results TestResult[]
+}
+
+model Class {
+  id        Int      @id @default(autoincrement())
+  grade     Int
+  branch    String
+  schoolId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  school   School    @relation(fields: [schoolId], references: [id])
+  students Student[]
+}
+
+model School {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  classes Class[]
+  tests   TestOnSchool[]
+  admins  Admin[]
+}
+
+model Test {
+  id        Int      @id @default(autoincrement())
+  name      String
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  schools TestOnSchool[]
+  results TestResult[]
+}
+
+model TestOnSchool {
+  testId   Int
+  schoolId Int
+
+  test   Test   @relation(fields: [testId], references: [id])
+  school School @relation(fields: [schoolId], references: [id])
+
+  @@id([testId, schoolId])
+}
+
+model TestResult {
+  id        Int      @id @default(autoincrement())
+  testId    Int
+  studentId Int
+  score     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  test    Test    @relation(fields: [testId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
+}
