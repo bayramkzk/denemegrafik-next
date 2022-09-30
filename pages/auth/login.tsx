@@ -16,6 +16,7 @@ const useStyles = createStyles({
   root: {
     paddingTop: 128,
     maxWidth: 420,
+    paddingInline: 16,
     margin: "auto",
   },
 });
@@ -43,7 +44,7 @@ const Login: NextPage = () => {
   return (
     <form onSubmit={handleSubmit}>
       <Stack className={classes.root}>
-        <Title>Deneme Grafik'e Giriş</Title>
+        <Title>Giriş</Title>
         <NumberInput
           hideControls
           label="TC Kimlik Numarası"
