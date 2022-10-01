@@ -1,8 +1,10 @@
 import { TOKEN_KEY, USER_KEY } from "@/constants/keys";
 import { Routes } from "@/constants/routes";
-import { UserResponse } from "@/types/auth";
+import { axiosInstance } from "@/lib/axios-instance";
+import { LoginSchema } from "@/schemas/login";
+import { RegisterSchema } from "@/schemas/register";
+import { AuthResponse, UserResponse } from "@/types/auth";
 import { useLocalStorage } from "@mantine/hooks";
-import axios from "axios";
 
 export const useAuth = () => {
   const [token, setToken] = useLocalStorage<string>({
@@ -15,18 +17,18 @@ export const useAuth = () => {
     defaultValue: null,
   });
 
-  const login = async (citizenId: string, password: string) => {
-    const res = await axios.post(Routes.loginApi, { citizenId, password });
-    if (res.status === 200) {
+  const login = async (body: LoginSchema) => {
+    const res = await axiosInstance.post<AuthResponse>(Routes.loginApi, body);
+    if (res.data.success) {
       setToken(res.data.token);
       setUser(res.data.user);
     }
     return res;
   };
 
-  const register = async (citizenId: string, password: string) => {
-    const res = await axios.post(Routes.registerApi, { citizenId, password });
-    if (res.status === 200) {
+  const register = async (body: RegisterSchema) => {
+    const res = await axiosInstance.post(Routes.registerApi, body);
+    if (res.data) {
       setToken(res.data.token);
       setUser(res.data.user);
     }
