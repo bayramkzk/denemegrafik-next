@@ -17,7 +17,7 @@ export const useAuth = () => {
 
   const login = async (citizenId: string, password: string) => {
     const res = await axios.post(Routes.loginApi, { citizenId, password });
-    if (res.data.success) {
+    if (res.status === 200) {
       setToken(res.data.token);
       setUser(res.data.user);
     }
@@ -26,7 +26,7 @@ export const useAuth = () => {
 
   const register = async (citizenId: string, password: string) => {
     const res = await axios.post(Routes.registerApi, { citizenId, password });
-    if (res.data.success) {
+    if (res.status === 200) {
       setToken(res.data.token);
       setUser(res.data.user);
     }
