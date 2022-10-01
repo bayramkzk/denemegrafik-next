@@ -7,6 +7,7 @@ import {
 import { PASSWORD_SALT_OR_ROUNDS } from "@/constants/index";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/schemas/register";
+import { AuthResponse } from "@/types/auth";
 import { Prisma } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -30,7 +31,7 @@ const registerUser = async (citizenId: string, password: string) => {
   }
 };
 
-const handler: NextApiHandler = async (req, res) => {
+const handler: NextApiHandler<AuthResponse> = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json(METHOD_NOT_ALLOWED);
 
   const body = registerSchema.safeParse(req.body);
@@ -39,8 +40,9 @@ const handler: NextApiHandler = async (req, res) => {
   const result = await registerUser(body.data.citizenId, body.data.password);
   if (result.error) return res.status(400).json(result.error);
 
+  const { hash, ...userWithoutHash } = result.user;
   const token = jwt.sign({ id: result.user.id }, process.env.JWT_SECRET!);
-  res.status(200).json({ user: result.user, token });
+  res.status(200).json({ user: userWithoutHash, token });
 };
 
 export default handler;
