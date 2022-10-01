@@ -4,6 +4,7 @@ import {
   MantineProvider,
 } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getCookie, setCookie } from "cookies-next";
 import { GetServerSidePropsContext } from "next";
 import { AppProps } from "next/app";
@@ -12,6 +13,7 @@ import { useState } from "react";
 
 export default function App(props: AppProps & { colorScheme: ColorScheme }) {
   const { Component, pageProps } = props;
+  const [queryClient] = useState(() => new QueryClient());
   const [colorScheme, setColorScheme] = useState<ColorScheme>(
     props.colorScheme
   );
@@ -20,7 +22,6 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
     const nextColorScheme =
       value || (colorScheme === "dark" ? "light" : "dark");
     setColorScheme(nextColorScheme);
-    // when color scheme is updated save it to cookie
     setCookie("mantine-color-scheme", nextColorScheme, {
       maxAge: 60 * 60 * 24 * 30,
     });
@@ -43,7 +44,9 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
           withGlobalStyles
           withNormalizeCSS
         >
-          <Component {...pageProps} />
+          <QueryClientProvider client={queryClient}>
+            <Component {...pageProps} />
+          </QueryClientProvider>
         </MantineProvider>
       </ColorSchemeProvider>
     </>
