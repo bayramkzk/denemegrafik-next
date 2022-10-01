@@ -1,7 +1,10 @@
 export const Routes = Object.freeze({
+  home: "/",
   login: "/auth/login",
   register: "/auth/register",
-  home: "/",
+
+  loginApi: "/api/auth/login",
+  registerApi: "/api/auth/register",
 });
 
 type RouteKey = keyof typeof Routes;
