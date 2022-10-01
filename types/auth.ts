@@ -7,7 +7,7 @@ export type UserResponse = Omit<User, "hash"> & {
   };
 };
 
-export type AuthBodyErrorResponse = {
+export type AuthValidationErrorResponse = {
   error: ZodIssue[];
 };
 
@@ -24,6 +24,6 @@ export type AuthSuccessResponse = {
 };
 
 export type AuthResponse =
-  | AuthBodyErrorResponse
+  | AuthValidationErrorResponse
   | AuthCustomErrorResponse
   | AuthSuccessResponse;
