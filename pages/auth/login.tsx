@@ -1,3 +1,4 @@
+import { CITIZEN_ID_LENGTH, MINIMUM_PASSWORD_LENGTH } from "@/constants/index";
 import {
   Button,
   createStyles,
@@ -10,7 +11,6 @@ import { useForm } from "@mantine/form";
 import { NextPage } from "next";
 
 const INPUT_SIZE = "lg";
-const CITIZEN_ID_LENGTH = 11;
 
 const useStyles = createStyles({
   root: {
@@ -31,9 +31,10 @@ const Login: NextPage = () => {
     validate: {
       citizenId: (value) =>
         String(value).length !== CITIZEN_ID_LENGTH &&
-        "TC Kimlik Numarası 11 haneli olmalıdır",
+        `TC Kimlik Numarası ${CITIZEN_ID_LENGTH} haneli olmalıdır`,
       password: (value) =>
-        String(value).length < 6 && "Şifre en az 6 karakter olmalıdır",
+        String(value).length < MINIMUM_PASSWORD_LENGTH &&
+        `Şifre en az ${MINIMUM_PASSWORD_LENGTH} karakter olmalıdır`,
     },
   });
 
