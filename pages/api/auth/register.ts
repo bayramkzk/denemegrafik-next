@@ -15,7 +15,10 @@ import { NextApiHandler } from "next";
 const registerUser = async (citizenId: string, password: string) => {
   const hash = await bcrypt.hash(password, PASSWORD_SALT_OR_ROUNDS);
   try {
-    const user = await prisma.user.create({ data: { citizenId, hash } });
+    const user = await prisma.user.create({
+      data: { citizenId, hash },
+      include: { student: { include: { class: true } } },
+    });
     return { user };
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
