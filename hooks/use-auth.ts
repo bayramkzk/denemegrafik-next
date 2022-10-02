@@ -15,6 +15,8 @@ export const useAuth = () => {
   const [user, setUser] = useLocalStorage<UserResponse | null>({
     key: USER_KEY,
     defaultValue: null,
+    serialize: (value) => JSON.stringify(value),
+    deserialize: (value) => JSON.parse(value),
   });
 
   const login = async (body: LoginSchema) => {

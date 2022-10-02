@@ -1,24 +1,37 @@
-import { prisma } from "@/lib/prisma";
-import { NumberInput } from "@mantine/core";
-import { Prisma } from "@prisma/client";
-import type { GetServerSideProps, NextPage } from "next";
+import { useAuth } from "@/hooks/use-auth";
+import { Button, Container, Group, Loader, Text } from "@mantine/core";
+import type { NextPage } from "next";
+import { useRouter } from "next/router";
 
-type HomeProps = {
-  userCount: Prisma.GetUserAggregateType<{ _count: true }>;
-};
+const Home: NextPage = () => {
+  const { user, logout } = useAuth();
 
-const Home: NextPage<HomeProps> = ({ userCount }) => {
-  return <NumberInput value={userCount._count} />;
-};
+  if (!user) {
+    if (typeof window !== "undefined") {
+      const router = useRouter();
+      router.push("/auth/login");
+    }
+    // center loader
+    return (
+      <Loader
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    );
+  }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const userCount = await prisma.user.aggregate({
-    _count: true,
-  });
-
-  return {
-    props: { userCount },
-  };
+  return (
+    <Container>
+      <Group grow>
+        <Text>Merhaba {user.student.name}</Text>
+        <Button onClick={logout}>Çıkış yap</Button>
+      </Group>
+    </Container>
+  );
 };
 
 export default Home;

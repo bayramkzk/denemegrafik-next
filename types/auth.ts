@@ -9,6 +9,7 @@ export type UserResponse = Omit<User, "hash"> & {
 
 export type AuthValidationErrorResponse = {
   error: ZodIssue[];
+  success: false;
 };
 
 export type AuthCustomErrorResponse = {
@@ -16,11 +17,13 @@ export type AuthCustomErrorResponse = {
     code: string;
     message: string;
   };
+  success: false;
 };
 
 export type AuthSuccessResponse = {
   user: UserResponse;
   token: string;
+  success: true;
 };
 
 export type AuthResponse =

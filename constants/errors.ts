@@ -1,5 +1,11 @@
-const generateError = (code: string, message: string) => ({
+import { AuthCustomErrorResponse } from "@/types/auth";
+
+const generateError = (
+  code: string,
+  message: string
+): AuthCustomErrorResponse => ({
   error: { code, message },
+  success: false,
 });
 
 export const METHOD_NOT_ALLOWED = generateError(
