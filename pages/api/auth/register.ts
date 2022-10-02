@@ -35,14 +35,15 @@ const handler: NextApiHandler<AuthResponse> = async (req, res) => {
   if (req.method !== "POST") return res.status(405).json(METHOD_NOT_ALLOWED);
 
   const body = registerSchema.safeParse(req.body);
-  if (!body.success) return res.status(400).json({ error: body.error.issues });
+  if (!body.success)
+    return res.status(400).json({ error: body.error.issues, success: false });
 
   const result = await registerUser(body.data.citizenId, body.data.password);
   if (result.error) return res.status(400).json(result.error);
 
   const { hash, ...userWithoutHash } = result.user;
   const token = jwt.sign({ id: result.user.id }, process.env.JWT_SECRET!);
-  res.status(200).json({ user: userWithoutHash, token });
+  res.status(200).json({ user: userWithoutHash, token, success: true });
 };
 
 export default handler;
