@@ -1,3 +1,4 @@
+import Layout from "@/components/Layout";
 import { Button, Container, Group, Loader, Text } from "@mantine/core";
 import type { NextPage } from "next";
 import { signOut, useSession } from "next-auth/react";
@@ -19,12 +20,14 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Container>
-      <Group grow>
-        <Text>Merhaba {session.user.student.name}</Text>
-        <Button onClick={() => signOut()}>Çıkış yap</Button>
-      </Group>
-    </Container>
+    <Layout aside={null} footer={null} navbar={null}>
+      <Container>
+        <Group grow>
+          <Text>Merhaba {session.user.student.name}</Text>
+          <Button onClick={() => signOut()}>Çıkış yap</Button>
+        </Group>
+      </Container>
+    </Layout>
   );
 };
 
