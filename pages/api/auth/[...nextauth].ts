@@ -1,6 +1,7 @@
 import { loginSchema } from "@/schemas/login";
+import { SessionUser } from "@/types/auth";
 import bcrypt from "bcrypt";
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
@@ -32,10 +33,24 @@ export const authOptions: NextAuthOptions = {
         const isValid = await bcrypt.compare(body.data.password, user.hash);
         if (!isValid) return null;
 
-        return user;
+        const { hash, ...userWithoutHash } = user;
+        return userWithoutHash as SessionUser;
       },
     }),
   ],
+  callbacks: {
+    async session({ session, token }): Promise<Session> {
+      session.user = token.user as SessionUser;
+      return session;
+    },
+    async jwt({ token, user }) {
+      token.user ??= user;
+      return token;
+    },
+  },
+  pages: {
+    signIn: "/auth/login",
+  },
 };
 
 export default NextAuth(authOptions);
