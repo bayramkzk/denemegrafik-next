@@ -1,3 +1,4 @@
+import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/schemas/login";
 import { SessionUser } from "@/types/auth";
 import bcrypt from "bcrypt";
