@@ -62,7 +62,8 @@ const Login: NextPage = () => {
         title: "Giriş başarılı",
         message: "Yönlendiriliyorsunuz...",
       });
-      router.push("/");
+      const callbackUrl = router.query.callbackUrl as string;
+      router.push(callbackUrl || "/");
     }
   });
 
