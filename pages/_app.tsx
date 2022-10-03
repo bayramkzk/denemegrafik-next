@@ -7,13 +7,20 @@ import { useHotkeys } from "@mantine/hooks";
 import { NotificationsProvider } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getCookie, setCookie } from "cookies-next";
-import { GetServerSidePropsContext } from "next";
-import { AppProps } from "next/app";
+import type { GetServerSidePropsContext } from "next";
+import type { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
+import type { AppProps as NextAppProps } from "next/app";
 import Head from "next/head";
 import { useState } from "react";
 
-export default function App(props: AppProps & { colorScheme: ColorScheme }) {
-  const { Component, pageProps } = props;
+interface AppProps extends NextAppProps {
+  colorScheme: ColorScheme;
+  session: Session;
+}
+
+export default function App(props: AppProps) {
+  const { Component, pageProps, session } = props;
   const [queryClient] = useState(() => new QueryClient());
   const [colorScheme, setColorScheme] = useState<ColorScheme>(
     props.colorScheme
@@ -36,22 +43,24 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
         <title>Deneme Grafik</title>
       </Head>
 
-      <ColorSchemeProvider
-        colorScheme={colorScheme}
-        toggleColorScheme={toggleColorScheme}
-      >
-        <MantineProvider
-          theme={{ colorScheme }}
-          withGlobalStyles
-          withNormalizeCSS
+      <SessionProvider session={session}>
+        <ColorSchemeProvider
+          colorScheme={colorScheme}
+          toggleColorScheme={toggleColorScheme}
         >
-          <NotificationsProvider>
-            <QueryClientProvider client={queryClient}>
-              <Component {...pageProps} />
-            </QueryClientProvider>
-          </NotificationsProvider>
-        </MantineProvider>
-      </ColorSchemeProvider>
+          <MantineProvider
+            theme={{ colorScheme }}
+            withGlobalStyles
+            withNormalizeCSS
+          >
+            <NotificationsProvider>
+              <QueryClientProvider client={queryClient}>
+                <Component {...pageProps} />
+              </QueryClientProvider>
+            </NotificationsProvider>
+          </MantineProvider>
+        </ColorSchemeProvider>
+      </SessionProvider>
     </>
   );
 }
