@@ -1,3 +1,4 @@
+import { loginSchema } from "@/schemas/login";
 import bcrypt from "bcrypt";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -19,15 +20,16 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials, req) {
-        if (!credentials?.citizenId || !credentials?.password) return null;
+        const body = loginSchema.safeParse(credentials);
+        if (!body.success) return null;
 
         const user = await prisma.user.findUnique({
-          where: { citizenId: credentials.citizenId },
+          where: { citizenId: body.data.citizenId },
           include: { student: { include: { class: true } } },
         });
         if (!user) return null;
 
-        const isValid = await bcrypt.compare(credentials.password, user.hash);
+        const isValid = await bcrypt.compare(body.data.password, user.hash);
         if (!isValid) return null;
 
         return user;
