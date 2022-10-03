@@ -1,17 +1,11 @@
-import { useAuth } from "@/hooks/use-auth";
 import { Button, Container, Group, Loader, Text } from "@mantine/core";
 import type { NextPage } from "next";
-import { useRouter } from "next/router";
+import { signOut, useSession } from "next-auth/react";
 
 const Home: NextPage = () => {
-  const { user, logout } = useAuth();
+  const { data: session, status } = useSession();
 
-  if (!user) {
-    if (typeof window !== "undefined") {
-      const router = useRouter();
-      router.push("/auth/login");
-    }
-    // center loader
+  if (status !== "authenticated") {
     return (
       <Loader
         sx={{
@@ -27,8 +21,8 @@ const Home: NextPage = () => {
   return (
     <Container>
       <Group grow>
-        <Text>Merhaba {user.student.name}</Text>
-        <Button onClick={logout}>Çıkış yap</Button>
+        <Text>Merhaba {session.user.student.name}</Text>
+        <Button onClick={() => signOut()}>Çıkış yap</Button>
       </Group>
     </Container>
   );
