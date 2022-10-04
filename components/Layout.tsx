@@ -13,12 +13,12 @@ import { useState } from "react";
 
 export type LayoutProps = {
   children: React.ReactNode;
-  navbar: React.ReactNode;
-  aside: React.ReactNode;
-  footer: React.ReactNode;
+  navbar?: React.ReactNode;
+  aside?: React.ReactNode;
+  footer?: React.ReactNode;
 };
 
-const Layout: React.FC<LayoutProps> = (props) => {
+const Layout: React.FC<LayoutProps> = ({ children, aside, footer, navbar }) => {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
 
@@ -35,26 +35,32 @@ const Layout: React.FC<LayoutProps> = (props) => {
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
       navbar={
-        <Navbar
-          p="md"
-          hiddenBreakpoint="sm"
-          hidden={!opened}
-          width={{ sm: 200, lg: 300 }}
-        >
-          {props.navbar}
-        </Navbar>
+        navbar ? (
+          <Navbar
+            p="md"
+            hiddenBreakpoint="sm"
+            hidden={!opened}
+            width={{ sm: 200, lg: 300 }}
+          >
+            {navbar}
+          </Navbar>
+        ) : undefined
       }
       aside={
-        <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-          <Aside p="md" hiddenBreakpoint="sm" width={{ sm: 200, lg: 300 }}>
-            {props.aside}
-          </Aside>
-        </MediaQuery>
+        aside ? (
+          <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+            <Aside p="md" hiddenBreakpoint="sm" width={{ sm: 200, lg: 300 }}>
+              {aside}
+            </Aside>
+          </MediaQuery>
+        ) : undefined
       }
       footer={
-        <Footer height={60} p="md">
-          {props.footer}
-        </Footer>
+        footer ? (
+          <Footer height={60} p="md">
+            {footer}
+          </Footer>
+        ) : undefined
       }
       header={
         <Header height={70} p="md">
@@ -78,7 +84,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
         </Header>
       }
     >
-      {props.children}
+      {children}
     </AppShell>
   );
 };
