@@ -2,14 +2,31 @@ import {
   AppShell,
   Aside,
   Burger,
+  createStyles,
   Footer,
+  Group,
   Header,
   MediaQuery,
   Navbar,
   Text,
-  useMantineTheme,
 } from "@mantine/core";
 import { useState } from "react";
+import { HEADER_HEIGHT } from "../constants";
+
+const useStyles = createStyles((theme) => ({
+  root: {
+    main: {
+      background:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[8]
+          : theme.colors.gray[0],
+    },
+  },
+
+  burger: {
+    color: theme.colors.gray[6],
+  },
+}));
 
 export type LayoutProps = {
   children: React.ReactNode;
@@ -19,19 +36,12 @@ export type LayoutProps = {
 };
 
 const Layout: React.FC<LayoutProps> = ({ children, aside, footer, navbar }) => {
-  const theme = useMantineTheme();
+  const { classes } = useStyles();
   const [opened, setOpened] = useState(false);
 
   return (
     <AppShell
-      styles={{
-        main: {
-          background:
-            theme.colorScheme === "dark"
-              ? theme.colors.dark[8]
-              : theme.colors.gray[0],
-        },
-      }}
+      className={classes.root}
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
       navbar={
@@ -40,7 +50,7 @@ const Layout: React.FC<LayoutProps> = ({ children, aside, footer, navbar }) => {
             p="md"
             hiddenBreakpoint="sm"
             hidden={!opened}
-            width={{ sm: 200, lg: 300 }}
+            width={{ sm: 350 }}
           >
             {navbar}
           </Navbar>
@@ -63,16 +73,14 @@ const Layout: React.FC<LayoutProps> = ({ children, aside, footer, navbar }) => {
         ) : undefined
       }
       header={
-        <Header height={70} p="md">
-          <div
-            style={{ display: "flex", alignItems: "center", height: "100%" }}
-          >
+        <Header height={HEADER_HEIGHT} p="md">
+          <Group>
             <MediaQuery largerThan="sm" styles={{ display: "none" }}>
               <Burger
+                className={classes.burger}
                 opened={opened}
                 onClick={() => setOpened((o) => !o)}
                 size="sm"
-                color={theme.colors.gray[6]}
                 mr="xl"
               />
             </MediaQuery>
@@ -80,7 +88,7 @@ const Layout: React.FC<LayoutProps> = ({ children, aside, footer, navbar }) => {
             <Text size="xl" weight={500}>
               Header
             </Text>
-          </div>
+          </Group>
         </Header>
       }
     >
