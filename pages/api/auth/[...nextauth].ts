@@ -27,7 +27,9 @@ export const authOptions: NextAuthOptions = {
 
         const user = await prisma.user.findUnique({
           where: { citizenId: body.data.citizenId },
-          include: { student: { include: { class: true } } },
+          include: {
+            student: { include: { class: { include: { school: true } } } },
+          },
         });
         if (!user) return null;
 

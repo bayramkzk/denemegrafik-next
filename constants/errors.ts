@@ -1,9 +1,4 @@
-import { AuthCustomErrorResponse } from "@/types/auth";
-
-const generateError = (
-  code: string,
-  message: string
-): AuthCustomErrorResponse => ({
+const generateError = (code: string, message: string) => ({
   error: { code, message },
   success: false,
 });

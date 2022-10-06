@@ -1,7 +1,9 @@
-import { Class, Student, User } from "@prisma/client";
+import { Class, School, Student, User } from "@prisma/client";
 
 export type SessionUser = Omit<User, "hash"> & {
   student: Student & {
-    class: Class;
+    class: Class & {
+      school: School;
+    };
   };
 };
