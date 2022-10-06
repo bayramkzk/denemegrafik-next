@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import Navbar from "@/components/Navbar";
 import { Button, Container, Group, Loader, Text } from "@mantine/core";
 import type { NextPage } from "next";
 import { signOut, useSession } from "next-auth/react";
@@ -20,7 +21,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Layout aside={null} footer={null} navbar={null}>
+    <Layout navbar={<Navbar />}>
       <Container>
         <Group grow>
           <Text>Merhaba {session.user.student.name}</Text>
