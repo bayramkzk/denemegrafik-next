@@ -1,7 +1,9 @@
+import "@/styles/globals.css";
 import {
   ColorScheme,
   ColorSchemeProvider,
   MantineProvider,
+  MantineThemeOverride,
 } from "@mantine/core";
 import { useHotkeys } from "@mantine/hooks";
 import { NotificationsProvider } from "@mantine/notifications";
@@ -37,6 +39,26 @@ export default function App(props: AppProps) {
 
   useHotkeys([["mod+J", () => toggleColorScheme()]]);
 
+  const mantineTheme: MantineThemeOverride = {
+    colorScheme,
+    colors: {
+      primary: [
+        "#d9fffb",
+        "#adfcff",
+        "#7ff3fb",
+        "#50e7f8",
+        "#24d9f5",
+        "#0ab9db",
+        "#009cab",
+        "#00787c",
+        "#004c4a",
+        "#001c1a",
+      ],
+    },
+    primaryColor: "primary",
+    primaryShade: { light: 6, dark: 8 },
+  };
+
   return (
     <>
       <Head>
@@ -49,7 +71,7 @@ export default function App(props: AppProps) {
           toggleColorScheme={toggleColorScheme}
         >
           <MantineProvider
-            theme={{ colorScheme }}
+            theme={mantineTheme}
             withGlobalStyles
             withNormalizeCSS
           >
