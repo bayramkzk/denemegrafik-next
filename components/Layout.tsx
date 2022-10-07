@@ -1,17 +1,13 @@
 import {
   AppShell,
   Aside,
-  Burger,
   createStyles,
   Footer,
-  Group,
-  Header,
   MediaQuery,
   Navbar,
-  Text,
 } from "@mantine/core";
 import { useState } from "react";
-import { HEADER_HEIGHT } from "../constants";
+import Header from "./Header";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -21,10 +17,6 @@ const useStyles = createStyles((theme) => ({
           ? theme.colors.dark[8]
           : theme.colors.gray[0],
     },
-  },
-
-  burger: {
-    color: theme.colors.gray[6],
   },
 }));
 
@@ -72,25 +64,7 @@ const Layout: React.FC<LayoutProps> = ({ children, aside, footer, navbar }) => {
           </Footer>
         ) : undefined
       }
-      header={
-        <Header height={HEADER_HEIGHT} p="md">
-          <Group>
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Burger
-                className={classes.burger}
-                opened={opened}
-                onClick={() => setOpened((o) => !o)}
-                size="sm"
-                mr="xl"
-              />
-            </MediaQuery>
-
-            <Text size="xl" weight={500}>
-              Header
-            </Text>
-          </Group>
-        </Header>
-      }
+      header={<Header opened={opened} setOpened={setOpened} />}
     >
       {children}
     </AppShell>
