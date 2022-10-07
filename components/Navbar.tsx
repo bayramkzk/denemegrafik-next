@@ -1,7 +1,6 @@
 import { createStyles, Stack } from "@mantine/core";
 import React from "react";
 import SessionGuard from "./SessionGuard";
-import SessionButton from "./SessionMenu";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -19,7 +18,6 @@ const Navbar: React.FC<NavbarProps> = () => {
       {(session) => (
         <Stack justify="space-between" className={classes.root}>
           <div>{session.user.student.name}</div>
-          <SessionButton />
         </Stack>
       )}
     </SessionGuard>
