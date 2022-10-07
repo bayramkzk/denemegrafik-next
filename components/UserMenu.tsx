@@ -7,13 +7,13 @@ import {
   UnstyledButton,
   useMantineColorScheme,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import { IconChevronDown, IconLogout } from "@tabler/icons";
 import { signOut } from "next-auth/react";
 import React, { useState } from "react";
 import SessionGuard from "./SessionGuard";
 
 const MENU_ICON_SIZE = 14;
+const MENU_MINIMIZE_BREAKPOINT = "sm";
 
 const useStyles = createStyles((theme) => ({
   user: {
@@ -27,7 +27,7 @@ const useStyles = createStyles((theme) => ({
         theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
     },
 
-    [theme.fn.smallerThan("xs")]: {
+    [theme.fn.smallerThan(MENU_MINIMIZE_BREAKPOINT)]: {
       padding: 4,
     },
   },
@@ -38,8 +38,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   avatar: {
-    [theme.fn.smallerThan("xs")]: {
-      // make bigger
+    [theme.fn.smallerThan(MENU_MINIMIZE_BREAKPOINT)]: {
       width: 32,
       height: 32,
     },
@@ -47,13 +46,13 @@ const useStyles = createStyles((theme) => ({
 
   name: {
     lineHeight: 1,
-    [theme.fn.smallerThan("xs")]: {
+    [theme.fn.smallerThan(MENU_MINIMIZE_BREAKPOINT)]: {
       display: "none",
     },
   },
 
   down: {
-    [theme.fn.smallerThan("xs")]: {
+    [theme.fn.smallerThan(MENU_MINIMIZE_BREAKPOINT)]: {
       display: "none",
     },
   },
@@ -63,7 +62,6 @@ export interface HeaderUserMenuProps {}
 
 const UserMenu: React.FC<HeaderUserMenuProps> = () => {
   const { classes, theme, cx } = useStyles();
-  const [opened, { toggle }] = useDisclosure(false);
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
