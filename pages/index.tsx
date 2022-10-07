@@ -1,35 +1,63 @@
 import Layout from "@/components/Layout";
 import Navbar from "@/components/Navbar";
-import { Button, Container, Group, Loader, Text } from "@mantine/core";
-import type { NextPage } from "next";
-import { signOut, useSession } from "next-auth/react";
+import SessionGuard from "@/components/SessionGuard";
+import { prisma } from "@/lib/prisma";
+import { Container, Title } from "@mantine/core";
+import { Test, TestResult } from "@prisma/client";
+import type { GetServerSideProps, NextPage } from "next";
+import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
 
-const Home: NextPage = () => {
-  const { data: session, status } = useSession();
+export type HomeProps = {
+  results: (TestResult & { test: Test })[];
+};
 
-  if (status !== "authenticated") {
-    return (
-      <Loader
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      />
-    );
-  }
-
+const Home: NextPage<HomeProps> = ({ results }) => {
   return (
     <Layout navbar={<Navbar />}>
       <Container>
-        <Group grow>
-          <Text>Merhaba {session.user.student.name}</Text>
-          <Button onClick={() => signOut()}>Çıkış yap</Button>
-        </Group>
+        <SessionGuard>
+          {(session) => (
+            <div>
+              <Title mt="xl">Home</Title>
+              <p>Hi {session.user.student.name}!</p>
+              <p>Here are your results:</p>
+              <ul>
+                {results.map((result) => (
+                  <li key={result.id}>
+                    {result.test.name}: {result.score}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </SessionGuard>
       </Container>
     </Layout>
   );
 };
 
 export default Home;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+
+  const results = await prisma.testResult.findMany({
+    where: { student: { id: session.user.student.id } },
+    include: { test: true },
+  });
+
+  return { props: { results: JSON.parse(JSON.stringify(results)) } };
+};
