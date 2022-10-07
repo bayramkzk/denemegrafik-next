@@ -4,6 +4,7 @@ import {
   Header as MantineHeader,
   MediaQuery,
 } from "@mantine/core";
+import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
 import { HEADER_HEIGHT } from "../constants";
 import AppLogo from "./AppLogo";
@@ -44,7 +45,11 @@ const Header: React.FC<HeaderProps> = ({ opened, setOpened }) => {
         />
       </MediaQuery>
 
-      <AppLogo size={20} />
+      <Link href="/" passHref>
+        <a>
+          <AppLogo size={20} />
+        </a>
+      </Link>
 
       <UserMenu />
     </MantineHeader>
