@@ -10,7 +10,7 @@ import {
   YAxis,
 } from "recharts";
 
-const NAME_FIELD = "İsim";
+const NAME_FIELD = "Deneme İsmi";
 const STUDENT_SCORE_FIELD = "Öğrenci Puanı";
 const AVERAGE_SCORE_FIELD = "Ortalama Puan";
 
@@ -42,7 +42,7 @@ const ResultChart: React.FC<ResultChartProps> = ({
       margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
     >
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="name" />
+      <XAxis dataKey={NAME_FIELD} />
       <YAxis />
       <Tooltip />
       <Legend />
