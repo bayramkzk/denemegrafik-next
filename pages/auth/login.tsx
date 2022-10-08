@@ -64,7 +64,10 @@ const Login: NextPage = () => {
     if (res.error) {
       showNotification({
         title: "Giriş başarısız",
-        message: res.error,
+        message:
+          res.error === "CredentialsSignin"
+            ? "TC Kimlik Numarası veya şifre hatalı"
+            : "Bilinmeyen bir hata oluştu, lütfen bilgilerinizi kontrol edin",
         color: "red",
       });
     }
