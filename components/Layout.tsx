@@ -1,6 +1,7 @@
 import {
   AppShell,
   Aside,
+  Container,
   createStyles,
   Footer,
   MediaQuery,
@@ -69,7 +70,7 @@ const Layout: React.FC<LayoutProps> = ({ children, aside, footer, navbar }) => {
         <Header burgerState={[opened, setOpened]} burgerEnabled={!!navbar} />
       }
     >
-      {children}
+      <Container size="xl">{children}</Container>
 
       <AppFooter />
     </AppShell>

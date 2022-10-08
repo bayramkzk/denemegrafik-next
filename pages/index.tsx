@@ -4,7 +4,7 @@ import ProfileTable from "@/components/ProfileTable";
 import SessionGuard from "@/components/SessionGuard";
 import { prisma } from "@/lib/prisma";
 import { TestResultWithAverage, TestResultWithTest } from "@/types/tests";
-import { Alert, Container, Stack, Text, Title } from "@mantine/core";
+import { Alert, Stack, Text, Title } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
@@ -24,26 +24,24 @@ const Home: NextPage<HomeProps> = ({ results }) => {
     <SessionGuard>
       {(session) => (
         <Layout navbar={!session.user.student && <Navbar />}>
-          <Container>
-            <Stack py="lg" spacing={32}>
-              <Title>Deneme Grafik</Title>
+          <Stack py="lg" spacing={32}>
+            <Title>Deneme Grafik</Title>
 
-              <Alert variant="filled" icon={<IconInfoCircle />}>
-                Merhaba {session.user.student.name}, bu websitesindeki veriler
-                sadece senin için saklanmaktadır.
-              </Alert>
+            <Alert variant="filled" icon={<IconInfoCircle />}>
+              Merhaba {session.user.student.name}, bu websitesindeki veriler
+              sadece senin için saklanmaktadır.
+            </Alert>
 
-              <ProfileTable />
+            <ProfileTable />
 
-              <Text>
-                Aşağıdaki grafiği inceleyerek deneme sonuçlarının zaman içinde
-                nasıl değiştiğini görebilirsin ve kendi sonuçlarını ortalama ile
-                karşılaştırabilirsin.
-              </Text>
+            <Text>
+              Aşağıdaki grafiği inceleyerek deneme sonuçlarının zaman içinde
+              nasıl değiştiğini görebilirsin ve kendi sonuçlarını ortalama ile
+              karşılaştırabilirsin.
+            </Text>
 
-              <ResultChart results={results} />
-            </Stack>
-          </Container>
+            <ResultChart results={results} />
+          </Stack>
         </Layout>
       )}
     </SessionGuard>
