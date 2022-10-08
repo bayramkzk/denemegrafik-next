@@ -1,6 +1,7 @@
 import { Container, createStyles, Text } from "@mantine/core";
 import { IconBrandGithub } from "@tabler/icons";
 import Link from "next/link";
+import { CONTAINER_SIZE } from "../constants";
 
 const useStyles = createStyles((theme) => ({
   footer: {
@@ -34,7 +35,7 @@ export function AppFooter() {
 
   return (
     <div className={classes.footer}>
-      <Container className={classes.inner}>
+      <Container className={classes.inner} size={CONTAINER_SIZE}>
         <Text color="dimmed" size="xs">
           Süleyman Demirel Fen Lisesi öğrencileri tarafından yapılmıştır. Tüm
           hakları saklıdır.

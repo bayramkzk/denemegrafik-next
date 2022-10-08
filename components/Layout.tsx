@@ -8,6 +8,7 @@ import {
   Navbar,
 } from "@mantine/core";
 import { useState } from "react";
+import { CONTAINER_SIZE } from "../constants";
 import { AppFooter } from "./AppFooter";
 import Header from "./Header";
 
@@ -70,7 +71,7 @@ const Layout: React.FC<LayoutProps> = ({ children, aside, footer, navbar }) => {
         <Header burgerState={[opened, setOpened]} burgerEnabled={!!navbar} />
       }
     >
-      <Container size="xl">{children}</Container>
+      <Container size={CONTAINER_SIZE}>{children}</Container>
 
       <AppFooter />
     </AppShell>

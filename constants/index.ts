@@ -6,4 +6,6 @@ export const PASSWORD_SALT_OR_ROUNDS = 10;
 
 export const HEADER_HEIGHT = 60;
 
+export const CONTAINER_SIZE = "xl";
+
 export const APP_NAME = "denemegrafik";
