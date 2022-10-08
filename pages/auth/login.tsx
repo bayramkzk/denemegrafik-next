@@ -11,22 +11,31 @@ import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
 import { NextPage } from "next";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const INPUT_SIZE = "lg";
 
-const useStyles = createStyles({
+const useStyles = createStyles((theme) => ({
   root: {
     paddingTop: 128,
     maxWidth: 420,
     paddingInline: 16,
     margin: "auto",
   },
-});
+  register: {
+    marginTop: 16,
+    textAlign: "center",
+    "&:hover": {
+      color: theme.colors.primary[6],
+    },
+  },
+}));
 
 const Login: NextPage = () => {
   const router = useRouter();
-
+  const [loading, setLoading] = useState(false);
   const { classes } = useStyles();
   const form = useForm({
     initialValues: {
@@ -44,23 +53,27 @@ const Login: NextPage = () => {
   });
 
   const handleSubmit = form.onSubmit(async (values) => {
+    setLoading(true);
     const res = await signIn("credentials", {
       redirect: false,
       ...values,
     });
     if (!res) return;
+    setLoading(false);
 
     if (res.error) {
       showNotification({
         title: "Giriş başarısız",
         message: res.error,
+        color: "red",
       });
     }
 
     if (res.ok) {
       showNotification({
         title: "Giriş başarılı",
-        message: "Yönlendiriliyorsunuz...",
+        message: "Ana sayfaya yönlendiriliyorsunuz...",
+        color: "teal",
       });
       const callbackUrl = router.query.callbackUrl as string;
       router.push(callbackUrl || "/");
@@ -70,7 +83,10 @@ const Login: NextPage = () => {
   return (
     <form onSubmit={handleSubmit}>
       <Stack className={classes.root}>
-        <Title>Giriş</Title>
+        <Title mb="md" order={1} size={36}>
+          Giriş
+        </Title>
+
         <NumberInput
           hideControls
           label="TC Kimlik Numarası"
@@ -86,9 +102,14 @@ const Login: NextPage = () => {
           size={INPUT_SIZE}
           {...form.getInputProps("password")}
         />
-        <Button size={INPUT_SIZE} type="submit">
-          Giriş yap
+
+        <Button size={INPUT_SIZE} type="submit" loading={loading} color="teal">
+          {!loading && "Giriş yap"}
         </Button>
+
+        <Link href="/auth/register" passHref replace>
+          <a className={classes.register}>Hesabın yok mu? Kayıt ol!</a>
+        </Link>
       </Stack>
     </form>
   );
