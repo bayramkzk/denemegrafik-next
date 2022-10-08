@@ -3,9 +3,8 @@ import Navbar from "@/components/Navbar";
 import ProfileTable from "@/components/ProfileTable";
 import SessionGuard from "@/components/SessionGuard";
 import { prisma } from "@/lib/prisma";
-import { TestResultWithTest } from "@/types/tests";
+import { TestResultWithAverage, TestResultWithTest } from "@/types/tests";
 import { Alert, Container, Stack, Text, Title } from "@mantine/core";
-import { useElementSize } from "@mantine/hooks";
 import { IconInfoCircle } from "@tabler/icons";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
@@ -17,17 +16,15 @@ const ResultChart = dynamic(() => import("@/components/ResultChart"), {
 });
 
 export type HomeProps = {
-  results: TestResultWithTest[];
+  results: TestResultWithAverage[];
 };
 
 const Home: NextPage<HomeProps> = ({ results }) => {
-  const { ref, width } = useElementSize();
-
   return (
     <SessionGuard>
       {(session) => (
         <Layout navbar={!session.user.student && <Navbar />}>
-          <Container ref={ref}>
+          <Container>
             <Stack py="lg" spacing={32}>
               <Title>Deneme Grafik</Title>
 
@@ -44,7 +41,7 @@ const Home: NextPage<HomeProps> = ({ results }) => {
                 karşılaştırabilirsin.
               </Text>
 
-              <ResultChart results={results} width={width} />
+              <ResultChart results={results} />
             </Stack>
           </Container>
         </Layout>
@@ -70,10 +67,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const results = await prisma.testResult.findMany({
+  const results: TestResultWithTest[] = await prisma.testResult.findMany({
     where: { student: { id: session.user.student.id } },
     include: { test: true },
   });
 
-  return { props: { results: JSON.parse(JSON.stringify(results)) } };
+  const averages = await prisma.$transaction(
+    results.map((result) =>
+      prisma.testResult.aggregate({
+        where: { test: { id: result.test.id } },
+        _avg: { score: true },
+      })
+    )
+  );
+
+  const resultsWithAverages: TestResultWithAverage[] = results.map(
+    (result, index) => ({
+      ...result,
+      average: averages[index]._avg.score!,
+    })
+  );
+
+  return {
+    props: {
+      results: JSON.parse(JSON.stringify(resultsWithAverages)),
+    },
+  };
 };
