@@ -10,31 +10,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Permission {
+enum Role {
   SUPERADMIN
   ADMIN
-}
-
-model Admin {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  hash      String
-  name      String
-  schoolId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  school School @relation(fields: [schoolId], references: [id])
+  STUDENT
 }
 
 model User {
   id        Int      @id @default(autoincrement())
   citizenId String   @unique
   hash      String
+  role      Role     @default(STUDENT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  student Student @relation(fields: [citizenId], references: [citizenId])
+  student Student? @relation(fields: [citizenId], references: [citizenId])
+  admin   Admin?
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  citizenId String   @unique
+  schoolId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [citizenId], references: [citizenId])
+  school School @relation(fields: [schoolId], references: [id])
 }
 
 model Student {

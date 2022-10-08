@@ -29,6 +29,7 @@ export const authOptions: NextAuthOptions = {
           where: { citizenId: body.data.citizenId },
           include: {
             student: { include: { class: { include: { school: true } } } },
+            admin: { include: { school: true } },
           },
         });
         if (!user) return null;
