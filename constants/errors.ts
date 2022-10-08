@@ -1,29 +1,34 @@
-const generateError = (code: string, message: string) => ({
+import { AuthCustomErrorResponse } from "@/types/auth";
+
+const generateError = (
+  code: string,
+  message: string
+): AuthCustomErrorResponse => ({
   error: { code, message },
   success: false,
 });
 
 export const METHOD_NOT_ALLOWED = generateError(
-  "Method not allowed",
-  "method_not_allowed"
+  "method_not_allowed",
+  "Metod geçerli değil."
 );
 
 export const INVALID_CREDENTIALS = generateError(
-  "Invalid credentials",
-  "invalid_credentials"
+  "invalid_credentials",
+  "Kimlik bilgileri geçersiz."
 );
 
 export const DUPLICATE_CITIZEN_ID = generateError(
-  "The citizen ID is already in use",
-  "duplicate_citizen_id"
+  "duplicate_citizen_id",
+  "Kimlik numarası zaten kullanımda."
 );
 
 export const NO_STUDENT_FOUND = generateError(
-  "No student found with the given citizen ID",
-  "no_student_found"
+  "no_student_found",
+  "Verilen kimlik numarasına ait öğrenci bulunamadı."
 );
 
 export const INTERNAL_SERVER_ERROR = generateError(
-  "Internal server error",
-  "internal_server_error"
+  "internal_server_error",
+  "Bilinmeyen bir sunucu hatası oluştu."
 );
