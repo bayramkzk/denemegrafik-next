@@ -26,24 +26,27 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export type HeaderProps = {
-  opened: boolean;
-  setOpened: Dispatch<SetStateAction<boolean>>;
+  burgerState: [boolean, Dispatch<SetStateAction<boolean>>];
+  burgerEnabled: boolean;
 };
 
-const Header: React.FC<HeaderProps> = ({ opened, setOpened }) => {
+const Header: React.FC<HeaderProps> = ({ burgerState }) => {
+  const [burgerOpened, setBurgerOpened] = burgerState;
   const { classes } = useStyles();
 
   return (
     <MantineHeader height={HEADER_HEIGHT} p="sm" className={classes.header}>
-      <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-        <Burger
-          className={classes.burger}
-          opened={opened}
-          onClick={() => setOpened((o) => !o)}
-          size="sm"
-          mr="xl"
-        />
-      </MediaQuery>
+      {burgerOpened && (
+        <MediaQuery largerThan="sm" styles={{ display: "none" }}>
+          <Burger
+            className={classes.burger}
+            opened={burgerOpened}
+            onClick={() => setBurgerOpened((o) => !o)}
+            size="sm"
+            mr="xl"
+          />
+        </MediaQuery>
+      )}
 
       <Link href="/" passHref>
         <a>
