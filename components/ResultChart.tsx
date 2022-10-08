@@ -16,7 +16,6 @@ const NAME_FIELD = "Deneme İsmi";
 const STUDENT_SCORE_FIELD = "Öğrenci Puanı";
 const AVERAGE_SCORE_FIELD = "Ortalama Puan";
 
-const CARD_PADDING = 16;
 const STROKE_WIDTH = 2;
 
 export interface ResultChartProps {
@@ -41,9 +40,9 @@ const ResultChart: React.FC<ResultChartProps> = ({ results }) => {
     }));
 
   return (
-    <Card ref={ref} radius="md" p={CARD_PADDING}>
+    <Card ref={ref} radius="md" py="lg">
       <LineChart
-        width={width - CARD_PADDING * 2}
+        width={width}
         height={400}
         data={data}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
