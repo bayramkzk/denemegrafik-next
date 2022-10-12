@@ -4,6 +4,7 @@ import ProfileTable from "@/components/ProfileTable";
 import SessionGuard from "@/components/SessionGuard";
 import { prisma } from "@/lib/prisma";
 import { TestResultWithAverage, TestResultWithTest } from "@/types/tests";
+import { getName } from "@/utils/user";
 import { Alert, Stack, Text, Title } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons";
 import type { GetServerSideProps, NextPage } from "next";
@@ -22,14 +23,14 @@ export type HomeProps = {
 const Home: NextPage<HomeProps> = ({ results }) => {
   return (
     <SessionGuard>
-      {(session) => (
-        <Layout navbar={!session.user.student && <Navbar />}>
+      {({ user }) => (
+        <Layout navbar={!!user.admin && <Navbar />}>
           <Stack py="lg" spacing={32}>
             <Title>Deneme Grafik</Title>
 
             <Alert variant="filled" icon={<IconInfoCircle />}>
-              Merhaba {session.user.student.name}, bu websitesindeki veriler
-              sadece senin için saklanmaktadır.
+              Merhaba {getName(user)}, bu websitesindeki veriler sadece senin
+              için saklanmaktadır.
             </Alert>
 
             <ProfileTable />
@@ -60,6 +61,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       redirect: {
         destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+  if (!session.user.student) {
+    return {
+      redirect: {
+        destination: "/admin",
         permanent: false,
       },
     };

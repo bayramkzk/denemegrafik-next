@@ -1,4 +1,9 @@
-import { getFirstName, getLastName, stringifyClass } from "@/utils/user";
+import {
+  getName,
+  getSchool,
+  parseIntoNames,
+  stringifyClass,
+} from "@/utils/user";
 import { Table } from "@mantine/core";
 import React from "react";
 import SessionGuard from "./SessionGuard";
@@ -8,10 +13,9 @@ export interface ProfileTableProps {}
 const ProfileTable: React.FC<ProfileTableProps> = () => {
   return (
     <SessionGuard>
-      {(session) => {
-        const names = getFirstName(session.user.student.name);
-        const surname = getLastName(session.user.student.name);
-        const className = stringifyClass(session.user.student.class);
+      {({ user }) => {
+        const { firstName, lastName } = parseIntoNames(getName(user));
+
         return (
           <Table>
             <thead>
@@ -23,20 +27,22 @@ const ProfileTable: React.FC<ProfileTableProps> = () => {
             <tbody>
               <tr>
                 <td>Ad</td>
-                <td>{names}</td>
+                <td>{firstName}</td>
               </tr>
               <tr>
                 <td>Soyad</td>
-                <td>{surname}</td>
+                <td>{lastName}</td>
               </tr>
               <tr>
                 <td>Okul</td>
-                <td>{session.user.student.class.school.name}</td>
+                <td>{getSchool(user).name}</td>
               </tr>
-              <tr>
-                <td>Sınıf</td>
-                <td>{className}</td>
-              </tr>
+              {user.student && (
+                <tr>
+                  <td>Sınıf</td>
+                  <td>{stringifyClass(user.student.class)}</td>
+                </tr>
+              )}
             </tbody>
           </Table>
         );

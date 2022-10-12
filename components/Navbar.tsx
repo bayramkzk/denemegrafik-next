@@ -1,3 +1,4 @@
+import { getName } from "@/utils/user";
 import { createStyles, Stack } from "@mantine/core";
 import React from "react";
 import SessionGuard from "./SessionGuard";
@@ -17,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = () => {
     <SessionGuard>
       {(session) => (
         <Stack justify="space-between" className={classes.root}>
-          <div>{session.user.student.name}</div>
+          <div>Hello {getName(session.user)}</div>
         </Stack>
       )}
     </SessionGuard>

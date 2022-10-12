@@ -1,3 +1,4 @@
+import { getName } from "@/utils/user";
 import {
   Avatar,
   createStyles,
@@ -61,13 +62,13 @@ const useStyles = createStyles((theme) => ({
 export interface HeaderUserMenuProps {}
 
 const UserMenu: React.FC<HeaderUserMenuProps> = () => {
-  const { classes, theme, cx } = useStyles();
+  const { classes, cx } = useStyles();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
   return (
     <SessionGuard>
-      {(session) => (
+      {({ user }) => (
         <Menu
           width={260}
           position="bottom-end"
@@ -83,13 +84,13 @@ const UserMenu: React.FC<HeaderUserMenuProps> = () => {
             >
               <Group spacing={7}>
                 <Avatar
-                  alt={session.user.student.name}
+                  alt="user avatar"
                   radius="xl"
                   size={24}
                   className={classes.avatar}
                 />
                 <Text weight={500} size="sm" className={classes.name} mr={3}>
-                  {session.user.student.name}
+                  {getName(user)}
                 </Text>
                 <IconChevronDown
                   size={12}
