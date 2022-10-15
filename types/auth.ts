@@ -1,11 +1,13 @@
-import { Admin, Class, School, Student, User } from "@prisma/client";
+import { Admin, Class, Role, School, Student, User } from "@prisma/client";
 import { ZodIssue } from "zod";
 
 export type AdminUser = Omit<User, "hash"> & {
+  role: typeof Role.ADMIN | typeof Role.SUPERADMIN;
   admin: Admin & { school: School };
 };
 
 export type StudentUser = Omit<User, "hash"> & {
+  role: typeof Role.STUDENT;
   student: Student & { class: Class & { school: School } };
 };
 
