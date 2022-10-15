@@ -15,7 +15,7 @@ export const parseIntoNames = (name: string) => ({
 });
 
 export const getName = (user: SessionUser) =>
-  user.student ? user.student.name : user.admin!.name;
+  user.role === "STUDENT" ? user.student.name : user.admin.name;
 
 export const getSchool = (user: SessionUser) =>
-  user.student ? user.student.class.school : user.admin!.school;
+  user.role === "STUDENT" ? user.student.class.school : user.admin.school;

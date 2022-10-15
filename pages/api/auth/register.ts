@@ -6,7 +6,7 @@ import {
 import { PASSWORD_SALT_OR_ROUNDS } from "@/constants/index";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/schemas/register";
-import { RegisterResponse } from "@/types/auth";
+import { RegisterResponse, StudentUser } from "@/types/auth";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import bcrypt from "bcrypt";
 import { NextApiHandler } from "next";
@@ -30,8 +30,14 @@ const handler: NextApiHandler<RegisterResponse> = async (req, res) => {
         admin: { include: { school: true } },
       },
     });
+    if (user.role !== "STUDENT" || !user.student) {
+      throw Error("Registered user is not student");
+    }
     const { hash: _, ...userWithoutHash } = user;
-    return res.status(200).json({ user: userWithoutHash, success: true });
+    return res.status(200).json({
+      user: userWithoutHash as StudentUser,
+      success: true,
+    });
   } catch (error) {
     if (
       error instanceof PrismaClientKnownRequestError &&

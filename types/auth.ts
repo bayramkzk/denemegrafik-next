@@ -39,7 +39,7 @@ export type LoginSuccessResponse = {
 export type LoginResponse = AuthErrorResponse | LoginSuccessResponse;
 
 export type RegisterSuccessResponse = {
-  user: SessionUser;
+  user: StudentUser;
   success: true;
 };
 

@@ -1,11 +1,9 @@
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { AdminUser, SessionUser, StudentUser } from "@/types/auth";
 import { checkEnforcedRole, EnforcedRole } from "@/utils/role";
 import { Alert, Loader } from "@mantine/core";
 import { Role } from "@prisma/client";
 import { IconAlertCircle } from "@tabler/icons";
-import { GetServerSideProps } from "next";
-import { Session, unstable_getServerSession } from "next-auth";
+import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import React from "react";
 
@@ -60,20 +58,3 @@ export default function SessionGuard<R extends EnforcedRole>({
     </Alert>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await unstable_getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/auth/login",
-        permanent: false,
-      },
-    };
-  }
-  return { props: {} };
-};
