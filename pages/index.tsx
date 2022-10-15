@@ -1,5 +1,4 @@
 import Layout from "@/components/Layout";
-import Navbar from "@/components/Navbar";
 import ProfileTable from "@/components/ProfileTable";
 import SessionGuard from "@/components/SessionGuard";
 import { prisma } from "@/lib/prisma";
@@ -22,9 +21,9 @@ export type HomeProps = {
 
 const Home: NextPage<HomeProps> = ({ results }) => {
   return (
-    <SessionGuard>
+    <SessionGuard enforcedRole="STUDENT">
       {({ user }) => (
-        <Layout navbar={!!user.admin && <Navbar />}>
+        <Layout>
           <Stack py="lg" spacing={32}>
             <Title>Deneme Grafik</Title>
 
@@ -65,7 +64,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     };
   }
-  if (!session.user.student) {
+  if (session.user.role !== "STUDENT") {
     return {
       redirect: {
         destination: "/admin",

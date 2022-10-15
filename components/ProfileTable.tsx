@@ -12,7 +12,7 @@ export interface ProfileTableProps {}
 
 const ProfileTable: React.FC<ProfileTableProps> = () => {
   return (
-    <SessionGuard>
+    <SessionGuard enforcedRole="STUDENT">
       {({ user }) => {
         const { firstName, lastName } = parseIntoNames(getName(user));
 
@@ -37,12 +37,10 @@ const ProfileTable: React.FC<ProfileTableProps> = () => {
                 <td>Okul</td>
                 <td>{getSchool(user).name}</td>
               </tr>
-              {user.student && (
-                <tr>
-                  <td>Sınıf</td>
-                  <td>{stringifyClass(user.student.class)}</td>
-                </tr>
-              )}
+              <tr>
+                <td>Sınıf</td>
+                <td>{stringifyClass(user.student.class)}</td>
+              </tr>
             </tbody>
           </Table>
         );

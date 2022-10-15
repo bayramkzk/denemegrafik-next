@@ -15,7 +15,7 @@ const Navbar: React.FC<NavbarProps> = () => {
   const { classes } = useStyles();
 
   return (
-    <SessionGuard>
+    <SessionGuard enforcedRole="ADMIN">
       {(session) => (
         <Stack justify="space-between" className={classes.root}>
           <div>Hello {getName(session.user)}</div>
