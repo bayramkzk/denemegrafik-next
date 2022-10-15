@@ -1,6 +1,8 @@
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { Alert, Loader } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons";
-import { Session } from "next-auth";
+import { GetServerSideProps } from "next";
+import { Session, unstable_getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import React from "react";
 
@@ -36,3 +38,20 @@ const SessionGuard: React.FC<SessionGuardProps> = ({ children: builder }) => {
 };
 
 export default SessionGuard;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: false,
+      },
+    };
+  }
+  return { props: {} };
+};
