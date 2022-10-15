@@ -67,7 +67,7 @@ const Login: NextPage = () => {
         message:
           res.error === "CredentialsSignin"
             ? "TC Kimlik Numarası veya şifre hatalı"
-            : "Bilinmeyen bir hata oluştu, lütfen bilgilerinizi kontrol edin",
+            : JSON.stringify(res.error).replaceAll("\\n", "\n"),
         color: "red",
       });
     }
