@@ -6,6 +6,14 @@ export type SessionUser = Omit<User, "hash"> & {
   admin: (Admin & { school: School }) | null;
 };
 
+export type AdminUser = Omit<User, "hash"> & {
+  admin: Admin & { school: School };
+};
+
+export type StudentUser = Omit<User, "hash"> & {
+  student: Student & { class: Class & { school: School } };
+};
+
 export type AuthValidationErrorResponse = {
   error: ZodIssue[];
   success: false;
