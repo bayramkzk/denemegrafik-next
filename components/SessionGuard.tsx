@@ -1,5 +1,3 @@
-import { AdminUser, SessionUser, StudentUser } from "@/types/auth";
-import { checkEnforcedRole, EnforcedRole } from "@/utils/role";
 import { Alert, Loader } from "@mantine/core";
 import { Role } from "@prisma/client";
 import { IconAlertCircle } from "@tabler/icons";
@@ -7,24 +5,15 @@ import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import React from "react";
 
-export type SessionGuardChildrenArgs<R extends EnforcedRole> = {
-  session: Session;
-  user: R extends undefined
-    ? SessionUser
-    : R extends typeof Role.STUDENT
-    ? StudentUser
-    : AdminUser;
+export type SessionGuardProps = {
+  children: (session: Session) => React.ReactNode;
+  allowedRoles?: Role[];
 };
 
-export type SessionGuardProps<R extends EnforcedRole> = {
-  enforcedRole?: R;
-  children: (args: SessionGuardChildrenArgs<R>) => React.ReactNode;
-};
-
-export default function SessionGuard<R extends EnforcedRole>({
-  enforcedRole,
-  children,
-}: SessionGuardProps<R>) {
+const SessionGuard: React.FC<SessionGuardProps> = ({
+  children: builder,
+  allowedRoles,
+}) => {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
@@ -46,10 +35,9 @@ export default function SessionGuard<R extends EnforcedRole>({
 
   if (
     status === "authenticated" &&
-    checkEnforcedRole(session.user.role, enforcedRole)
+    (allowedRoles === undefined || allowedRoles.includes(session.user.role))
   ) {
-    const user = session.user as SessionGuardChildrenArgs<R>["user"];
-    return <>{children({ session, user })}</>;
+    return <>{builder(session)}</>;
   }
 
   return (
@@ -57,4 +45,6 @@ export default function SessionGuard<R extends EnforcedRole>({
       Bu sayfayı görüntülemek için yetkiniz yok!
     </Alert>
   );
-}
+};
+
+export default SessionGuard;
