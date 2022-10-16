@@ -1,4 +1,3 @@
-import { getName } from "@/utils/user";
 import {
   Avatar,
   createStyles,
@@ -90,7 +89,7 @@ const UserMenu: React.FC<HeaderUserMenuProps> = () => {
                   className={classes.avatar}
                 />
                 <Text weight={500} size="sm" className={classes.name} mr={3}>
-                  {getName(user)}
+                  {user.profile.name}
                 </Text>
                 <IconChevronDown
                   size={12}

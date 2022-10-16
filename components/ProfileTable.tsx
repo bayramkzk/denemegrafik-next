@@ -1,10 +1,6 @@
-import {
-  getName,
-  getSchool,
-  parseIntoNames,
-  stringifyClass,
-} from "@/utils/user";
+import { parseIntoNames, stringifyGroup } from "@/utils/user";
 import { Table } from "@mantine/core";
+import { Role } from "@prisma/client";
 import React from "react";
 import SessionGuard from "./SessionGuard";
 
@@ -12,9 +8,9 @@ export interface ProfileTableProps {}
 
 const ProfileTable: React.FC<ProfileTableProps> = () => {
   return (
-    <SessionGuard enforcedRole="STUDENT">
+    <SessionGuard allowedRoles={[Role.STUDENT]}>
       {({ user }) => {
-        const { firstName, lastName } = parseIntoNames(getName(user));
+        const { firstName, lastName } = parseIntoNames(user.profile.name);
 
         return (
           <Table>
@@ -35,11 +31,11 @@ const ProfileTable: React.FC<ProfileTableProps> = () => {
               </tr>
               <tr>
                 <td>Okul</td>
-                <td>{getSchool(user).name}</td>
+                <td>{user.profile.group.organization.name}</td>
               </tr>
               <tr>
                 <td>Sınıf</td>
-                <td>{stringifyClass(user.student.class)}</td>
+                <td>{stringifyGroup(user.profile.group)}</td>
               </tr>
             </tbody>
           </Table>

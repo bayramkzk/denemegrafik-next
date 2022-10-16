@@ -3,7 +3,6 @@ import ProfileTable from "@/components/ProfileTable";
 import SessionGuard from "@/components/SessionGuard";
 import { prisma } from "@/lib/prisma";
 import { TestResultWithAverage, TestResultWithTest } from "@/types/tests";
-import { getName } from "@/utils/user";
 import { Alert, Stack, Text, Title } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons";
 import type { GetServerSideProps, NextPage } from "next";
@@ -21,15 +20,15 @@ export type HomeProps = {
 
 const Home: NextPage<HomeProps> = ({ results }) => {
   return (
-    <SessionGuard enforcedRole="STUDENT">
+    <SessionGuard allowedRoles={["STUDENT"]}>
       {({ user }) => (
         <Layout>
           <Stack py="lg" spacing={32}>
             <Title>Deneme Grafik</Title>
 
             <Alert variant="filled" icon={<IconInfoCircle />}>
-              Merhaba {getName(user)}, bu websitesindeki veriler sadece senin
-              için saklanmaktadır.
+              Merhaba {user.profile.name}, bu websitesindeki veriler sadece
+              senin için saklanmaktadır.
             </Alert>
 
             <ProfileTable />
@@ -74,7 +73,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const results: TestResultWithTest[] = await prisma.testResult.findMany({
-    where: { student: { id: session.user.student.id } },
+    where: { profile: { id: session.user.profile.id } },
     include: { test: true },
   });
 

@@ -1,5 +1,5 @@
-import { getName } from "@/utils/user";
 import { createStyles, Stack } from "@mantine/core";
+import { Role } from "@prisma/client";
 import React from "react";
 import SessionGuard from "./SessionGuard";
 
@@ -15,10 +15,10 @@ const Navbar: React.FC<NavbarProps> = () => {
   const { classes } = useStyles();
 
   return (
-    <SessionGuard enforcedRole="ADMIN">
+    <SessionGuard allowedRoles={[Role.ADMIN, Role.SUPERADMIN]}>
       {(session) => (
         <Stack justify="space-between" className={classes.root}>
-          <div>Hello {getName(session.user)}</div>
+          <div>Hello {session.user.profile.name}</div>
         </Stack>
       )}
     </SessionGuard>
