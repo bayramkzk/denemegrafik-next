@@ -53,7 +53,9 @@ const Layout: React.FC<LayoutProps> = ({ children, aside, footer }) => {
       }
       header={<Header />}
     >
-      <Container size={CONTAINER_SIZE}>{children}</Container>
+      <Container size={CONTAINER_SIZE} py="xl">
+        {children}
+      </Container>
 
       <AppFooter />
     </AppShell>

@@ -23,7 +23,7 @@ const Home: NextPage<HomeProps> = ({ results }) => {
     <SessionGuard allowedRoles={["STUDENT"]}>
       {({ user }) => (
         <Layout>
-          <Stack py="lg" spacing={32}>
+          <Stack spacing={32}>
             <Title>Deneme Grafik</Title>
 
             <Alert variant="filled" icon={<IconInfoCircle />}>
