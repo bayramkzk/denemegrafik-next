@@ -21,7 +21,7 @@ interface AppProps extends NextAppProps {
   session: Session;
 }
 
-export default function App(props: AppProps) {
+function App(props: AppProps) {
   const { Component, pageProps, session } = props;
   const [queryClient] = useState(() => new QueryClient());
   const [colorScheme, setColorScheme] = useState<ColorScheme>(
@@ -87,6 +87,8 @@ export default function App(props: AppProps) {
   );
 }
 
-App.getInitialProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => ({
+App.getServerSideProps = ({ ctx }: { ctx: GetServerSidePropsContext }) => ({
   colorScheme: getCookie("mantine-color-scheme", ctx) || "light",
 });
+
+export default App;
