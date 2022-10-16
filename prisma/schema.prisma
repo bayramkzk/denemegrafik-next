@@ -24,56 +24,42 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  student Student? @relation(fields: [citizenId], references: [citizenId], map: "user_student_fk")
-  admin   Admin?   @relation(fields: [citizenId], references: [citizenId], map: "user_admin_fk")
+  student Profile? @relation(fields: [citizenId], references: [citizenId])
 }
 
-model Admin {
+model Profile {
   id        Int      @id @default(autoincrement())
   citizenId String   @unique
   name      String
-  schoolId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user   User?
-  school School @relation(fields: [schoolId], references: [id])
-}
-
-model Student {
-  id        Int      @id @default(autoincrement())
-  citizenId String   @unique
-  name      String
-  classId   Int
+  groupId   Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user    User?
-  class   Class        @relation(fields: [classId], references: [id])
+  group   Group        @relation(fields: [groupId], references: [id])
   results TestResult[]
 }
 
-model Class {
-  id        Int      @id @default(autoincrement())
-  grade     Int
-  branch    String
-  schoolId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Group {
+  id             Int      @id @default(autoincrement())
+  grade          Int
+  branch         String
+  organizationId Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  school   School    @relation(fields: [schoolId], references: [id])
-  students Student[]
+  organization Organization @relation(fields: [organizationId], references: [id])
+  profiles     Profile[]
 }
 
-model School {
+model Organization {
   id        Int      @id @default(autoincrement())
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  classes Class[]
-  tests   TestOnSchool[]
-  admins  Admin[]
+  groups Group[]
+  tests  TestOnOrganization[]
 }
 
 model Test {
@@ -83,28 +69,28 @@ model Test {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  schools TestOnSchool[]
-  results TestResult[]
+  organizations TestOnOrganization[]
+  results       TestResult[]
 }
 
-model TestOnSchool {
-  testId   Int
-  schoolId Int
+model TestOnOrganization {
+  testId         Int
+  organizationId Int
 
-  test   Test   @relation(fields: [testId], references: [id])
-  school School @relation(fields: [schoolId], references: [id])
+  test         Test         @relation(fields: [testId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
 
-  @@id([testId, schoolId])
+  @@id([testId, organizationId])
 }
 
 model TestResult {
   id        Int      @id @default(autoincrement())
   testId    Int
-  studentId Int
+  profileId Int
   score     Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   test    Test    @relation(fields: [testId], references: [id])
-  student Student @relation(fields: [studentId], references: [id])
+  profile Profile @relation(fields: [profileId], references: [id])
 }
