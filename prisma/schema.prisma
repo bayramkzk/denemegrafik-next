@@ -24,7 +24,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  profile Profile? @relation(fields: [citizenId], references: [citizenId])
+  profile Profile @relation(fields: [citizenId], references: [citizenId])
 }
 
 model Profile {
