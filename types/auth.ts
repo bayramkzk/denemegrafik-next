@@ -1,17 +1,13 @@
-import { Admin, Class, Role, School, Student, User } from "@prisma/client";
+import { Group, Organization, Profile, User } from "@prisma/client";
 import { ZodIssue } from "zod";
 
-export type AdminUser = Omit<User, "hash"> & {
-  role: typeof Role.ADMIN | typeof Role.SUPERADMIN;
-  admin: Admin & { school: School };
+export type SessionUser = Omit<User, "hash"> & {
+  profile: Profile & {
+    group: Group & {
+      organization: Organization;
+    };
+  };
 };
-
-export type StudentUser = Omit<User, "hash"> & {
-  role: typeof Role.STUDENT;
-  student: Student & { class: Class & { school: School } };
-};
-
-export type SessionUser = AdminUser | StudentUser;
 
 export type AuthValidationErrorResponse = {
   error: ZodIssue[];
@@ -39,7 +35,7 @@ export type LoginSuccessResponse = {
 export type LoginResponse = AuthErrorResponse | LoginSuccessResponse;
 
 export type RegisterSuccessResponse = {
-  user: StudentUser;
+  user: SessionUser;
   success: true;
 };
 
