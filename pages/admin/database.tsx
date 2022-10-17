@@ -6,7 +6,8 @@ import {
   DatabaseModelPluralDisplayNames,
 } from "@/constants/models";
 import { Title } from "@mantine/core";
-import { DataGrid } from "mantine-data-grid";
+import { useViewportSize } from "@mantine/hooks";
+import { DataTable } from "mantine-datatable";
 import { GetServerSideProps, NextPage } from "next";
 
 export type DatabaseProps = {
@@ -15,6 +16,7 @@ export type DatabaseProps = {
 
 const Database: NextPage<DatabaseProps> = ({ model }) => {
   const title = DatabaseModelPluralDisplayNames[model] ?? "Veriler";
+  const { height } = useViewportSize();
 
   return (
     <SessionGuard>
@@ -23,11 +25,10 @@ const Database: NextPage<DatabaseProps> = ({ model }) => {
           <Title>{title}</Title>
 
           {model ? (
-            <DataGrid
+            <DataTable
               my={50}
-              data={[{}]}
-              withGlobalFilter
               columns={modelToColumnMap[model]}
+              minHeight={height / 2}
             />
           ) : (
             <p>Model seçilmedi.</p>

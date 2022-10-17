@@ -1,168 +1,165 @@
 import { DatabaseModel } from "@/constants/models";
-import { DataGridProps } from "mantine-data-grid";
+import { DataTableColumn } from "mantine-datatable";
 
-export const modelToColumnMap: Record<
-  DatabaseModel,
-  DataGridProps<unknown>["columns"]
-> = {
+export const modelToColumnMap: Record<DatabaseModel, DataTableColumn<any>[]> = {
   organization: [
     {
-      accessorKey: "id",
-      header: "ID",
+      accessor: "id",
+      title: "ID",
     },
     {
-      accessorKey: "name",
-      header: "Okul Adı",
+      accessor: "name",
+      title: "Okul Adı",
     },
     {
-      accessorKey: "classCount",
-      header: "Şube Sayısı",
+      accessor: "classCount",
+      title: "Şube Sayısı",
     },
     {
-      accessorKey: "studentCount",
-      header: "Öğrenci Sayısı",
+      accessor: "studentCount",
+      title: "Öğrenci Sayısı",
     },
     {
-      accessorKey: "createdAt",
-      header: "Oluşturulma Tarihi",
+      accessor: "createdAt",
+      title: "Oluşturulma Tarihi",
     },
     {
-      accessorKey: "updatedAt",
-      header: "Güncellenme Tarihi",
+      accessor: "updatedAt",
+      title: "Güncellenme Tarihi",
     },
   ],
   group: [
     {
-      accessorKey: "id",
-      header: "ID",
+      accessor: "id",
+      title: "ID",
     },
     {
-      accessorKey: "grade",
-      header: "Sınıf",
+      accessor: "grade",
+      title: "Sınıf",
     },
     {
-      accessorKey: "branch",
-      header: "Şube",
+      accessor: "branch",
+      title: "Şube",
     },
     {
-      accessorKey: "studentCount",
-      header: "Öğrenci Sayısı",
+      accessor: "studentCount",
+      title: "Öğrenci Sayısı",
     },
     {
-      accessorKey: "createdAt",
-      header: "Oluşturulma Tarihi",
+      accessor: "createdAt",
+      title: "Oluşturulma Tarihi",
     },
     {
-      accessorKey: "updatedAt",
-      header: "Güncellenme Tarihi",
+      accessor: "updatedAt",
+      title: "Güncellenme Tarihi",
     },
   ],
   profile: [
     {
-      accessorKey: "id",
-      header: "ID",
+      accessor: "id",
+      title: "ID",
     },
     {
-      accessorKey: "name",
-      header: "Ad",
+      accessor: "name",
+      title: "Ad",
     },
     {
-      accessorKey: "surname",
-      header: "Soyad",
+      accessor: "surname",
+      title: "Soyad",
     },
     {
-      accessorKey: "className",
-      header: "Sınıf",
+      accessor: "className",
+      title: "Sınıf",
     },
     {
-      accessorKey: "code",
-      header: "Okul Numarası",
+      accessor: "code",
+      title: "Okul Numarası",
     },
     {
-      accessorKey: "createdAt",
-      header: "Oluşturulma Tarihi",
+      accessor: "createdAt",
+      title: "Oluşturulma Tarihi",
     },
     {
-      accessorKey: "updatedAt",
-      header: "Güncellenme Tarihi",
+      accessor: "updatedAt",
+      title: "Güncellenme Tarihi",
     },
   ],
   user: [
     {
-      accessorKey: "id",
-      header: "ID",
+      accessor: "id",
+      title: "ID",
     },
     {
-      accessorKey: "citizenId",
-      header: "TC Kimlik No",
+      accessor: "citizenId",
+      title: "TC Kimlik No",
     },
     {
-      accessorKey: "hash",
-      header: "Parola Hash",
+      accessor: "hash",
+      title: "Parola Hash",
     },
     {
-      accessorKey: "role",
-      header: "Kullanıcı Tipi",
+      accessor: "role",
+      title: "Kullanıcı Tipi",
     },
     {
-      accessorKey: "createdAt",
-      header: "Oluşturulma Tarihi",
+      accessor: "createdAt",
+      title: "Oluşturulma Tarihi",
     },
     {
-      accessorKey: "updatedAt",
-      header: "Güncellenme Tarihi",
+      accessor: "updatedAt",
+      title: "Güncellenme Tarihi",
     },
   ],
   test: [
     {
-      accessorKey: "id",
-      header: "ID",
+      accessor: "id",
+      title: "ID",
     },
     {
-      accessorKey: "name",
-      header: "Deneme Sınavı Adı",
+      accessor: "name",
+      title: "Deneme Sınavı Adı",
     },
     {
-      accessorKey: "studentCount",
-      header: "Öğrenci Sayısı",
+      accessor: "studentCount",
+      title: "Öğrenci Sayısı",
     },
     {
-      accessorKey: "schoolCount",
-      header: "Okul Sayısı",
+      accessor: "schoolCount",
+      title: "Okul Sayısı",
     },
     {
-      accessorKey: "createdAt",
-      header: "Oluşturulma Tarihi",
+      accessor: "createdAt",
+      title: "Oluşturulma Tarihi",
     },
     {
-      accessorKey: "updatedAt",
-      header: "Güncellenme Tarihi",
+      accessor: "updatedAt",
+      title: "Güncellenme Tarihi",
     },
   ],
   testResult: [
     {
-      accessorKey: "id",
-      header: "ID",
+      accessor: "id",
+      title: "ID",
     },
     {
-      accessorKey: "testName",
-      header: "Deneme Sınavı Adı",
+      accessor: "testName",
+      title: "Deneme Sınavı Adı",
     },
     {
-      accessorKey: "profileName",
-      header: "Öğrenci Adı",
+      accessor: "profileName",
+      title: "Öğrenci Adı",
     },
     {
-      accessorKey: "score",
-      header: "Puan",
+      accessor: "score",
+      title: "Puan",
     },
     {
-      accessorKey: "createdAt",
-      header: "Oluşturulma Tarihi",
+      accessor: "createdAt",
+      title: "Oluşturulma Tarihi",
     },
     {
-      accessorKey: "updatedAt",
-      header: "Güncellenme Tarihi",
+      accessor: "updatedAt",
+      title: "Güncellenme Tarihi",
     },
   ],
 };
