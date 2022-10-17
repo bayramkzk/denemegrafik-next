@@ -32,3 +32,13 @@ export const INTERNAL_SERVER_ERROR = generateError(
   "internal_server_error",
   "Bilinmeyen bir sunucu hatası oluştu."
 );
+
+export const UNAUTHORIZED = generateError(
+  "unauthorized",
+  "Bu işlemi gerçekleştirmek için yetkiniz yok."
+);
+
+export const INVALID_MODEL_NAME = generateError(
+  "invalid_model",
+  "Geçersiz veri tabanı modeli adı!"
+);
