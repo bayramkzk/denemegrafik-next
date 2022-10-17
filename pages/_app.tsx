@@ -57,6 +57,7 @@ export default function App(props: AppProps) {
     },
     primaryColor: "primary",
     primaryShade: { light: 6, dark: 8 },
+    loader: "dots",
   };
 
   return (
