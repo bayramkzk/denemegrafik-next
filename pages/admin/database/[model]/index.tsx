@@ -6,6 +6,7 @@ import {
   DatabaseModelPluralDisplayNames,
 } from "@/constants/models";
 import { Routes } from "@/constants/routes";
+import { validateModelQuery } from "@/utils/model";
 import { Stack, Text, Title } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
@@ -33,8 +34,8 @@ const DatabaseModelPage: NextPage<DatabaseModelPageProps> = ({ model }) => {
   } = useQuery([model], () => axios.get(`${Routes.databaseApi}/${model}`));
 
   useEffect(() => {
-    if (!res?.data?.success) {
-      console.error(error);
+    if (res && !res?.data.success) {
+      console.error(error, res);
       showNotification({
         title: "Veri çekme başarısız",
         message: error
@@ -57,7 +58,7 @@ const DatabaseModelPage: NextPage<DatabaseModelPageProps> = ({ model }) => {
             <DataTable
               my={50}
               columns={modelToColumnMap[model]}
-              records={res?.data}
+              records={res?.data.records}
               fetching={isLoading}
               loaderBackgroundBlur={1}
               minHeight={minHeight}
@@ -80,11 +81,9 @@ export default DatabaseModelPage;
 export const getServerSideProps: GetServerSideProps<
   DatabaseModelPageServerSideProps
 > = async (context) => {
-  const model = (context.query.model as string | undefined) ?? null;
-
-  if (!model || !Object.keys(DatabaseModelPluralDisplayNames).includes(model)) {
+  const model = validateModelQuery(context.query.model);
+  if (!model) {
     return { notFound: true };
   }
-
-  return { props: { model: model as DatabaseModel } };
+  return { props: { model } };
 };
