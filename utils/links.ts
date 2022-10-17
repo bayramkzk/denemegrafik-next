@@ -14,7 +14,7 @@ export const getLinkDataBasedOnRole = (role: Role): HeaderLinkData[] => {
       .map(([modelName, modelDisplayName]) => ({
         hasMenu: false,
         label: modelDisplayName,
-        href: `${Routes.database}?model=${modelName}`,
+        href: `${Routes.database}/${modelName}`,
       }))
       .map((link) => link as HeaderLinkData)
       .forEach((link) => links.push(link));

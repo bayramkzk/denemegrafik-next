@@ -14,7 +14,7 @@ export type DatabaseProps = {
   model: DatabaseModel;
 };
 
-const DatabasePage: NextPage<DatabaseProps> = ({ model }) => {
+const DatabaseModelPage: NextPage<DatabaseProps> = ({ model }) => {
   const title = DatabaseModelPluralDisplayNames[model] ?? "Veriler";
   const { height } = useViewportSize();
 
@@ -24,29 +24,27 @@ const DatabasePage: NextPage<DatabaseProps> = ({ model }) => {
         <Layout>
           <Title>{title}</Title>
 
-          {model ? (
-            <DataTable
-              my={50}
-              columns={modelToColumnMap[model]}
-              minHeight={height / 2}
-            />
-          ) : (
-            <p>Model seçilmedi.</p>
-          )}
+          <DataTable
+            my={50}
+            columns={modelToColumnMap[model]}
+            minHeight={height / 2}
+          />
         </Layout>
       )}
     </SessionGuard>
   );
 };
 
-export default DatabasePage;
+export default DatabaseModelPage;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps<DatabaseProps> = async (
+  context
+) => {
   const model = (context.query.model as string | undefined) ?? null;
 
-  if (model && !Object.keys(DatabaseModelPluralDisplayNames).includes(model)) {
+  if (!model || !Object.keys(DatabaseModelPluralDisplayNames).includes(model)) {
     return { notFound: true };
   }
 
-  return { props: { model } };
+  return { props: { model: model as DatabaseModel } };
 };
