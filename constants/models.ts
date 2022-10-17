@@ -14,6 +14,6 @@ export const DatabaseModelPluralDisplayNames = {
   [DatabaseModels.group]: "Sınıflar",
   [DatabaseModels.profile]: "Öğrenciler",
   [DatabaseModels.user]: "Kullanıcılar",
-  [DatabaseModels.test]: "Deneme sınavları",
-  [DatabaseModels.testResult]: "Deneme sonuçları",
+  [DatabaseModels.test]: "Denemeler",
+  [DatabaseModels.testResult]: "Sonuçlar",
 };
