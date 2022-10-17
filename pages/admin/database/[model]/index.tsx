@@ -46,7 +46,7 @@ const DatabaseModelPage: NextPage<DatabaseModelPageProps> = ({ model }) => {
         color: "red",
       });
     }
-  }, [res]);
+  }, [res, error]);
 
   return (
     <SessionGuard>
