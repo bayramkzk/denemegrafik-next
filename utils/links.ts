@@ -8,19 +8,16 @@ export const getLinkDataBasedOnRole = (role: Role): HeaderLinkData[] => {
   const isAtLeastAdmin = ["ADMIN", "SUPERADMIN"].includes(role);
 
   if (isAtLeastAdmin) {
-    links.push({
-      hasMenu: true,
-      label: "Veriler",
-      href: Routes.database,
-      links: Object.entries(DatabaseModelPluralDisplayNames)
-        // user needs to be superadmin in order to see organization list
-        .filter(([key]) => role === "SUPERADMIN" || key !== "organization")
-        .map(([modelName, modelDisplayName]) => ({
-          hasMenu: false,
-          label: modelDisplayName,
-          href: `${Routes.database}?model=${modelName}`,
-        })),
-    });
+    Object.entries(DatabaseModelPluralDisplayNames)
+      // user needs to be superadmin in order to see organization list
+      .filter(([key]) => role === "SUPERADMIN" || key !== "organization")
+      .map(([modelName, modelDisplayName]) => ({
+        hasMenu: false,
+        label: modelDisplayName,
+        href: `${Routes.database}?model=${modelName}`,
+      }))
+      .map((link) => link as HeaderLinkData)
+      .forEach((link) => links.push(link));
   }
 
   return links;
