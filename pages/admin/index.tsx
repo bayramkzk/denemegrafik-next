@@ -1,6 +1,7 @@
 import Layout from "@/components/Layout";
+import ProfileTable from "@/components/ProfileTable";
 import SessionGuard from "@/components/SessionGuard";
-import { Title } from "@mantine/core";
+import { Stack, Text, Title } from "@mantine/core";
 import { NextPage } from "next";
 
 const AdminPage: NextPage = (props) => {
@@ -8,7 +9,16 @@ const AdminPage: NextPage = (props) => {
     <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN"]}>
       {({ user }) => (
         <Layout>
-          <Title>Admin Panel</Title>
+          <Stack spacing="xl">
+            <Title>Admin Panel</Title>
+
+            <Text size="lg">
+              Merhaba {user.profile.name}! Deneme Grafik admin paneline
+              hoşgeldin!👋
+            </Text>
+
+            <ProfileTable />
+          </Stack>
         </Layout>
       )}
     </SessionGuard>
