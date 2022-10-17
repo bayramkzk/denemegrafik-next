@@ -16,7 +16,7 @@ import HeaderLink from "./HeaderLink";
 import SessionGuard from "./SessionGuard";
 import UserMenu from "./UserMenu";
 
-const HAMBURGER_BREAKPOINT = "sm";
+const HAMBURGER_BREAKPOINT = "md";
 
 const useStyles = createStyles((theme) => ({
   burger: {
@@ -50,7 +50,7 @@ const useStyles = createStyles((theme) => ({
     borderTopWidth: 0,
     overflow: "hidden",
 
-    [theme.fn.largerThan("sm")]: {
+    [theme.fn.largerThan(HAMBURGER_BREAKPOINT)]: {
       display: "none",
     },
   },
@@ -65,15 +65,11 @@ const Header: React.FC<HeaderProps> = (props) => {
   return (
     <SessionGuard>
       {({ user }) => {
-        const linkData = getLinkDataBasedOnRole(user.role);
-        const nestedLinks = linkData.map((link) => (
-          <HeaderLink key={link.href} link={link} />
-        ));
-        const flatLinks = linkData.map((link) => (
+        const links = getLinkDataBasedOnRole(user.role);
+        const items = links.map((link) => (
           <HeaderLink
             key={link.href}
             link={link}
-            flattenMenu
             closeMenu={burgerHandler.close}
           />
         ));
@@ -97,15 +93,15 @@ const Header: React.FC<HeaderProps> = (props) => {
               />
             </MediaQuery>
 
-            <Group>
+            <Group noWrap>
               <Link href="/" passHref>
                 <a>
                   <AppLogo size={20} />
                 </a>
               </Link>
 
-              <Group spacing="xl" className={classes.links}>
-                {nestedLinks}
+              <Group spacing="xs" className={classes.links} noWrap>
+                {items}
               </Group>
             </Group>
 
@@ -118,7 +114,7 @@ const Header: React.FC<HeaderProps> = (props) => {
             >
               {(styles) => (
                 <Paper className={classes.dropdown} withBorder style={styles}>
-                  {flatLinks}
+                  {items}
                 </Paper>
               )}
             </Transition>
