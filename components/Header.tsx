@@ -66,9 +66,16 @@ const Header: React.FC<HeaderProps> = (props) => {
     <SessionGuard>
       {({ user }) => {
         const linkData = getLinkDataBasedOnRole(user.role);
-        const nestedLinks = linkData.map((link) => <HeaderLink link={link} />);
+        const nestedLinks = linkData.map((link) => (
+          <HeaderLink key={link.href} link={link} />
+        ));
         const flatLinks = linkData.map((link) => (
-          <HeaderLink link={link} flattenMenu closeMenu={burgerHandler.close} />
+          <HeaderLink
+            key={link.href}
+            link={link}
+            flattenMenu
+            closeMenu={burgerHandler.close}
+          />
         ));
 
         return (
