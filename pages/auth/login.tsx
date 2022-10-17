@@ -33,7 +33,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const Login: NextPage = () => {
+const LoginPage: NextPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { classes } = useStyles();
@@ -118,4 +118,4 @@ const Login: NextPage = () => {
   );
 };
 
-export default Login;
+export default LoginPage;

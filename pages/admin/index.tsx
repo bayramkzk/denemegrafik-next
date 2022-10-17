@@ -3,7 +3,7 @@ import SessionGuard from "@/components/SessionGuard";
 import { Title } from "@mantine/core";
 import { NextPage } from "next";
 
-const Admin: NextPage = (props) => {
+const AdminPage: NextPage = (props) => {
   return (
     <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN"]}>
       {({ user }) => (
@@ -15,4 +15,4 @@ const Admin: NextPage = (props) => {
   );
 };
 
-export default Admin;
+export default AdminPage;

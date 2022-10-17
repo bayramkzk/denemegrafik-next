@@ -34,7 +34,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const Register: NextPage = () => {
+const RegisterPage: NextPage = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { classes } = useStyles();
@@ -117,4 +117,4 @@ const Register: NextPage = () => {
   );
 };
 
-export default Register;
+export default RegisterPage;

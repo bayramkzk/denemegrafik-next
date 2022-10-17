@@ -18,7 +18,7 @@ export type HomeProps = {
   results: TestResultWithAverage[];
 };
 
-const Home: NextPage<HomeProps> = ({ results }) => {
+const HomePage: NextPage<HomeProps> = ({ results }) => {
   return (
     <SessionGuard allowedRoles={["STUDENT"]}>
       {({ user }) => (
@@ -47,7 +47,7 @@ const Home: NextPage<HomeProps> = ({ results }) => {
   );
 };
 
-export default Home;
+export default HomePage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await unstable_getServerSession(

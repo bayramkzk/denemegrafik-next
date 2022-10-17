@@ -14,7 +14,7 @@ export type DatabaseProps = {
   model: DatabaseModel;
 };
 
-const Database: NextPage<DatabaseProps> = ({ model }) => {
+const DatabasePage: NextPage<DatabaseProps> = ({ model }) => {
   const title = DatabaseModelPluralDisplayNames[model] ?? "Veriler";
   const { height } = useViewportSize();
 
@@ -39,7 +39,7 @@ const Database: NextPage<DatabaseProps> = ({ model }) => {
   );
 };
 
-export default Database;
+export default DatabasePage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const model = (context.query.model as string | undefined) ?? null;
