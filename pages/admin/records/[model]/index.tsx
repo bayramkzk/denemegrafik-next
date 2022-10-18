@@ -47,7 +47,7 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
           )
         ) as FindManyByModelResult;
       const sorted = sortBy(filtered, sortStatus.columnAccessor);
-      setRecords(sortStatus.direction === "desc" ? sorted.reverse() : filtered);
+      setRecords(sortStatus.direction === "desc" ? sorted.reverse() : sorted);
     }
   }, [sortStatus, records, debouncedQuery]);
 
