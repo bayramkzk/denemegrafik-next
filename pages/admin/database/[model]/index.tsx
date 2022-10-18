@@ -6,11 +6,12 @@ import {
   DatabaseModelPluralDisplayNames,
 } from "@/constants/models";
 import { useRecords } from "@/hooks/use-records";
+import { FindManyByModelResult } from "@/utils/db";
 import { validateModelQuery } from "@/utils/model";
-import { Stack, Text, Title } from "@mantine/core";
-import { useViewportSize } from "@mantine/hooks";
+import { Stack, Text, TextInput, Title } from "@mantine/core";
+import { useDebouncedValue, useViewportSize } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-import { IconDatabaseOff } from "@tabler/icons";
+import { IconDatabaseOff, IconSearch } from "@tabler/icons";
 import sortBy from "lodash/sortBy";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { GetServerSideProps, NextPage } from "next";
@@ -33,13 +34,25 @@ const DatabaseModelPage: NextPage<DatabaseModelPageProps> = ({ model }) => {
   const [sortedRecords, setRecords] = useState(() =>
     sortBy(records, sortStatus.columnAccessor)
   );
+  const [query, setQuery] = useState("");
+  const [debouncedQuery] = useDebouncedValue(query, 200);
 
   useEffect(() => {
     if (records) {
-      const sorted = sortBy(records, sortStatus.columnAccessor);
-      setRecords(sortStatus.direction === "desc" ? sorted.reverse() : sorted);
+      const filtered = records
+        .map((record) => record as any)
+        .filter((record) =>
+          Object.values(record).some((value) =>
+            String(value)
+              .toLowerCase()
+              .trim()
+              .includes(debouncedQuery.toLowerCase().trim())
+          )
+        ) as FindManyByModelResult;
+      const sorted = sortBy(filtered, sortStatus.columnAccessor);
+      setRecords(sortStatus.direction === "desc" ? sorted.reverse() : filtered);
     }
-  }, [sortStatus, records]);
+  }, [sortStatus, records, debouncedQuery]);
 
   useEffect(() => {
     if (error) {
@@ -56,11 +69,17 @@ const DatabaseModelPage: NextPage<DatabaseModelPageProps> = ({ model }) => {
     <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN"]}>
       {() => (
         <Layout>
-          <Stack>
-            <Title>{title}</Title>
+          <Stack spacing="xl">
+            <Title mb="lg">{title}</Title>
+
+            <TextInput
+              placeholder={`${title} arasında ara...`}
+              value={query}
+              icon={<IconSearch size={16} />}
+              onChange={(event) => setQuery(event.target.value)}
+            />
 
             <DataTable
-              my={50}
               columns={modelToColumnMap[model]}
               records={sortedRecords}
               fetching={isLoading}
