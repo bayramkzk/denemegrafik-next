@@ -5,17 +5,16 @@ import {
   DatabaseModel,
   DatabaseModelPluralDisplayNames,
 } from "@/constants/models";
-import { Routes } from "@/constants/routes";
+import { useRecords } from "@/hooks/use-records";
 import { validateModelQuery } from "@/utils/model";
 import { Stack, Text, Title } from "@mantine/core";
 import { useViewportSize } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { IconDatabaseOff } from "@tabler/icons";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { DataTable } from "mantine-datatable";
+import sortBy from "lodash/sortBy";
+import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { GetServerSideProps, NextPage } from "next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export type DatabaseModelPageServerSideProps = {
   model: DatabaseModel;
@@ -26,30 +25,35 @@ export type DatabaseModelPageProps = DatabaseModelPageServerSideProps & {};
 const DatabaseModelPage: NextPage<DatabaseModelPageProps> = ({ model }) => {
   const title = DatabaseModelPluralDisplayNames[model];
   const { height } = useViewportSize();
-  const minHeight = height / 2;
-  const {
-    data: res,
-    isLoading,
-    error,
-  } = useQuery([model], () => axios.get(`${Routes.databaseApi}/${model}`));
+  const { records, isLoading, error } = useRecords(model);
+  const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
+    columnAccessor: "id",
+    direction: "asc",
+  });
+  const [sortedRecords, setRecords] = useState(() =>
+    sortBy(records, sortStatus.columnAccessor)
+  );
 
   useEffect(() => {
-    if (res && !res?.data.success) {
-      console.error(error, res);
+    if (records) {
+      const sorted = sortBy(records, sortStatus.columnAccessor);
+      setRecords(sortStatus.direction === "desc" ? sorted.reverse() : sorted);
+    }
+  }, [sortStatus, records]);
+
+  useEffect(() => {
+    if (error) {
+      console.error(error);
       showNotification({
         title: "Veri çekme başarısız",
-        message: error
-          ? String(error)
-          : res?.data
-          ? JSON.stringify(res?.data)
-          : "Bilinmeyen bir hata oluştu",
+        message: error ? JSON.stringify(error) : "Bilinmeyen bir hata oluştu",
         color: "red",
       });
     }
-  }, [res, error]);
+  }, [error]);
 
   return (
-    <SessionGuard>
+    <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN"]}>
       {() => (
         <Layout>
           <Stack>
@@ -58,16 +62,18 @@ const DatabaseModelPage: NextPage<DatabaseModelPageProps> = ({ model }) => {
             <DataTable
               my={50}
               columns={modelToColumnMap[model]}
-              records={res?.data.records}
+              records={sortedRecords}
               fetching={isLoading}
               loaderBackgroundBlur={1}
-              minHeight={minHeight}
+              minHeight={height / 2}
               emptyState={
                 <Stack align="center">
                   <IconDatabaseOff size={40} />
                   <Text>{title} için veri bulunamadı</Text>
                 </Stack>
               }
+              sortStatus={sortStatus}
+              onSortStatusChange={setSortStatus}
             />
           </Stack>
         </Layout>
