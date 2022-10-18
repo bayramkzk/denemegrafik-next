@@ -74,6 +74,7 @@ const UserMenu: React.FC<HeaderUserMenuProps> = () => {
           transition="pop-top-right"
           onClose={() => setUserMenuOpened(false)}
           onOpen={() => setUserMenuOpened(true)}
+          opened={userMenuOpened}
         >
           <Menu.Target>
             <UnstyledButton
