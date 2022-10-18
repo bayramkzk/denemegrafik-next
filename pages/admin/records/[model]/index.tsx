@@ -1,13 +1,10 @@
 import Layout from "@/components/Layout";
 import SessionGuard from "@/components/SessionGuard";
 import { modelToColumnMap } from "@/constants/columns";
-import {
-  DatabaseModel,
-  DatabaseModelPluralDisplayNames,
-} from "@/constants/models";
+import { RecordModel, RecordModelPluralDisplayNames } from "@/constants/models";
 import { useRecords } from "@/hooks/use-records";
-import { FindManyByModelResult } from "@/utils/db";
 import { validateModelQuery } from "@/utils/model";
+import { FindManyByModelResult } from "@/utils/record";
 import { Stack, Text, TextInput, Title } from "@mantine/core";
 import { useDebouncedValue, useViewportSize } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
@@ -17,14 +14,14 @@ import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { GetServerSideProps, NextPage } from "next";
 import { useEffect, useState } from "react";
 
-export type DatabaseModelPageServerSideProps = {
-  model: DatabaseModel;
+export type RecordsPageServerSideProps = {
+  model: RecordModel;
 };
 
-export type DatabaseModelPageProps = DatabaseModelPageServerSideProps & {};
+export type RecordsPageProps = RecordsPageServerSideProps & {};
 
-const DatabaseModelPage: NextPage<DatabaseModelPageProps> = ({ model }) => {
-  const title = DatabaseModelPluralDisplayNames[model];
+const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
+  const title = RecordModelPluralDisplayNames[model];
   const { height } = useViewportSize();
   const { records, isLoading, error } = useRecords(model);
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
@@ -83,7 +80,6 @@ const DatabaseModelPage: NextPage<DatabaseModelPageProps> = ({ model }) => {
               columns={modelToColumnMap[model]}
               records={sortedRecords}
               fetching={isLoading}
-              loaderBackgroundBlur={1}
               minHeight={height / 2}
               emptyState={
                 <Stack align="center">
@@ -101,10 +97,10 @@ const DatabaseModelPage: NextPage<DatabaseModelPageProps> = ({ model }) => {
   );
 };
 
-export default DatabaseModelPage;
+export default RecordsPage;
 
 export const getServerSideProps: GetServerSideProps<
-  DatabaseModelPageServerSideProps
+  RecordsPageServerSideProps
 > = async (context) => {
   const model = validateModelQuery(context.query.model);
   if (!model) {

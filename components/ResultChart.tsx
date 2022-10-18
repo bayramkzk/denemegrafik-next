@@ -1,4 +1,4 @@
-import { TestResultWithAverage } from "@/types/tests";
+import { TestResultWithAverage } from "@/types/test";
 import { Card, useMantineTheme } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
 import React from "react";

@@ -1,14 +1,14 @@
-import { DatabaseModel } from "@/constants/models";
+import { RecordModel } from "@/constants/models";
 import { DataTableColumn } from "mantine-datatable";
 
-export const columnDefaults: Partial<DataTableColumn<DatabaseModel>> = {
+export const columnDefaults: Partial<DataTableColumn<RecordModel>> = {
   sortable: true,
   ellipsis: true,
   titleSx: { userSelect: "none" },
 };
 
 export const modelToColumnMapWithoutDefaults: Record<
-  DatabaseModel,
+  RecordModel,
   DataTableColumn<any>[]
 > = {
   organization: [
@@ -178,4 +178,4 @@ export const modelToColumnMap = Object.fromEntries(
     model,
     columns.map((column) => ({ ...columnDefaults, ...column })),
   ])
-) as Record<DatabaseModel, DataTableColumn<any>[]>;
+) as Record<RecordModel, DataTableColumn<any>[]>;

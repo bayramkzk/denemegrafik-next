@@ -1,4 +1,4 @@
-import { getLinkDataBasedOnRole } from "@/utils/links";
+import { getLinkDataBasedOnRole } from "@/utils/link";
 import {
   Burger,
   createStyles,

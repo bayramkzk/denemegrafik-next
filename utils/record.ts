@@ -1,12 +1,12 @@
-import { DatabaseModel, DatabaseModels } from "@/constants/models";
+import { RecordModel, RecordModels } from "@/constants/models";
 import { prisma } from "@/lib/prisma";
 import { parseFirstName, parseLastName, stringifyGroup } from "./user";
 
 export const sumArray = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 
-export const findManyByModel = async (model: DatabaseModel) => {
+export const findRecordsByModel = async (model: RecordModel) => {
   switch (model) {
-    case DatabaseModels.organization:
+    case RecordModels.organization:
       const organizations = await prisma.organization.findMany({
         include: {
           groups: {
@@ -23,7 +23,7 @@ export const findManyByModel = async (model: DatabaseModel) => {
           organization.groups.map((group) => group._count.profiles)
         ),
       }));
-    case DatabaseModels.group:
+    case RecordModels.group:
       const group = await prisma.group.findMany({
         include: {
           _count: true,
@@ -33,7 +33,7 @@ export const findManyByModel = async (model: DatabaseModel) => {
         ...group,
         studentCount: group._count.profiles,
       }));
-    case DatabaseModels.profile:
+    case RecordModels.profile:
       const profiles = await prisma.profile.findMany({
         include: {
           group: true,
@@ -45,10 +45,10 @@ export const findManyByModel = async (model: DatabaseModel) => {
         name: parseFirstName(profile.name),
         surname: parseLastName(profile.name),
       }));
-    case DatabaseModels.user:
+    case RecordModels.user:
       const users = await prisma.user.findMany();
       return users;
-    case DatabaseModels.test:
+    case RecordModels.test:
       const tests = await prisma.test.findMany({
         include: {
           _count: true,
@@ -59,7 +59,7 @@ export const findManyByModel = async (model: DatabaseModel) => {
         studentCount: test._count.results,
         schoolCount: test._count.organizations,
       }));
-    case DatabaseModels.testResult:
+    case RecordModels.testResult:
       const testResults = await prisma.testResult.findMany({
         include: {
           test: true,
@@ -75,4 +75,6 @@ export const findManyByModel = async (model: DatabaseModel) => {
   throw new Error("Invalid model");
 };
 
-export type FindManyByModelResult = Awaited<ReturnType<typeof findManyByModel>>;
+export type FindManyByModelResult = Awaited<
+  ReturnType<typeof findRecordsByModel>
+>;

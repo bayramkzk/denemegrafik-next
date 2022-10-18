@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import ProfileTable from "@/components/ProfileTable";
 import SessionGuard from "@/components/SessionGuard";
 import { prisma } from "@/lib/prisma";
-import { TestResultWithAverage, TestResultWithTest } from "@/types/tests";
+import { TestResultWithAverage, TestResultWithTest } from "@/types/test";
 import { Alert, Stack, Text, Title } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons";
 import type { GetServerSideProps, NextPage } from "next";
