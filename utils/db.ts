@@ -72,4 +72,7 @@ export const findManyByModel = async (model: DatabaseModel) => {
         testName: testResult.test.name,
       }));
   }
+  throw new Error("Invalid model");
 };
+
+export type FindManyByModelResult = Awaited<ReturnType<typeof findManyByModel>>;

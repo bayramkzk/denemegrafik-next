@@ -1,5 +1,6 @@
 import { Group, Organization, Profile, User } from "@prisma/client";
 import { ZodIssue } from "zod";
+import { CustomErrorResponse } from "./response";
 
 export type SessionUser = Omit<User, "hash"> & {
   profile: Profile & {
@@ -14,17 +15,9 @@ export type AuthValidationErrorResponse = {
   success: false;
 };
 
-export type AuthCustomErrorResponse = {
-  error: {
-    code: string;
-    message: string;
-  };
-  success: false;
-};
-
 export type AuthErrorResponse =
   | AuthValidationErrorResponse
-  | AuthCustomErrorResponse;
+  | CustomErrorResponse;
 
 export type LoginSuccessResponse = {
   user: SessionUser;
