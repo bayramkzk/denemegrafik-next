@@ -6,7 +6,7 @@ import {
 import { PASSWORD_SALT_OR_ROUNDS } from "@/constants/index";
 import { prisma } from "@/lib/prisma";
 import { registerSchema } from "@/schemas/register";
-import { RegisterResponse } from "@/types/auth";
+import { RegisterResponse } from "@/types/response";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import bcrypt from "bcrypt";
 import { NextApiHandler } from "next";

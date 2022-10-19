@@ -1,6 +1,6 @@
 import { CITIZEN_ID_LENGTH, MINIMUM_PASSWORD_LENGTH } from "@/constants/index";
 import { axiosInstance } from "@/lib/axios-instance";
-import { RegisterResponse } from "@/types/auth";
+import { RegisterResponse } from "@/types/response";
 import {
   Button,
   createStyles,
