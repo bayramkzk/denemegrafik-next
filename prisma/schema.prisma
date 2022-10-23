@@ -13,54 +13,55 @@ datasource db {
 enum Role {
   SUPERADMIN
   ADMIN
-  STUDENT
 }
 
-model User {
+model Admin {
   id        Int      @id @default(autoincrement())
-  citizenId String   @unique
+  username  String   @unique
   hash      String
-  role      Role     @default(STUDENT)
+  role      Role     @default(ADMIN)
+  name      String
+  schoolId  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  profile Profile @relation(fields: [citizenId], references: [citizenId])
+  school School @relation(fields: [schoolId], references: [id])
 }
 
-model Profile {
+model Student {
   id        Int      @id @default(autoincrement())
   citizenId String   @unique
   name      String
   code      Int
-  groupId   Int
+  classId   Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user    User?
-  group   Group        @relation(fields: [groupId], references: [id])
+  class   Class        @relation(fields: [classId], references: [id])
   results TestResult[]
 }
 
-model Group {
-  id             Int      @id @default(autoincrement())
-  grade          Int
-  branch         String
-  organizationId Int
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+model Class {
+  id        Int      @id @default(autoincrement())
+  grade     Int
+  branch    String
+  schoolId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  organization Organization @relation(fields: [organizationId], references: [id])
-  profiles     Profile[]
+  school   School    @relation(fields: [schoolId], references: [id])
+  students Student[]
 }
 
-model Organization {
+model School {
   id        Int      @id @default(autoincrement())
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  groups Group[]
-  tests  TestOnOrganization[]
+  classes Class[]
+  tests   TestOnSchool[]
+  admins  Admin[]
 }
 
 model Test {
@@ -70,28 +71,28 @@ model Test {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  organizations TestOnOrganization[]
-  results       TestResult[]
+  schools TestOnSchool[]
+  results TestResult[]
 }
 
-model TestOnOrganization {
-  testId         Int
-  organizationId Int
+model TestOnSchool {
+  testId   Int
+  schoolId Int
 
-  test         Test         @relation(fields: [testId], references: [id])
-  organization Organization @relation(fields: [organizationId], references: [id])
+  test   Test   @relation(fields: [testId], references: [id])
+  school School @relation(fields: [schoolId], references: [id])
 
-  @@id([testId, organizationId])
+  @@id([testId, schoolId])
 }
 
 model TestResult {
   id        Int      @id @default(autoincrement())
   testId    Int
-  profileId Int
+  studentId Int
   score     Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   test    Test    @relation(fields: [testId], references: [id])
-  profile Profile @relation(fields: [profileId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
 }

@@ -1,11 +1,12 @@
 -- CreateEnum
-CREATE TYPE "Permission" AS ENUM ('SUPERADMIN', 'ADMIN');
+CREATE TYPE "Role" AS ENUM ('SUPERADMIN', 'ADMIN');
 
 -- CreateTable
 CREATE TABLE "Admin" (
     "id" SERIAL NOT NULL,
-    "email" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
     "hash" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'ADMIN',
     "name" TEXT NOT NULL,
     "schoolId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -15,22 +16,12 @@ CREATE TABLE "Admin" (
 );
 
 -- CreateTable
-CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
-    "citizenId" TEXT NOT NULL,
-    "hash" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Student" (
     "id" SERIAL NOT NULL,
     "citizenId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "classId" INTEGER NOT NULL,
+    "code" INTEGER NOT NULL,
+    "groupId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -42,7 +33,7 @@ CREATE TABLE "Class" (
     "id" SERIAL NOT NULL,
     "grade" INTEGER NOT NULL,
     "branch" TEXT NOT NULL,
-    "schoolId" INTEGER NOT NULL,
+    "organizationId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -71,18 +62,18 @@ CREATE TABLE "Test" (
 );
 
 -- CreateTable
-CREATE TABLE "TestOnSchool" (
+CREATE TABLE "TestOnOrganization" (
     "testId" INTEGER NOT NULL,
-    "schoolId" INTEGER NOT NULL,
+    "organizationId" INTEGER NOT NULL,
 
-    CONSTRAINT "TestOnSchool_pkey" PRIMARY KEY ("testId","schoolId")
+    CONSTRAINT "TestOnOrganization_pkey" PRIMARY KEY ("testId","organizationId")
 );
 
 -- CreateTable
 CREATE TABLE "TestResult" (
     "id" SERIAL NOT NULL,
     "testId" INTEGER NOT NULL,
-    "studentId" INTEGER NOT NULL,
+    "profileId" INTEGER NOT NULL,
     "score" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -91,10 +82,7 @@ CREATE TABLE "TestResult" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Admin_email_key" ON "Admin"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_citizenId_key" ON "User"("citizenId");
+CREATE UNIQUE INDEX "Admin_username_key" ON "Admin"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Student_citizenId_key" ON "Student"("citizenId");
@@ -103,22 +91,19 @@ CREATE UNIQUE INDEX "Student_citizenId_key" ON "Student"("citizenId");
 ALTER TABLE "Admin" ADD CONSTRAINT "Admin_schoolId_fkey" FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_citizenId_fkey" FOREIGN KEY ("citizenId") REFERENCES "Student"("citizenId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Student" ADD CONSTRAINT "Student_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Class"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Student" ADD CONSTRAINT "Student_classId_fkey" FOREIGN KEY ("classId") REFERENCES "Class"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Class" ADD CONSTRAINT "Class_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "School"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Class" ADD CONSTRAINT "Class_schoolId_fkey" FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TestOnOrganization" ADD CONSTRAINT "TestOnOrganization_testId_fkey" FOREIGN KEY ("testId") REFERENCES "Test"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TestOnSchool" ADD CONSTRAINT "TestOnSchool_testId_fkey" FOREIGN KEY ("testId") REFERENCES "Test"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "TestOnSchool" ADD CONSTRAINT "TestOnSchool_schoolId_fkey" FOREIGN KEY ("schoolId") REFERENCES "School"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TestOnOrganization" ADD CONSTRAINT "TestOnOrganization_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "School"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TestResult" ADD CONSTRAINT "TestResult_testId_fkey" FOREIGN KEY ("testId") REFERENCES "Test"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TestResult" ADD CONSTRAINT "TestResult_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "TestResult" ADD CONSTRAINT "TestResult_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Student"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
