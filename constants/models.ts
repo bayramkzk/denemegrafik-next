@@ -1,19 +1,19 @@
-export const RecordModels = {
-  organization: "organization",
-  group: "group",
-  profile: "profile",
-  user: "user",
-  test: "test",
-  testResult: "testResult",
-};
+export const RecordModelNames = [
+  "school",
+  "class",
+  "student",
+  "admin",
+  "test",
+  "testResult",
+] as const;
 
-export type RecordModel = keyof typeof RecordModels;
+export type RecordModel = typeof RecordModelNames[number];
 
 export const RecordModelPluralDisplayNames = {
-  [RecordModels.organization]: "Okullar",
-  [RecordModels.group]: "Sınıflar",
-  [RecordModels.profile]: "Öğrenciler",
-  [RecordModels.user]: "Kullanıcılar",
-  [RecordModels.test]: "Denemeler",
-  [RecordModels.testResult]: "Sonuçlar",
+  school: "Okullar",
+  class: "Sınıflar",
+  student: "Öğrenciler",
+  admin: "Yöneticiler",
+  test: "Denemeler",
+  testResult: "Sonuçlar",
 };

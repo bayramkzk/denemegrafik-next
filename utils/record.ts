@@ -1,80 +1,89 @@
-import { RecordModel, RecordModels } from "@/constants/models";
+import { RecordModel } from "@/constants/models";
 import { prisma } from "@/lib/prisma";
-import { parseFirstName, parseLastName, stringifyGroup } from "./user";
+import { parseFirstName, parseLastName, stringifyClass } from "./user";
 
 export const sumArray = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 
 export const findRecordsByModel = async (model: RecordModel) => {
   switch (model) {
-    case RecordModels.organization:
-      const organizations = await prisma.organization.findMany({
-        include: {
-          groups: {
-            include: {
-              _count: true,
-            },
-          },
-        },
+    case "school": {
+      const schools = await prisma.school.findMany({
+        include: { classes: { include: { _count: true } } },
       });
-      return organizations.map((organization) => ({
-        ...organization,
-        classCount: organization.groups.length,
+      const schoolsWithCounts = schools.map((school) => ({
+        ...school,
+        classCount: school.classes.length,
         studentCount: sumArray(
-          organization.groups.map((group) => group._count.profiles)
+          school.classes.map((cls) => cls._count.students)
         ),
       }));
-    case RecordModels.group:
-      const group = await prisma.group.findMany({
+      return schoolsWithCounts;
+    }
+
+    case "class": {
+      const classes = await prisma.class.findMany({
         include: {
           _count: true,
         },
       });
-      return group.map((group) => ({
-        ...group,
-        studentCount: group._count.profiles,
+      const classesWithCounts = classes.map((cls) => ({
+        ...cls,
+        studentCount: cls._count.students,
       }));
-    case RecordModels.profile:
-      const profiles = await prisma.profile.findMany({
+      return classesWithCounts;
+    }
+
+    case "student": {
+      const students = await prisma.student.findMany({
         include: {
-          group: true,
+          class: true,
         },
       });
-      return profiles.map((profile) => ({
-        ...profile,
-        className: stringifyGroup(profile.group),
-        name: parseFirstName(profile.name),
-        surname: parseLastName(profile.name),
+      const studentsWithParsedNames = students.map((student) => ({
+        ...student,
+        className: stringifyClass(student.class),
+        name: parseFirstName(student.name),
+        surname: parseLastName(student.name),
       }));
-    case RecordModels.user:
-      const users = await prisma.user.findMany();
+      return studentsWithParsedNames;
+    }
+
+    case "admin": {
+      const users = await prisma.admin.findMany();
       return users;
-    case RecordModels.test:
+    }
+
+    case "test": {
       const tests = await prisma.test.findMany({
         include: {
           _count: true,
         },
       });
-      return tests.map((test) => ({
+      const testsWithCounts = tests.map((test) => ({
         ...test,
         studentCount: test._count.results,
-        schoolCount: test._count.organizations,
+        schoolCount: test._count.schools,
       }));
-    case RecordModels.testResult:
+      return testsWithCounts;
+    }
+
+    case "testResult": {
       const testResults = await prisma.testResult.findMany({
         include: {
           test: true,
-          profile: true,
+          student: true,
         },
       });
-      return testResults.map((testResult) => ({
+      const testResultsWithNames = testResults.map((testResult) => ({
         ...testResult,
-        profileName: testResult.profile.name,
+        studentName: testResult.student.name,
         testName: testResult.test.name,
       }));
+      return testResultsWithNames;
+    }
   }
-  throw new Error("Invalid model");
 };
 
-export type FindManyByModelResult = Awaited<
-  ReturnType<typeof findRecordsByModel>
->;
+export type ModelRecords = Awaited<ReturnType<typeof findRecordsByModel>>;
+
+export type ModelRecord = ModelRecords[number];

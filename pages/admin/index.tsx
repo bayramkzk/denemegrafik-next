@@ -4,7 +4,7 @@ import SessionGuard from "@/components/SessionGuard";
 import { Stack, Text, Title } from "@mantine/core";
 import { NextPage } from "next";
 
-const AdminPage: NextPage = (props) => {
+const AdminPage: NextPage = () => {
   return (
     <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN"]}>
       {({ user }) => (
@@ -13,8 +13,7 @@ const AdminPage: NextPage = (props) => {
             <Title>Admin Panel</Title>
 
             <Text size="lg">
-              Merhaba {user.profile.name}! Deneme Grafik admin paneline
-              hoşgeldin!👋
+              Merhaba {user.name}! Deneme Grafik admin paneline hoşgeldin!👋
             </Text>
 
             <ProfileTable />

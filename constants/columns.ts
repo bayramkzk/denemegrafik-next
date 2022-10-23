@@ -11,7 +11,7 @@ export const modelToColumnMapWithoutDefaults: Record<
   RecordModel,
   DataTableColumn<any>[]
 > = {
-  organization: [
+  school: [
     {
       accessor: "id",
       title: "ID",
@@ -37,7 +37,7 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "Güncellenme Tarihi",
     },
   ],
-  group: [
+  class: [
     {
       accessor: "id",
       title: "ID",
@@ -63,7 +63,7 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "Güncellenme Tarihi",
     },
   ],
-  profile: [
+  student: [
     {
       accessor: "id",
       title: "ID",
@@ -93,18 +93,18 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "Güncellenme Tarihi",
     },
   ],
-  user: [
+  admin: [
     {
       accessor: "id",
       title: "ID",
     },
     {
-      accessor: "citizenId",
-      title: "TC Kimlik No",
+      accessor: "username",
+      title: "Kullanıcı Adı",
     },
     {
-      accessor: "hash",
-      title: "Parola Hash",
+      accessor: "name",
+      title: "Gerçek Ad",
     },
     {
       accessor: "role",
@@ -155,7 +155,7 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "Deneme Sınavı Adı",
     },
     {
-      accessor: "profileName",
+      accessor: "studentName",
       title: "Öğrenci Adı",
     },
     {

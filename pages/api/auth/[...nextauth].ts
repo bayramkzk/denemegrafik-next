@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { loginSchema } from "@/schemas/login";
 import { SessionUser } from "@/types/auth";
 import bcrypt from "bcrypt";
 import NextAuth, { NextAuthOptions, Session } from "next-auth";
@@ -10,36 +9,52 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        citizenId: {
-          label: "TC Kimlik Numarası",
-          type: "number",
+        usernameOrCitizenId: {
+          label: "Kullanıcı adı ya da TC kimlik numarası",
+          type: "text",
           placeholder: "12345678901",
         },
-        password: {
+        passwordOrCode: {
           label: "Parola",
           type: "password",
           placeholder: "sifre_123",
         },
+        isAdmin: {
+          label: "Yönetici mi",
+          type: "checkbox",
+        },
       },
-      async authorize(credentials, req) {
-        const body = loginSchema.safeParse(credentials);
-        if (!body.success) return null;
+      async authorize(credentials): Promise<SessionUser | null> {
+        if (!credentials) return null;
 
-        const user = await prisma.user.findUnique({
-          where: { citizenId: body.data.citizenId },
-          include: {
-            profile: {
-              include: { group: { include: { organization: true } } },
-            },
-          },
+        if (credentials.isAdmin) {
+          const admin = await prisma.admin.findUnique({
+            where: { username: credentials.usernameOrCitizenId.toString() },
+            include: { school: true },
+          });
+          if (!admin) return null;
+
+          const isPasswordValid = await bcrypt.compare(
+            credentials.passwordOrCode,
+            admin.hash
+          );
+          if (!isPasswordValid) return null;
+
+          const { hash: _, ...adminWithoutHash } = admin;
+          return adminWithoutHash;
+        }
+
+        const student = await prisma.student.findUnique({
+          where: { citizenId: credentials.usernameOrCitizenId.toString() },
+          include: { class: { include: { school: true } } },
         });
-        if (!user) return null;
+        if (!student) return null;
 
-        const isValid = await bcrypt.compare(body.data.password, user.hash);
-        if (!isValid) return null;
+        const isCodeValid = credentials.passwordOrCode === String(student.code);
+        if (!isCodeValid) return null;
 
-        const { hash, ...userWithoutHash } = user;
-        return userWithoutHash as SessionUser;
+        const studentUser = { ...student, role: "STUDENT" as const };
+        return studentUser;
       },
     }),
   ],

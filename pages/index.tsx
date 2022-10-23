@@ -27,8 +27,8 @@ const HomePage: NextPage<HomeProps> = ({ results }) => {
             <Title>Deneme Grafik</Title>
 
             <Alert variant="filled" icon={<IconInfoCircle />}>
-              Merhaba {user.profile.name}, bu websitesindeki veriler sadece
-              senin için saklanmaktadır.
+              Merhaba {user.name}, bu websitesindeki veriler sadece senin için
+              saklanmaktadır.
             </Alert>
 
             <ProfileTable />
@@ -73,7 +73,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const results: TestResultWithTest[] = await prisma.testResult.findMany({
-    where: { profile: { id: session.user.profile.id } },
+    where: { studentId: session.user.id },
     include: { test: true },
   });
 
@@ -89,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const resultsWithAverages: TestResultWithAverage[] = results.map(
     (result, index) => ({
       ...result,
-      average: averages[index]._avg.score!,
+      average: averages[index]._avg.score ?? 0,
     })
   );
 

@@ -58,9 +58,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export interface HeaderUserMenuProps {}
-
-const UserMenu: React.FC<HeaderUserMenuProps> = () => {
+const UserMenu: React.FC = () => {
   const { classes, cx } = useStyles();
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -90,7 +88,7 @@ const UserMenu: React.FC<HeaderUserMenuProps> = () => {
                   className={classes.avatar}
                 />
                 <Text weight={500} size="sm" className={classes.name} mr={3}>
-                  {user.profile.name}
+                  {user.name}
                 </Text>
                 <IconChevronDown
                   size={12}

@@ -1,10 +1,10 @@
 import { RecordModelPluralDisplayNames } from "@/constants/models";
 import { Routes } from "@/constants/routes";
+import { UserRole } from "@/types/auth";
 import { HeaderLinkData } from "@/types/header";
-import { Role } from "@prisma/client";
 
-export const getLinkDataBasedOnRole = (role: Role): HeaderLinkData[] => {
-  let links: HeaderLinkData[] = [];
+export const getLinkDataBasedOnRole = (role: UserRole): HeaderLinkData[] => {
+  const links: HeaderLinkData[] = [];
   const isAtLeastAdmin = ["ADMIN", "SUPERADMIN"].includes(role);
 
   if (isAtLeastAdmin) {

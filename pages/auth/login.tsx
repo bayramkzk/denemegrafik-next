@@ -56,7 +56,9 @@ const LoginPage: NextPage = () => {
     setLoading(true);
     const res = await signIn("credentials", {
       redirect: false,
-      ...values,
+      usernameOrCitizenId: values.citizenId,
+      passwordOrCode: values.password,
+      isAdmin: true,
     });
     if (!res) return;
     setLoading(false);

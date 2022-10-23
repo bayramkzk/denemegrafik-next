@@ -1,5 +1,5 @@
+import { UserRole } from "@/types/auth";
 import { Alert, Loader } from "@mantine/core";
-import { Role } from "@prisma/client";
 import { IconAlertCircle } from "@tabler/icons";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
@@ -7,7 +7,7 @@ import React from "react";
 
 export type SessionGuardProps = {
   children: (session: Session) => React.ReactNode;
-  allowedRoles?: Role[];
+  allowedRoles?: UserRole[];
 };
 
 const SessionGuard: React.FC<SessionGuardProps> = ({

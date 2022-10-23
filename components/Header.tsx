@@ -56,9 +56,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export type HeaderProps = {};
-
-const Header: React.FC<HeaderProps> = (props) => {
+const Header: React.FC = () => {
   const { classes } = useStyles();
   const [burgerOpened, burgerHandler] = useDisclosure(false);
 

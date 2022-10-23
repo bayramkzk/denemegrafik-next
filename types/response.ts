@@ -1,4 +1,4 @@
-import { FindManyByModelResult } from "@/utils/record";
+import { ModelRecords } from "@/utils/record";
 import { ZodIssue } from "zod";
 import { SessionUser } from "./auth";
 
@@ -11,7 +11,7 @@ export type CustomErrorResponse = {
 };
 
 export type FetchRecordsSuccessResponse = {
-  records: FindManyByModelResult;
+  records: ModelRecords;
   success: true;
 };
 

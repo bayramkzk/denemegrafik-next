@@ -1,9 +1,16 @@
-import { Group, Organization, Profile, User } from "@prisma/client";
+import { Admin, Class, School, Student } from "@prisma/client";
 
-export type SessionUser = Omit<User, "hash"> & {
-  profile: Profile & {
-    group: Group & {
-      organization: Organization;
-    };
-  };
+export type AdminUser = Omit<Admin, "hash"> & {
+  school: School;
 };
+
+export type StudentUser = Student & {
+  class: Class & {
+    school: School;
+  };
+  role: "STUDENT";
+};
+
+export type SessionUser = AdminUser | StudentUser;
+
+export type UserRole = SessionUser["role"];

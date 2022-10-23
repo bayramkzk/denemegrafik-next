@@ -1,16 +1,14 @@
 import { roleDisplayNameMap } from "@/utils/role";
-import { parseIntoNames, stringifyGroup } from "@/utils/user";
+import { getSchool, parseIntoNames, stringifyClass } from "@/utils/user";
 import { Table } from "@mantine/core";
 import React from "react";
 import SessionGuard from "./SessionGuard";
 
-export interface ProfileTableProps {}
-
-const ProfileTable: React.FC<ProfileTableProps> = () => {
+const ProfileTable: React.FC = () => {
   return (
     <SessionGuard>
       {({ user }) => {
-        const { firstName, lastName } = parseIntoNames(user.profile.name);
+        const { firstName, lastName } = parseIntoNames(user.name);
 
         return (
           <Table>
@@ -31,12 +29,14 @@ const ProfileTable: React.FC<ProfileTableProps> = () => {
               </tr>
               <tr>
                 <td>Okul</td>
-                <td>{user.profile.group.organization.name}</td>
+                <td>{getSchool(user).name}</td>
               </tr>
-              <tr>
-                <td>Sınıf</td>
-                <td>{stringifyGroup(user.profile.group)}</td>
-              </tr>
+              {user.role === "STUDENT" && (
+                <tr>
+                  <td>Sınıf</td>
+                  <td>{stringifyClass(user.class)}</td>
+                </tr>
+              )}
               <tr>
                 <td>Kullanıcı Tipi</td>
                 <td>{roleDisplayNameMap[user.role]}</td>

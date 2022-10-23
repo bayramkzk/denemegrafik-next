@@ -4,7 +4,7 @@ import { modelToColumnMap } from "@/constants/columns";
 import { RecordModel, RecordModelPluralDisplayNames } from "@/constants/models";
 import { useRecords } from "@/hooks/use-records";
 import { validateModelQuery } from "@/utils/model";
-import { FindManyByModelResult } from "@/utils/record";
+import { ModelRecord, ModelRecords } from "@/utils/record";
 import { Stack, Text, TextInput, Title } from "@mantine/core";
 import { useDebouncedValue, useViewportSize } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
@@ -14,11 +14,9 @@ import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { GetServerSideProps, NextPage } from "next";
 import { useEffect, useState } from "react";
 
-export type RecordsPageServerSideProps = {
+export type RecordsPageProps = {
   model: RecordModel;
 };
-
-export type RecordsPageProps = RecordsPageServerSideProps & {};
 
 const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
   const title = RecordModelPluralDisplayNames[model];
@@ -37,7 +35,7 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
   useEffect(() => {
     if (records) {
       const filtered = records
-        .map((record) => record as any)
+        .map((record) => record as ModelRecord)
         .filter((record) =>
           Object.values(record).some((value) =>
             String(value)
@@ -45,7 +43,7 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
               .trim()
               .includes(debouncedQuery.toLowerCase().trim())
           )
-        ) as FindManyByModelResult;
+        ) as ModelRecords;
       const sorted = sortBy(filtered, sortStatus.columnAccessor);
       setRecords(sortStatus.direction === "desc" ? sorted.reverse() : sorted);
     }
@@ -99,9 +97,9 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
 
 export default RecordsPage;
 
-export const getServerSideProps: GetServerSideProps<
-  RecordsPageServerSideProps
-> = async (context) => {
+export const getServerSideProps: GetServerSideProps<RecordsPageProps> = async (
+  context
+) => {
   const model = validateModelQuery(context.query.model);
   if (!model) {
     return { notFound: true };
