@@ -16,7 +16,7 @@ const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
   }
 
   const session = await unstable_getServerSession(req, res, authOptions);
-  if (!session || session.user.role !== "SUPERADMIN") {
+  if (!session || session.user.role === "STUDENT") {
     return res.status(401).json(UNAUTHORIZED);
   }
 
@@ -25,7 +25,10 @@ const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
     return res.status(400).json(INVALID_MODEL_NAME);
   }
 
-  const records = await findRecordsByModel(model);
+  const records = await findRecordsByModel(model, session.user);
+  if (records === null) {
+    return res.status(401).json(UNAUTHORIZED);
+  }
   return res.status(200).json({ records, success: true });
 };
 

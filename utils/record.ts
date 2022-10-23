@@ -1,12 +1,21 @@
 import { RecordModelName } from "@/constants/models";
 import { prisma } from "@/lib/prisma";
+import { SessionUser } from "@/types/auth";
 import { parseFirstName, parseLastName, stringifyClass } from "./user";
 
 export const sumArray = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 
-export const findRecordsByModel = async (model: RecordModelName) => {
+export const findRecordsByModel = async (
+  model: RecordModelName,
+  user: SessionUser
+) => {
+  if (user.role === "STUDENT") return null;
+  const contrainedSchoolId =
+    user.role === "SUPERADMIN" ? undefined : user.schoolId;
+
   switch (model) {
     case "school": {
+      if (user.role !== "SUPERADMIN") return null;
       const schools = await prisma.school.findMany({
         include: { classes: { include: { _count: true } } },
       });
@@ -22,9 +31,8 @@ export const findRecordsByModel = async (model: RecordModelName) => {
 
     case "class": {
       const classes = await prisma.class.findMany({
-        include: {
-          _count: true,
-        },
+        where: { schoolId: contrainedSchoolId },
+        include: { _count: true },
       });
       const classesWithCounts = classes.map((cls) => ({
         ...cls,
@@ -35,9 +43,8 @@ export const findRecordsByModel = async (model: RecordModelName) => {
 
     case "student": {
       const students = await prisma.student.findMany({
-        include: {
-          class: true,
-        },
+        where: { class: { schoolId: contrainedSchoolId } },
+        include: { class: true },
       });
       const studentsWithParsedNames = students.map((student) => ({
         ...student,
@@ -49,15 +56,15 @@ export const findRecordsByModel = async (model: RecordModelName) => {
     }
 
     case "admin": {
+      if (user.role !== "SUPERADMIN") return null;
       const users = await prisma.admin.findMany();
       return users;
     }
 
     case "test": {
       const tests = await prisma.test.findMany({
-        include: {
-          _count: true,
-        },
+        where: { schools: { some: { schoolId: contrainedSchoolId } } },
+        include: { _count: true },
       });
       const testsWithCounts = tests.map((test) => ({
         ...test,
@@ -69,10 +76,8 @@ export const findRecordsByModel = async (model: RecordModelName) => {
 
     case "testResult": {
       const testResults = await prisma.testResult.findMany({
-        include: {
-          test: true,
-          student: true,
-        },
+        where: { student: { class: { schoolId: contrainedSchoolId } } },
+        include: { test: true, student: true },
       });
       const testResultsWithNames = testResults.map((testResult) => ({
         ...testResult,
@@ -86,4 +91,4 @@ export const findRecordsByModel = async (model: RecordModelName) => {
 
 export type ModelRecords = Awaited<ReturnType<typeof findRecordsByModel>>;
 
-export type ModelRecord = ModelRecords[number];
+export type ModelRecord = NonNullable<ModelRecords>[number];
