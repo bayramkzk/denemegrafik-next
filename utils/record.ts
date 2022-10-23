@@ -1,10 +1,10 @@
-import { RecordModel } from "@/constants/models";
+import { RecordModelName } from "@/constants/models";
 import { prisma } from "@/lib/prisma";
 import { parseFirstName, parseLastName, stringifyClass } from "./user";
 
 export const sumArray = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 
-export const findRecordsByModel = async (model: RecordModel) => {
+export const findRecordsByModel = async (model: RecordModelName) => {
   switch (model) {
     case "school": {
       const schools = await prisma.school.findMany({

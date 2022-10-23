@@ -7,7 +7,7 @@ export const RecordModelNames = [
   "testResult",
 ] as const;
 
-export type RecordModel = typeof RecordModelNames[number];
+export type RecordModelName = typeof RecordModelNames[number];
 
 export const RecordModelPluralDisplayNames = {
   school: "Okullar",

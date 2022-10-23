@@ -1,7 +1,10 @@
 import Layout from "@/components/Layout";
 import SessionGuard from "@/components/SessionGuard";
 import { modelToColumnMap } from "@/constants/columns";
-import { RecordModel, RecordModelPluralDisplayNames } from "@/constants/models";
+import {
+  RecordModelName,
+  RecordModelPluralDisplayNames,
+} from "@/constants/models";
 import { useRecords } from "@/hooks/use-records";
 import { validateModelQuery } from "@/utils/model";
 import { ModelRecord, ModelRecords } from "@/utils/record";
@@ -15,7 +18,7 @@ import { GetServerSideProps, NextPage } from "next";
 import { useEffect, useState } from "react";
 
 export type RecordsPageProps = {
-  model: RecordModel;
+  model: RecordModelName;
 };
 
 const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {

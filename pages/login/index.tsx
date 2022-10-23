@@ -128,7 +128,7 @@ const LoginPage: NextPage = () => {
 
         {isAdmin ? (
           <TextInput
-            label="Kullanıcı adı"
+            label="Kullanıcı Adı"
             placeholder="kullanici_adi"
             size={INPUT_SIZE}
             icon={<IconUser />}
