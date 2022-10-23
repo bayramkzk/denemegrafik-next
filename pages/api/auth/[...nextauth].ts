@@ -1,4 +1,6 @@
+import { Routes } from "@/constants/routes";
 import { prisma } from "@/lib/prisma";
+import { loginSchema } from "@/schemas/login";
 import { SessionUser } from "@/types/auth";
 import bcrypt from "bcrypt";
 import NextAuth, { NextAuthOptions, Session } from "next-auth";
@@ -25,17 +27,18 @@ export const authOptions: NextAuthOptions = {
         },
       },
       async authorize(credentials): Promise<SessionUser | null> {
-        if (!credentials) return null;
+        const body = loginSchema.safeParse(credentials);
+        if (!body.success) return null;
 
-        if (credentials.isAdmin) {
+        if (body.data.isAdmin) {
           const admin = await prisma.admin.findUnique({
-            where: { username: credentials.usernameOrCitizenId.toString() },
+            where: { username: body.data.usernameOrCitizenId },
             include: { school: true },
           });
           if (!admin) return null;
 
           const isPasswordValid = await bcrypt.compare(
-            credentials.passwordOrCode,
+            body.data.passwordOrCode,
             admin.hash
           );
           if (!isPasswordValid) return null;
@@ -45,12 +48,12 @@ export const authOptions: NextAuthOptions = {
         }
 
         const student = await prisma.student.findUnique({
-          where: { citizenId: credentials.usernameOrCitizenId.toString() },
+          where: { citizenId: body.data.usernameOrCitizenId },
           include: { class: { include: { school: true } } },
         });
         if (!student) return null;
 
-        const isCodeValid = credentials.passwordOrCode === String(student.code);
+        const isCodeValid = body.data.passwordOrCode === String(student.code);
         if (!isCodeValid) return null;
 
         const studentUser = { ...student, role: "STUDENT" as const };
@@ -68,9 +71,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
-  pages: {
-    signIn: "/auth/login",
-  },
+  pages: { signIn: Routes.login },
 };
 
 export default NextAuth(authOptions);
