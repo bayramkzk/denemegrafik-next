@@ -1,3 +1,5 @@
+import CreateRecordModalButton from "@/components/CreateRecordModalButton";
+import DeleteRecordModalButton from "@/components/DeleteRecordModalButton";
 import Layout from "@/components/Layout";
 import SessionGuard from "@/components/SessionGuard";
 import UploadExcelModalButton from "@/components/UploadExcelModalButton";
@@ -9,7 +11,7 @@ import {
 import { useRecords } from "@/hooks/use-records";
 import { validateModelQuery } from "@/utils/model";
 import { ModelRecord, ModelRecords } from "@/utils/record";
-import { Group, Stack, Text, TextInput, Title } from "@mantine/core";
+import { Grid, Group, Stack, Text, TextInput, Title } from "@mantine/core";
 import { useDebouncedValue, useViewportSize } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { IconDatabaseOff, IconSearch } from "@tabler/icons";
@@ -36,6 +38,8 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
   const [selectedRecords, setSelectedRecords] = useState<ModelRecord[]>([]);
   const [query, setQuery] = useState("");
   const [debouncedQuery] = useDebouncedValue(query, 200);
+
+  useEffect(() => setSelectedRecords([]), [model]);
 
   useEffect(() => {
     if (records) {
@@ -72,17 +76,28 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
           <Stack spacing="xl">
             <Title mb="lg">{title}</Title>
 
-            <Group>
-              <TextInput
-                placeholder={`${title} arasında ara...`}
-                value={query}
-                icon={<IconSearch size={16} />}
-                onChange={(event) => setQuery(event.target.value)}
-                sx={{ flexGrow: 1 }}
-              />
+            <Grid grow gutter={8}>
+              <Grid.Col span={12} sm={6} md={8}>
+                <TextInput
+                  placeholder={`${title} arasında ara...`}
+                  value={query}
+                  icon={<IconSearch size={16} />}
+                  onChange={(event) => setQuery(event.target.value)}
+                  sx={{ flexGrow: 1, flexShrink: 1 }}
+                />
+              </Grid.Col>
 
-              <UploadExcelModalButton model={model} />
-            </Group>
+              <Grid.Col span={12} sm={6} md={4}>
+                <Group noWrap spacing={4}>
+                  <DeleteRecordModalButton
+                    model={model}
+                    records={selectedRecords}
+                  />
+                  <UploadExcelModalButton model={model} />
+                  <CreateRecordModalButton model={model} />
+                </Group>
+              </Grid.Col>
+            </Grid>
 
             <Stack spacing="xs">
               {records && !isLoading ? (

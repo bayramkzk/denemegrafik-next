@@ -143,8 +143,13 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
 
   return (
     <>
-      <Button rightIcon={<IconFileUpload size={20} />} onClick={open}>
-        Excel Yükle
+      <Button
+        rightIcon={<IconFileUpload size={20} />}
+        onClick={open}
+        fullWidth
+        color="blue"
+      >
+        Yükle
       </Button>
       <Modal
         opened={opened}
