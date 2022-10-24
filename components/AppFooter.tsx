@@ -14,11 +14,13 @@ const useStyles = createStyles((theme) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    gap: theme.spacing.md,
     paddingTop: theme.spacing.xl,
     paddingBottom: theme.spacing.xl,
 
     [theme.fn.smallerThan("xs")]: {
       flexDirection: "column",
+      textAlign: "center",
     },
   },
 
