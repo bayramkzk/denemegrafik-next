@@ -86,7 +86,6 @@ model TestOnSchool {
 }
 
 model TestResult {
-  id        Int      @id @default(autoincrement())
   testId    Int
   studentId Int
   score     Float
@@ -95,4 +94,6 @@ model TestResult {
 
   test    Test    @relation(fields: [testId], references: [id])
   student Student @relation(fields: [studentId], references: [id])
+
+  @@id([testId, studentId])
 }
