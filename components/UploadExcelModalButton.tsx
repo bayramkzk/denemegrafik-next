@@ -44,13 +44,19 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
     [model],
     model === "student" ? postStudentExcel : postResultExcel
   );
+  const [hasUploaded, setHasUploaded] = useState(false);
 
   const excelFileHref = `/example-${model}s.xlsx`;
   const modelDisplayName = RecordModelPluralDisplayNames[model];
   const excelFileDownloadName = `${APP_DISPLAY_NAME} ${modelDisplayName} Örnek Excel.xlsx`;
 
   useEffect(() => {
+    // prevent multiple notifications
+    if (hasUploaded && mutation.isSuccess) return;
+
     if (mutation.isLoading) {
+      setHasUploaded(false);
+
       showNotification({
         id: UPLOAD_NOTIFICATION_ID,
         title: "Excel Yükleniyor",
@@ -62,6 +68,8 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
         icon: <IconUpload />,
       });
     } else if (mutation.isSuccess) {
+      setHasUploaded(true);
+
       if (mutation.data.errors.length > 0) {
         const uniqueErrors = Array.from(
           new Set(
@@ -98,6 +106,7 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
         autoClose: AUTO_CLOSE_NOTIFICATION_DURATION,
       });
     } else if (mutation.isError) {
+      setHasUploaded(true);
       updateNotification({
         id: UPLOAD_NOTIFICATION_ID,
         title: "Excel Yüklenemedi!",
@@ -119,6 +128,7 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
     mutation.isSuccess,
     mutation.error,
     modelDisplayName,
+    hasUploaded,
   ]);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
