@@ -74,7 +74,7 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
         const uniqueErrors = Array.from(
           new Set(
             mutation.data.errors.map(
-              (e) => e?.error.message ?? JSON.stringify(e)
+              (e) => e?.error?.message ?? JSON.stringify(e)
             )
           )
         );
@@ -90,7 +90,7 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
         mutation.data.totalCount === 0
           ? `${modelDisplayName} için Excel dosyası yüklenemedi. Lütfen dosyayı kontrol edin.`
           : mutation.data.fulfilledCount === 0
-          ? `Excel dosyası içinden hiç kayıt oluşturulamadı. Lütfen dosyayı kontrol edin.`
+          ? `Excel dosyasındaki ${mutation.data.totalCount} kayıt arasından hiçbiri oluşturulamadı. Lütfen dosyayı kontrol edin.`
           : mutation.data.fulfilledCount === mutation.data.totalCount
           ? `${modelDisplayName} için Excel dosyası başarıyla yüklendi.`
           : `${modelDisplayName} için Excel dosyası yüklendi. ${mutation.data.fulfilledCount} kayıt oluşturuldu. ${mutation.data.rejectedCount} kayıt oluşturulamadı. Lütfen dosyayı kontrol edin.`;
@@ -131,10 +131,12 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
     hasUploaded,
   ]);
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     if (!file) return;
-    mutation.mutate(file);
+    await mutation.mutateAsync(file);
+    setFile(null);
+    if (mutation.isSuccess && mutation.data.fulfilledCount !== 0) close();
   };
 
   if (!ExcelModels.includes(model)) return null;
@@ -146,7 +148,10 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
       </Button>
       <Modal
         opened={opened}
-        onClose={close}
+        onClose={() => {
+          close();
+          setFile(null);
+        }}
         title={
           <Title order={2}>
             {RecordModelPluralDisplayNames[model]} için Excel Yükle

@@ -1,4 +1,5 @@
 import {
+  DUPLICATE_CITIZEN_ID,
   DUPLICATE_TEST_RESULT,
   INTERNAL_SERVER_ERROR,
   INVALID_MODEL_NAME,
@@ -92,16 +93,24 @@ const postStudent = async (context: ModelRequestContext) => {
   });
   if (!cls) return context.res.status(404).json(NO_CLASS_FOUND);
 
-  const student = await prisma.student.create({
-    data: {
-      name: body.data.name,
-      citizenId: body.data.citizenId,
-      code: body.data.code,
-      classId: cls.id,
-    },
-  });
-
-  return context.res.status(200).json({ success: true, record: student });
+  try {
+    const student = await prisma.student.create({
+      data: {
+        name: body.data.name,
+        citizenId: body.data.citizenId,
+        code: body.data.code,
+        classId: cls.id,
+      },
+    });
+    return context.res.status(200).json({ success: true, record: student });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        return context.res.status(409).json(DUPLICATE_CITIZEN_ID);
+      }
+    }
+    context.res.status(500).json(INTERNAL_SERVER_ERROR);
+  }
 };
 
 const postRecord = async (context: ModelRequestContext) => {
