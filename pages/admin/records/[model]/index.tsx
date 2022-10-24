@@ -1,5 +1,5 @@
 import CreateRecordModalButton from "@/components/CreateRecordModalButton";
-import DeleteRecordModalButton from "@/components/DeleteRecordModalButton";
+import DeleteRecordModalButton from "@/components/DeleteRecordsModalButton";
 import Layout from "@/components/Layout";
 import SessionGuard from "@/components/SessionGuard";
 import UploadExcelModalButton from "@/components/UploadExcelModalButton";
