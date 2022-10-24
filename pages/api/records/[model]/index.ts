@@ -1,4 +1,6 @@
 import {
+  DUPLICATE_TEST_RESULT,
+  INTERNAL_SERVER_ERROR,
   INVALID_MODEL_NAME,
   METHOD_NOT_ALLOWED,
   NO_CLASS_FOUND,
@@ -7,10 +9,11 @@ import {
 } from "@/constants/errors";
 import { RecordModelName } from "@/constants/models";
 import { prisma } from "@/lib/prisma";
-import { studentSchema, testResultSchema } from "@/schemas/postRecord";
+import { postStudentSchema, postTestResultSchema } from "@/schemas/postRecord";
 import { FetchRecordsResponse } from "@/types/response";
 import { validateModelQuery } from "@/utils/model";
 import { findRecordsByModel } from "@/utils/record";
+import { Prisma } from "@prisma/client";
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { Session, unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
@@ -35,7 +38,7 @@ const postTestResult = async ({ req, res, session }: ModelRequestContext) => {
     return res.status(401).json(UNAUTHORIZED);
   }
 
-  const body = testResultSchema.safeParse(req.body);
+  const body = postTestResultSchema.safeParse(req.body);
   if (!body.success)
     return res
       .status(400)
@@ -49,15 +52,24 @@ const postTestResult = async ({ req, res, session }: ModelRequestContext) => {
   });
   if (!student) return res.status(404).json(NO_STUDENT_FOUND);
 
-  const testResult = await prisma.testResult.create({
-    data: {
-      testId: body.data.testId,
-      studentId: student.id,
-      score: body.data.score,
-    },
-  });
+  try {
+    const testResult = await prisma.testResult.create({
+      data: {
+        testId: body.data.testId,
+        studentId: student.id,
+        score: body.data.score,
+      },
+    });
 
-  return res.status(200).json({ success: true, record: testResult });
+    return res.status(200).json({ success: true, record: testResult });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        return res.status(409).json(DUPLICATE_TEST_RESULT);
+      }
+    }
+    res.status(500).json(INTERNAL_SERVER_ERROR);
+  }
 };
 
 const postStudent = async (context: ModelRequestContext) => {
@@ -65,7 +77,7 @@ const postStudent = async (context: ModelRequestContext) => {
     return context.res.status(401).json(UNAUTHORIZED);
   }
 
-  const body = studentSchema.safeParse(context.req.body);
+  const body = postStudentSchema.safeParse(context.req.body);
   if (!body.success)
     return context.res
       .status(400)

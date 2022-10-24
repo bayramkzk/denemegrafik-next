@@ -2,6 +2,7 @@ import {
   RecordModelName,
   RecordModelPluralDisplayNames,
 } from "@/constants/models";
+import { postResultExcel, postStudentExcel } from "@/utils/excel";
 import {
   Button,
   FileInput,
@@ -11,16 +12,23 @@ import {
   Title,
   useMantineTheme,
 } from "@mantine/core";
+import { MS_EXCEL_MIME_TYPE } from "@mantine/dropzone";
 import { useDisclosure } from "@mantine/hooks";
+import { showNotification, updateNotification } from "@mantine/notifications";
 import {
   IconFileAnalytics,
   IconFileDownload,
   IconFileUpload,
+  IconUpload,
 } from "@tabler/icons";
-import React from "react";
+import { useMutation } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
 import { APP_DISPLAY_NAME } from "../constants";
 
 const ExcelModels: RecordModelName[] = ["student", "testResult"];
+
+const UPLOAD_NOTIFICATION_ID = "upload-excel-notification";
+const AUTO_CLOSE_NOTIFICATION_DURATION = 10_000;
 
 export interface UploadExcelModalButtonProps {
   model: RecordModelName;
@@ -31,9 +39,93 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
 }) => {
   const theme = useMantineTheme();
   const [opened, { close, open }] = useDisclosure(false);
+  const [file, setFile] = useState<File | null>(null);
+  const mutation = useMutation(
+    [model],
+    model === "student" ? postStudentExcel : postResultExcel
+  );
+
   const excelFileHref = `/example-${model}s.xlsx`;
   const modelDisplayName = RecordModelPluralDisplayNames[model];
   const excelFileDownloadName = `${APP_DISPLAY_NAME} ${modelDisplayName} Örnek Excel.xlsx`;
+
+  useEffect(() => {
+    if (mutation.isLoading) {
+      showNotification({
+        id: UPLOAD_NOTIFICATION_ID,
+        title: "Excel Yükleniyor",
+        message: `${modelDisplayName} için Excel dosyası yükleniyor...`,
+        color: "blue",
+        loading: true,
+        disallowClose: true,
+        autoClose: false,
+        icon: <IconUpload />,
+      });
+    } else if (mutation.isSuccess) {
+      if (mutation.data.errors.length > 0) {
+        const uniqueErrors = Array.from(
+          new Set(
+            mutation.data.errors.map(
+              (e) => e?.error.message ?? JSON.stringify(e)
+            )
+          )
+        );
+        showNotification({
+          title: "Excel yüklenirken hatalar oluştu!",
+          message: uniqueErrors.map((s) => `👉 ${s}`).join("\n"),
+          color: "red",
+          icon: <IconFileUpload />,
+        });
+      }
+
+      const message =
+        mutation.data.totalCount === 0
+          ? `${modelDisplayName} için Excel dosyası yüklenemedi. Lütfen dosyayı kontrol edin.`
+          : mutation.data.fulfilledCount === 0
+          ? `Excel dosyası içinden hiç kayıt oluşturulamadı. Lütfen dosyayı kontrol edin.`
+          : mutation.data.fulfilledCount === mutation.data.totalCount
+          ? `${modelDisplayName} için Excel dosyası başarıyla yüklendi.`
+          : `${modelDisplayName} için Excel dosyası yüklendi. ${mutation.data.fulfilledCount} kayıt oluşturuldu. ${mutation.data.rejectedCount} kayıt oluşturulamadı. Lütfen dosyayı kontrol edin.`;
+
+      updateNotification({
+        id: UPLOAD_NOTIFICATION_ID,
+        title: "Excel Yükleme Sonlandı!",
+        message,
+        color: "green",
+        loading: false,
+        disallowClose: false,
+        icon: <IconFileUpload />,
+        autoClose: AUTO_CLOSE_NOTIFICATION_DURATION,
+      });
+    } else if (mutation.isError) {
+      updateNotification({
+        id: UPLOAD_NOTIFICATION_ID,
+        title: "Excel Yüklenemedi!",
+        message: [
+          `${modelDisplayName} için Excel dosyası yüklenirken bir hata oluştu!`,
+          String(mutation.error),
+        ],
+        color: "red",
+        loading: false,
+        disallowClose: false,
+        icon: <IconFileUpload />,
+        autoClose: AUTO_CLOSE_NOTIFICATION_DURATION,
+      });
+    }
+  }, [
+    mutation.data,
+    mutation.isLoading,
+    mutation.isError,
+    mutation.isSuccess,
+    mutation.error,
+    modelDisplayName,
+  ]);
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    if (!file) return;
+    mutation.mutate(file);
+  };
 
   if (!ExcelModels.includes(model)) return null;
 
@@ -68,17 +160,17 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
             </Button>
           </Stack>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
-          >
+          <form onSubmit={handleSubmit}>
             <Stack>
               <FileInput
-                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                accept={MS_EXCEL_MIME_TYPE.join(",")}
                 icon={<IconFileAnalytics size={20} />}
                 label="Excel Dosyası"
                 placeholder={`${modelDisplayName} için Excel dosyası seçin`}
+                withAsterisk
+                value={file}
+                onChange={(file) => setFile(file)}
+                required
               />
 
               <Button
@@ -86,9 +178,11 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
                 color={theme.colors.blue[6]}
                 variant="outline"
                 fullWidth
-                rightIcon={<IconFileUpload size={20} />}
+                rightIcon={!mutation.isLoading && <IconUpload size={20} />}
+                loading={mutation.isLoading}
+                disabled={mutation.isLoading || !file}
               >
-                Yükle
+                {!mutation.isLoading && "Yükle"}
               </Button>
             </Stack>
           </form>

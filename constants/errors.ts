@@ -44,3 +44,8 @@ export const INVALID_MODEL_NAME = generateError(
   "invalid_model",
   "Geçersiz veri tabanı modeli adı!"
 );
+
+export const DUPLICATE_TEST_RESULT = generateError(
+  "duplicate_test_result",
+  "Bu öğrenci için daha önce bu test sonucu girilmiş."
+);

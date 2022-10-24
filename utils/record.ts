@@ -10,8 +10,8 @@ export const findRecordsByModel = async (
   user: SessionUser
 ) => {
   if (user.role === "STUDENT") return null;
-  const contrainedSchoolId =
-    user.role === "SUPERADMIN" ? undefined : user.schoolId;
+  const constrain = <T>(obj: T) =>
+    user.role === "SUPERADMIN" ? undefined : obj;
 
   switch (model) {
     case "school": {
@@ -31,7 +31,7 @@ export const findRecordsByModel = async (
 
     case "class": {
       const classes = await prisma.class.findMany({
-        where: { schoolId: contrainedSchoolId },
+        where: constrain({ schoolId: user.schoolId }),
         include: { _count: true },
       });
       const classesWithCounts = classes.map((cls) => ({
@@ -43,7 +43,7 @@ export const findRecordsByModel = async (
 
     case "student": {
       const students = await prisma.student.findMany({
-        where: { class: { schoolId: contrainedSchoolId } },
+        where: constrain({ class: { schoolId: user.schoolId } }),
         include: { class: true },
       });
       const studentsWithParsedNames = students.map((student) => ({
@@ -63,7 +63,7 @@ export const findRecordsByModel = async (
 
     case "test": {
       const tests = await prisma.test.findMany({
-        where: { schools: { some: { schoolId: contrainedSchoolId } } },
+        where: constrain({ schools: { some: { schoolId: user.schoolId } } }),
         include: { _count: true },
       });
       const testsWithCounts = tests.map((test) => ({
@@ -76,7 +76,7 @@ export const findRecordsByModel = async (
 
     case "testResult": {
       const testResults = await prisma.testResult.findMany({
-        where: { student: { class: { schoolId: contrainedSchoolId } } },
+        where: constrain({ student: { class: { schoolId: user.schoolId } } }),
         include: { test: true, student: true },
       });
       const testResultsWithNames = testResults.map((testResult) => ({
