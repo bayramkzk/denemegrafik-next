@@ -83,6 +83,7 @@ export const findRecordsByModel = async (
         ...testResult,
         studentName: testResult.student.name,
         testName: testResult.test.name,
+        id: `${testResult.testId}-${testResult.studentId}`,
       }));
       return testResultsWithNames;
     }

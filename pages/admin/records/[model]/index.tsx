@@ -33,6 +33,7 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
   const [sortedRecords, setRecords] = useState(() =>
     sortBy(records, sortStatus.columnAccessor)
   );
+  const [selectedRecords, setSelectedRecords] = useState<ModelRecord[]>([]);
   const [query, setQuery] = useState("");
   const [debouncedQuery] = useDebouncedValue(query, 200);
 
@@ -83,20 +84,36 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
               <UploadExcelModalButton model={model} />
             </Group>
 
-            <DataTable
-              columns={modelToColumnMap[model]}
-              records={sortedRecords}
-              fetching={isLoading}
-              minHeight={height / 2}
-              emptyState={
-                <Stack align="center">
-                  <IconDatabaseOff size={40} />
-                  <Text>{title} için veri bulunamadı</Text>
-                </Stack>
-              }
-              sortStatus={sortStatus}
-              onSortStatusChange={setSortStatus}
-            />
+            <Stack spacing="xs">
+              {records && !isLoading ? (
+                <Text align="right" size="sm">
+                  {selectedRecords.length || records.length} kayıt
+                </Text>
+              ) : (
+                <Text align="right" size="sm" color="dimmed">
+                  {isLoading ? "Yükleniyor..." : "Veri yok"}
+                </Text>
+              )}
+
+              <DataTable
+                columns={modelToColumnMap[model]}
+                records={sortedRecords}
+                fetching={isLoading}
+                minHeight={height / 2}
+                emptyState={
+                  <Stack align="center">
+                    <IconDatabaseOff size={40} />
+                    <Text>{title} için veri bulunamadı</Text>
+                  </Stack>
+                }
+                sortStatus={sortStatus}
+                onSortStatusChange={setSortStatus}
+                selectedRecords={selectedRecords}
+                onSelectedRecordsChange={(records) =>
+                  setSelectedRecords(records as ModelRecord[])
+                }
+              />
+            </Stack>
           </Stack>
         </Layout>
       )}
