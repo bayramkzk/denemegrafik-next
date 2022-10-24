@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
 import SessionGuard from "@/components/SessionGuard";
+import UploadExcelModalButton from "@/components/UploadExcelModalButton";
 import { modelToColumnMap } from "@/constants/columns";
 import {
   RecordModelName,
@@ -8,7 +9,7 @@ import {
 import { useRecords } from "@/hooks/use-records";
 import { validateModelQuery } from "@/utils/model";
 import { ModelRecord, ModelRecords } from "@/utils/record";
-import { Stack, Text, TextInput, Title } from "@mantine/core";
+import { Group, Stack, Text, TextInput, Title } from "@mantine/core";
 import { useDebouncedValue, useViewportSize } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { IconDatabaseOff, IconSearch } from "@tabler/icons";
@@ -70,12 +71,17 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
           <Stack spacing="xl">
             <Title mb="lg">{title}</Title>
 
-            <TextInput
-              placeholder={`${title} arasında ara...`}
-              value={query}
-              icon={<IconSearch size={16} />}
-              onChange={(event) => setQuery(event.target.value)}
-            />
+            <Group>
+              <TextInput
+                placeholder={`${title} arasında ara...`}
+                value={query}
+                icon={<IconSearch size={16} />}
+                onChange={(event) => setQuery(event.target.value)}
+                sx={{ flexGrow: 1 }}
+              />
+
+              <UploadExcelModalButton model={model} />
+            </Group>
 
             <DataTable
               columns={modelToColumnMap[model]}
