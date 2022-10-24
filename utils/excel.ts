@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/lib/axios-instance";
-import { PostStudent, PostTestResult } from "@/schemas/postRecord";
+import { PostStudent, PostTestResult } from "@/schemas/record";
 import { AxiosResponse } from "axios";
 import Excel from "exceljs";
 

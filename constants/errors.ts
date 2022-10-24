@@ -49,3 +49,8 @@ export const DUPLICATE_TEST_RESULT = generateError(
   "duplicate_test_result",
   "Bu öğrenci için daha önce bu test sonucu girilmiş."
 );
+
+export const INVALID_BODY = generateError(
+  "invalid_body",
+  "Gönderilen HTTP isteğinin gövde yapısı geçersiz."
+);

@@ -18,3 +18,9 @@ export const postStudentSchema = z.object({
 });
 
 export type PostStudent = z.infer<typeof postStudentSchema>;
+
+export const deleteRecordsSchema = z.object({
+  ids: z.array(z.union([z.number(), z.string()])),
+});
+
+export type DeleteRecords = z.infer<typeof deleteRecordsSchema>;
