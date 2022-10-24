@@ -25,6 +25,11 @@ export const NO_STUDENT_FOUND = generateError(
   "Verilen kimlik numarasına ait öğrenci bulunamadı."
 );
 
+export const NO_CLASS_FOUND = generateError(
+  "no_class_found",
+  "Verilen sınıf bilgilerine ait sınıf bulunamadı."
+);
+
 export const INTERNAL_SERVER_ERROR = generateError(
   "internal_server_error",
   "Bilinmeyen bir sunucu hatası oluştu."
