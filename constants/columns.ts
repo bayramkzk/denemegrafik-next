@@ -147,10 +147,6 @@ export const modelToColumnMapWithoutDefaults: Record<
   ],
   testResult: [
     {
-      accessor: "id",
-      title: "ID",
-    },
-    {
       accessor: "testName",
       title: "Deneme Sınavı Adı",
     },
