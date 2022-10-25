@@ -133,6 +133,69 @@ const deleteRecord = async (context: ModelRequestContext) => {
   }
 };
 
+const postRecord = async (context: ModelRequestContext) => {
+  if (context.session.user.role === "STUDENT") {
+    return context.res.status(401).json(UNAUTHORIZED);
+  }
+  const { model, req, res, session } = context;
+
+  switch (model) {
+    case "school": {
+      if (session.user.role !== "SUPERADMIN") {
+        return res.status(401).json(UNAUTHORIZED);
+      }
+      const school = await prisma.school.create({
+        data: req.body,
+      });
+      return res.status(200).json({ success: true, record: school });
+    }
+    case "class": {
+      const cls = await prisma.class.create({
+        data: {
+          ...req.body,
+          schoolId:
+            // admin can only create classes in their school
+            session.user.role === "ADMIN"
+              ? session.user.schoolId
+              : req.body.schoolId,
+        },
+      });
+      return res.status(200).json({ success: true, record: cls });
+    }
+    case "student": {
+      // FIXME: admins can create students in any school
+      const student = await prisma.student.create({
+        data: req.body,
+      });
+      return res.status(200).json({ success: true, record: student });
+    }
+    case "test": {
+      if (session.user.role !== "SUPERADMIN") {
+        return res.status(401).json(UNAUTHORIZED);
+      }
+      const test = await prisma.test.create({
+        data: req.body,
+      });
+      return res.status(200).json({ success: true, record: test });
+    }
+    case "testResult": {
+      const testResult = await prisma.testResult.create({
+        data: req.body,
+      });
+      return res.status(200).json({ success: true, record: testResult });
+    }
+    case "admin": {
+      if (session.user.role !== "SUPERADMIN") {
+        return res.status(401).json(UNAUTHORIZED);
+      }
+      const admin = await prisma.admin.create({
+        data: req.body,
+      });
+      return res.status(200).json({ success: true, record: admin });
+    }
+  }
+};
+
 const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
   const session = await unstable_getServerSession(req, res, authOptions);
   if (!session || session.user.role === "STUDENT") {
@@ -148,6 +211,9 @@ const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
     switch (req.method) {
       case "GET": {
         return await getRecords(context);
+      }
+      case "POST": {
+        return await postRecord(context);
       }
       case "DELETE": {
         return await deleteRecord(context);
