@@ -7,6 +7,17 @@ export const columnDefaults: Partial<DataTableColumn<RecordModelName>> = {
   titleSx: { userSelect: "none" },
 };
 
+const renderDate = (date: Date) => {
+  return new Date(date).toLocaleString("tr", {
+    weekday: "short",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  });
+};
+
 export const modelToColumnMapWithoutDefaults: Record<
   RecordModelName,
   DataTableColumn<any>[]
@@ -31,10 +42,12 @@ export const modelToColumnMapWithoutDefaults: Record<
     {
       accessor: "createdAt",
       title: "Oluşturulma Tarihi",
+      render: (date) => renderDate(date.createdAt),
     },
     {
       accessor: "updatedAt",
       title: "Güncellenme Tarihi",
+      render: (date) => renderDate(date.updatedAt),
     },
   ],
   class: [
@@ -57,10 +70,12 @@ export const modelToColumnMapWithoutDefaults: Record<
     {
       accessor: "createdAt",
       title: "Oluşturulma Tarihi",
+      render: (date) => renderDate(date.createdAt),
     },
     {
       accessor: "updatedAt",
       title: "Güncellenme Tarihi",
+      render: (date) => renderDate(date.updatedAt),
     },
   ],
   student: [
@@ -87,10 +102,12 @@ export const modelToColumnMapWithoutDefaults: Record<
     {
       accessor: "createdAt",
       title: "Oluşturulma Tarihi",
+      render: (date) => renderDate(date.createdAt),
     },
     {
       accessor: "updatedAt",
       title: "Güncellenme Tarihi",
+      render: (date) => renderDate(date.updatedAt),
     },
   ],
   admin: [
@@ -113,10 +130,12 @@ export const modelToColumnMapWithoutDefaults: Record<
     {
       accessor: "createdAt",
       title: "Oluşturulma Tarihi",
+      render: (date) => renderDate(date.createdAt),
     },
     {
       accessor: "updatedAt",
       title: "Güncellenme Tarihi",
+      render: (date) => renderDate(date.updatedAt),
     },
   ],
   test: [
@@ -139,10 +158,12 @@ export const modelToColumnMapWithoutDefaults: Record<
     {
       accessor: "createdAt",
       title: "Oluşturulma Tarihi",
+      render: (date) => renderDate(date.createdAt),
     },
     {
       accessor: "updatedAt",
       title: "Güncellenme Tarihi",
+      render: (date) => renderDate(date.updatedAt),
     },
   ],
   testResult: [
@@ -161,10 +182,12 @@ export const modelToColumnMapWithoutDefaults: Record<
     {
       accessor: "createdAt",
       title: "Oluşturulma Tarihi",
+      render: (date) => renderDate(date.createdAt),
     },
     {
       accessor: "updatedAt",
       title: "Güncellenme Tarihi",
+      render: (date) => renderDate(date.updatedAt),
     },
   ],
 };
