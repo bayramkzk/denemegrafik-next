@@ -96,16 +96,29 @@ const postStudent = async (context: ModelRequestContext) => {
 };
 
 const postRecord = async (context: ModelRequestContext) => {
-  switch (context.model) {
-    case "testResult": {
-      return await postTestResult(context);
+  try {
+    switch (context.model) {
+      case "testResult": {
+        return await postTestResult(context);
+      }
+      case "student": {
+        return await postStudent(context);
+      }
+      default: {
+        return context.res.status(404).json(INVALID_MODEL_NAME);
+      }
     }
-    case "student": {
-      return await postStudent(context);
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(500).json({
+        success: false,
+        error: {
+          code: "prisma_error",
+          message: e.message,
+        },
+      });
     }
-    default: {
-      return context.res.status(404).json(INVALID_MODEL_NAME);
-    }
+    return res.status(500).json(INTERNAL_SERVER_ERROR);
   }
 };
 
