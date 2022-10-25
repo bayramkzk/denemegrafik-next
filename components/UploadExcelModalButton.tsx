@@ -81,7 +81,14 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
         );
         showNotification({
           title: "Excel yüklenirken hatalar oluştu!",
-          message: uniqueErrors.map((s) => `👉 ${s}`).join("\n"),
+          message: uniqueErrors
+            .map((message) => {
+              const limit = 120;
+              const shortened = message.substring(0, limit);
+              const ellipsis = message.length > limit ? "..." : "";
+              return `👉 ${shortened}${ellipsis}`;
+            })
+            .map((message) => <Text key={message}>{message}</Text>),
           color: "red",
           icon: <IconFileUpload />,
         });
