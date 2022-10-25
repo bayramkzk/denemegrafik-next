@@ -86,6 +86,7 @@ const postStudent = async (context: ModelRequestContext) => {
     });
     return context.res.status(200).json({ success: true, record: student });
   } catch (e) {
+    console.log(e)
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === "P2002") {
         return context.res.status(409).json(DUPLICATE_CITIZEN_ID);
@@ -109,6 +110,7 @@ const postRecord = async (context: ModelRequestContext) => {
       }
     }
   } catch (e) {
+    console.log(e);
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       return context.res.status(500).json({
         success: false,
