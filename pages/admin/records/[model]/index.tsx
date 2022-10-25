@@ -1,4 +1,4 @@
-import CreateRecordModalButton from "@/components/CreateRecordModalButton";
+import CreateRecordDrawerButton from "@/components/CreateRecordDrawerButton";
 import DeleteRecordModalButton from "@/components/DeleteRecordsModalButton";
 import Layout from "@/components/Layout";
 import SessionGuard from "@/components/SessionGuard";
@@ -94,7 +94,7 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
                     records={selectedRecords}
                   />
                   <UploadExcelModalButton model={model} />
-                  <CreateRecordModalButton model={model} />
+                  <CreateRecordDrawerButton model={model} />
                 </Group>
               </Grid.Col>
             </Grid>
