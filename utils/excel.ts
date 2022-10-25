@@ -86,7 +86,7 @@ export const countSettledPromiseStatuses = <T extends AxiosResponse>(
 export const postStudentExcel = async (file: File) => {
   const students = await readStudentExcel(file);
   const promises = students.map((student) =>
-    axiosInstance.post("/api/records/student", student)
+    axiosInstance.post("/api/excels/student", student)
   );
   const results = await Promise.allSettled(promises);
   return countSettledPromiseStatuses(results);
@@ -95,7 +95,7 @@ export const postStudentExcel = async (file: File) => {
 export const postResultExcel = async (file: File) => {
   const testResults = await readResultExcel(file);
   const promises = testResults.map((testResult) =>
-    axiosInstance.post("/api/records/testResult", testResult)
+    axiosInstance.post("/api/excels/testResult", testResult)
   );
   const promiseResults = await Promise.allSettled(promises);
   return countSettledPromiseStatuses(promiseResults);

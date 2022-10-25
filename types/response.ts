@@ -1,4 +1,7 @@
+import { RecordModelName } from "@/constants/models";
 import { ModelRecords } from "@/utils/record";
+import { NextApiRequest, NextApiResponse } from "next";
+import { Session } from "next-auth";
 import { ZodIssue } from "zod";
 import { SessionUser } from "./auth";
 
@@ -42,3 +45,10 @@ export type RegisterSuccessResponse = {
 };
 
 export type RegisterResponse = AuthErrorResponse | RegisterSuccessResponse;
+
+export type ModelRequestContext = {
+  req: NextApiRequest;
+  res: NextApiResponse;
+  model: RecordModelName;
+  session: Session;
+};
