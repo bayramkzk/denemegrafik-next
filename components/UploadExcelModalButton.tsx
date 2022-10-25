@@ -138,9 +138,9 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
     await mutation.mutateAsync(file);
     setFile(null);
     if (mutation.isSuccess && mutation.data.fulfilledCount !== 0) {
-      queryClient.invalidateQueries([model]);
       close();
     }
+    queryClient.invalidateQueries([model]);
   };
 
   if (!ExcelModels.includes(model)) return null;
