@@ -8,6 +8,7 @@ import {
   NO_STUDENT_FOUND,
   UNAUTHORIZED,
 } from "@/constants/errors";
+import { prisma } from "@/lib/prisma";
 import { postStudentSchema, postTestResultSchema } from "@/schemas/record";
 import { FetchRecordsResponse, ModelRequestContext } from "@/types/response";
 import { validateModelQuery } from "@/utils/model";
