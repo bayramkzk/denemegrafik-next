@@ -74,8 +74,8 @@ export const countSettledPromiseStatuses = <T extends AxiosResponse>(
     (p) => p.status === "fulfilled" && p.value.status === 200
   );
   return {
-    fulfilledCount: statuses.filter(Boolean).length,
-    rejectedCount: statuses.filter(Boolean).length,
+    fulfilledCount: statuses.filter((s) => s).length,
+    rejectedCount: statuses.filter((s) => !s).length,
     totalCount: statuses.length,
     errors: promises
       .filter((p) => p.status === "rejected" || p.value.status !== 200)
@@ -85,6 +85,7 @@ export const countSettledPromiseStatuses = <T extends AxiosResponse>(
 
 export const postStudentExcel = async (file: File) => {
   const students = await readStudentExcel(file);
+  console.log(students);
   const promises = students.map((student) =>
     axiosInstance.post("/api/excels/student", student)
   );
