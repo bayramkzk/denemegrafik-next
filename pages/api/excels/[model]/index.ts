@@ -110,7 +110,7 @@ const postRecord = async (context: ModelRequestContext) => {
     }
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      return res.status(500).json({
+      return context.res.status(500).json({
         success: false,
         error: {
           code: "prisma_error",
@@ -118,7 +118,7 @@ const postRecord = async (context: ModelRequestContext) => {
         },
       });
     }
-    return res.status(500).json(INTERNAL_SERVER_ERROR);
+    return context.res.status(500).json(INTERNAL_SERVER_ERROR);
   }
 };
 
