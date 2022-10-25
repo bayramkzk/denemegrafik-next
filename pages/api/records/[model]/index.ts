@@ -253,16 +253,29 @@ const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
   }
   const context = { req, res, model, session };
 
-  switch (req.method) {
-    case "GET": {
-      return await getRecords(context);
+  try {
+    switch (req.method) {
+      case "GET": {
+        return await getRecords(context);
+      }
+      case "POST": {
+        return await postRecord(context);
+      }
+      case "DELETE": {
+        return await deleteRecord(context);
+      }
     }
-    case "POST": {
-      return await postRecord(context);
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      return res.status(500).json({
+        success: false,
+        error: {
+          code: "prisma_error",
+          message: e.message,
+        },
+      });
     }
-    case "DELETE": {
-      return await deleteRecord(context);
-    }
+    return res.status(500).json(INTERNAL_SERVER_ERROR);
   }
 
   return res.status(405).json(METHOD_NOT_ALLOWED);
