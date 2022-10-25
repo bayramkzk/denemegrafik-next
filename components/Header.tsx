@@ -73,50 +73,60 @@ const Header: React.FC = () => {
         ));
 
         return (
-          <MantineHeader
-            height={HEADER_HEIGHT}
-            p="sm"
-            className={classes.header}
-          >
-            <MediaQuery
-              largerThan={HAMBURGER_BREAKPOINT}
-              styles={{ display: "none" }}
-            >
-              <Burger
-                className={classes.burger}
-                opened={burgerOpened}
-                onClick={burgerHandler.toggle}
-                size="sm"
-                mr="xl"
-              />
-            </MediaQuery>
+          <SessionGuard>
+            {({ user }) => (
+              <MantineHeader
+                height={HEADER_HEIGHT}
+                p="sm"
+                className={classes.header}
+              >
+                {user.role !== "STUDENT" && (
+                  <MediaQuery
+                    largerThan={HAMBURGER_BREAKPOINT}
+                    styles={{ display: "none" }}
+                  >
+                    <Burger
+                      className={classes.burger}
+                      opened={burgerOpened}
+                      onClick={burgerHandler.toggle}
+                      size="sm"
+                      mr="xl"
+                    />
+                  </MediaQuery>
+                )}
 
-            <Group noWrap>
-              <Link href="/" passHref>
-                <a>
-                  <AppLogo size={20} />
-                </a>
-              </Link>
+                <Group noWrap>
+                  <Link href="/" passHref>
+                    <a>
+                      <AppLogo size={20} />
+                    </a>
+                  </Link>
 
-              <Group spacing="xs" className={classes.links} noWrap>
-                {items}
-              </Group>
-            </Group>
+                  <Group spacing="xs" className={classes.links} noWrap>
+                    {items}
+                  </Group>
+                </Group>
 
-            <UserMenu />
+                <UserMenu />
 
-            <Transition
-              transition="pop-top-right"
-              duration={200}
-              mounted={burgerOpened}
-            >
-              {(styles) => (
-                <Paper className={classes.dropdown} withBorder style={styles}>
-                  {items}
-                </Paper>
-              )}
-            </Transition>
-          </MantineHeader>
+                <Transition
+                  transition="pop-top-right"
+                  duration={200}
+                  mounted={burgerOpened}
+                >
+                  {(styles) => (
+                    <Paper
+                      className={classes.dropdown}
+                      withBorder
+                      style={styles}
+                    >
+                      {items}
+                    </Paper>
+                  )}
+                </Transition>
+              </MantineHeader>
+            )}
+          </SessionGuard>
         );
       }}
     </SessionGuard>
