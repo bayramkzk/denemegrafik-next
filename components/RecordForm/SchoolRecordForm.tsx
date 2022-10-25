@@ -1,3 +1,4 @@
+import { RECORD_FORM_ICON_SIZE } from "@/constants/index";
 import { axiosInstance } from "@/lib/axios-instance";
 import { AuthErrorResponse } from "@/types/response";
 import { Button, NumberInput, Stack, Text, TextInput } from "@mantine/core";
@@ -92,7 +93,7 @@ const SchoolRecordForm: React.FC<SchoolRecordFormProps> = ({
           label="Okul ID"
           placeholder="32"
           hideControls
-          icon={<IconIdBadge2 />}
+          icon={<IconIdBadge2 size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("id")}
         />
         <TextInput
@@ -100,7 +101,7 @@ const SchoolRecordForm: React.FC<SchoolRecordFormProps> = ({
           placeholder="Edirne Süleyman Demirel Fen Lisesi"
           withAsterisk
           required
-          icon={<IconLetterCase />}
+          icon={<IconLetterCase size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("name")}
         />
         <DateTimePicker
@@ -120,7 +121,11 @@ const SchoolRecordForm: React.FC<SchoolRecordFormProps> = ({
           color="green"
           type="submit"
           loading={mutation.isLoading}
-          rightIcon={!mutation.isLoading && <IconDeviceFloppy size={20} />}
+          rightIcon={
+            !mutation.isLoading && (
+              <IconDeviceFloppy size={RECORD_FORM_ICON_SIZE} />
+            )
+          }
         >
           {!mutation.isLoading && "Kaydet"}
         </Button>

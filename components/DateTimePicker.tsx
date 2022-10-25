@@ -3,6 +3,7 @@ import { Group, Input } from "@mantine/core";
 import { DatePicker, TimeInput } from "@mantine/dates";
 import { IconCalendar, IconClock } from "@tabler/icons";
 import React from "react";
+import { RECORD_FORM_ICON_SIZE } from "../constants";
 
 export interface DateTimePickerProps {
   label?: string;
@@ -36,12 +37,16 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
         <DatePicker
           placeholder={placeholder}
           sx={{ flexGrow: 1 }}
-          icon={<IconCalendar />}
+          icon={<IconCalendar size={RECORD_FORM_ICON_SIZE} />}
           value={date}
           onChange={updateDate}
         />
 
-        <TimeInput value={time} icon={<IconClock />} onChange={updateTime} />
+        <TimeInput
+          value={time}
+          icon={<IconClock size={RECORD_FORM_ICON_SIZE} />}
+          onChange={updateTime}
+        />
       </Group>
     </Input.Wrapper>
   );

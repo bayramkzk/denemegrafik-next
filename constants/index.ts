@@ -12,6 +12,8 @@ export const HEADER_HEIGHT = 60;
 
 export const CONTAINER_SIZE = "xl";
 
+export const RECORD_FORM_ICON_SIZE = 20;
+
 export const APP_NAME = "denemegrafik";
 
 export const APP_DISPLAY_NAME = "Deneme Grafik";
