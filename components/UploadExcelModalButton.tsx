@@ -21,7 +21,7 @@ import {
   IconFileUpload,
   IconUpload,
 } from "@tabler/icons";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { APP_DISPLAY_NAME } from "../constants";
 
@@ -40,6 +40,7 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
   const theme = useMantineTheme();
   const [opened, { close, open }] = useDisclosure(false);
   const [file, setFile] = useState<File | null>(null);
+  const queryClient = useQueryClient();
   const mutation = useMutation(
     [model],
     model === "student" ? postStudentExcel : postResultExcel
@@ -136,7 +137,10 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
     if (!file) return;
     await mutation.mutateAsync(file);
     setFile(null);
-    if (mutation.isSuccess && mutation.data.fulfilledCount !== 0) close();
+    if (mutation.isSuccess && mutation.data.fulfilledCount !== 0) {
+      queryClient.invalidateQueries([model]);
+      close();
+    }
   };
 
   if (!ExcelModels.includes(model)) return null;
