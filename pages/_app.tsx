@@ -9,6 +9,7 @@ import { useHotkeys } from "@mantine/hooks";
 import { NotificationsProvider } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getCookie, setCookie } from "cookies-next";
+import "dayjs/locale/tr";
 import type { GetServerSidePropsContext } from "next";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
@@ -58,6 +59,7 @@ export default function App(props: AppProps) {
     primaryColor: "primary",
     primaryShade: { light: 6, dark: 8 },
     loader: "dots",
+    datesLocale: "tr",
   };
 
   return (
