@@ -87,7 +87,6 @@ const postStudent = async (context: ModelRequestContext) => {
     });
     return context.res.status(200).json({ success: true, record: student });
   } catch (e) {
-    console.log(e)
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === "P2002") {
         return context.res.status(409).json(DUPLICATE_CITIZEN_ID);
@@ -98,30 +97,16 @@ const postStudent = async (context: ModelRequestContext) => {
 };
 
 const postRecord = async (context: ModelRequestContext) => {
-  try {
-    switch (context.model) {
-      case "testResult": {
-        return await postTestResult(context);
-      }
-      case "student": {
-        return await postStudent(context);
-      }
-      default: {
-        return context.res.status(404).json(INVALID_MODEL_NAME);
-      }
+  switch (context.model) {
+    case "testResult": {
+      return await postTestResult(context);
     }
-  } catch (e) {
-    console.log(e);
-    if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      return context.res.status(500).json({
-        success: false,
-        error: {
-          code: "prisma_error",
-          message: e.message,
-        },
-      });
+    case "student": {
+      return await postStudent(context);
     }
-    return context.res.status(500).json(INTERNAL_SERVER_ERROR);
+    default: {
+      return context.res.status(404).json(INVALID_MODEL_NAME);
+    }
   }
 };
 
