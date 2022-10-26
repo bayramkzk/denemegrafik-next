@@ -229,6 +229,7 @@ const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
         },
       });
     }
+    console.error(e);
     return res.status(500).json(INTERNAL_SERVER_ERROR);
   }
 
