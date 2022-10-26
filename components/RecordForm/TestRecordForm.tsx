@@ -25,7 +25,7 @@ export interface TestRecordFormProps {
   onSubmit: () => void;
 }
 
-export const SCHOOL_NOTIFICATION_ID = "test-record-form";
+export const TEST_NOTIFICATION_ID = "test-record-form";
 
 const TestRecordForm: React.FC<TestRecordFormProps> = ({ data, onSubmit }) => {
   const form = useForm({
@@ -47,7 +47,7 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ data, onSubmit }) => {
 
   const handleSubmit = form.onSubmit(async (values) => {
     showNotification({
-      id: SCHOOL_NOTIFICATION_ID,
+      id: TEST_NOTIFICATION_ID,
       title: "Kaydediliyor...",
       message: "Lütfen bekleyin...",
       color: "blue",
@@ -63,7 +63,7 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ data, onSubmit }) => {
       onSubmit();
 
       updateNotification({
-        id: SCHOOL_NOTIFICATION_ID,
+        id: TEST_NOTIFICATION_ID,
         title: "Kayıt Oluşturuldu",
         message: `${res.data.record.name} denemesi başarıyla oluşturuldu.`,
         color: "green",
@@ -83,7 +83,7 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ data, onSubmit }) => {
         : res.data.error.message;
 
     updateNotification({
-      id: SCHOOL_NOTIFICATION_ID,
+      id: TEST_NOTIFICATION_ID,
       title: "Kayıt Oluşturulamadı",
       message,
       color: "red",

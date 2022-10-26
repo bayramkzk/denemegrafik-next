@@ -28,7 +28,7 @@ export interface StudentRecordFormProps {
   onSubmit: () => void;
 }
 
-export const SCHOOL_NOTIFICATION_ID = "student-record-form";
+export const STUDENT_NOTIFICATION_ID = "student-record-form";
 
 const StudentRecordForm: React.FC<StudentRecordFormProps> = ({
   data,
@@ -57,7 +57,7 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({
 
   const handleSubmit = form.onSubmit(async (values) => {
     showNotification({
-      id: SCHOOL_NOTIFICATION_ID,
+      id: STUDENT_NOTIFICATION_ID,
       title: "Kaydediliyor...",
       message: "Lütfen bekleyin...",
       color: "blue",
@@ -76,7 +76,7 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({
       onSubmit();
 
       updateNotification({
-        id: SCHOOL_NOTIFICATION_ID,
+        id: STUDENT_NOTIFICATION_ID,
         title: "Kayıt Oluşturuldu",
         message: `${res.data.record.name} adlı öğrenci başarıyla oluşturuldu.`,
         color: "green",
@@ -96,7 +96,7 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({
         : res.data.error.message;
 
     updateNotification({
-      id: SCHOOL_NOTIFICATION_ID,
+      id: STUDENT_NOTIFICATION_ID,
       title: "Kayıt Oluşturulamadı",
       message,
       color: "red",

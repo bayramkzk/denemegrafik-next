@@ -37,7 +37,7 @@ export interface AdminRecordFormProps {
   onSubmit: () => void;
 }
 
-export const SCHOOL_NOTIFICATION_ID = "admin-record-form";
+export const ADMIN_NOTIFICATION_ID = "admin-record-form";
 
 const AdminRecordForm: React.FC<AdminRecordFormProps> = ({
   data,
@@ -64,7 +64,7 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({
     if (!values.hash) return;
 
     showNotification({
-      id: SCHOOL_NOTIFICATION_ID,
+      id: ADMIN_NOTIFICATION_ID,
       title: "Kaydediliyor...",
       message: "Lütfen bekleyin...",
       color: "blue",
@@ -82,7 +82,7 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({
 
     if (hashResponse.status !== 200) {
       updateNotification({
-        id: SCHOOL_NOTIFICATION_ID,
+        id: ADMIN_NOTIFICATION_ID,
         title: "Kayıt Oluşturulamadı",
         message: "Şifre oluşturulurken bir hata oluştu.",
         color: "red",
@@ -105,7 +105,7 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({
       onSubmit();
 
       updateNotification({
-        id: SCHOOL_NOTIFICATION_ID,
+        id: ADMIN_NOTIFICATION_ID,
         title: "Kayıt Oluşturuldu",
         message: `${res.data.record.name} adlı yönetici başarıyla oluşturuldu.`,
         color: "green",
@@ -125,7 +125,7 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({
         : res.data.error.message;
 
     updateNotification({
-      id: SCHOOL_NOTIFICATION_ID,
+      id: ADMIN_NOTIFICATION_ID,
       title: "Kayıt Oluşturulamadı",
       message,
       color: "red",

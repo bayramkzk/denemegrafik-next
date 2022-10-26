@@ -34,7 +34,7 @@ export interface ClassRecordFormProps {
   onSubmit: () => void;
 }
 
-export const SCHOOL_NOTIFICATION_ID = "school-record-form";
+export const ADMIN_NOTIFICATION_ID = "school-record-form";
 
 const ClassRecordForm: React.FC<ClassRecordFormProps> = ({
   data,
@@ -57,7 +57,7 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({
 
   const handleSubmit = form.onSubmit(async (values) => {
     showNotification({
-      id: SCHOOL_NOTIFICATION_ID,
+      id: ADMIN_NOTIFICATION_ID,
       title: "Kaydediliyor...",
       message: "Lütfen bekleyin...",
       color: "blue",
@@ -73,7 +73,7 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({
       onSubmit();
 
       updateNotification({
-        id: SCHOOL_NOTIFICATION_ID,
+        id: ADMIN_NOTIFICATION_ID,
         title: "Kayıt Oluşturuldu",
         message: `${stringifyClass(
           res.data.record
@@ -95,7 +95,7 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({
         : res.data.error.message;
 
     updateNotification({
-      id: SCHOOL_NOTIFICATION_ID,
+      id: ADMIN_NOTIFICATION_ID,
       title: "Kayıt Oluşturulamadı",
       message,
       color: "red",
