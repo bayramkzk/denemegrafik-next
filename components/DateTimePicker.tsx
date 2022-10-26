@@ -19,7 +19,6 @@ const DateTimePicker: React.FC<DateTimePickerProps> = ({
   onChange,
 }) => {
   const { time, date } = splitTimeAndDate(value);
-  console.log(time, date);
 
   const updateDate = (updatedDate: Date) => {
     const combined = combineTimeAndDate(time, updatedDate);
