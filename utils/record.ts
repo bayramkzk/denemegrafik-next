@@ -32,7 +32,7 @@ export const findRecordsByModel = async (
     case "class": {
       const classes = await prisma.class.findMany({
         where: constrain({ schoolId: user.schoolId }),
-        include: { _count: true },
+        include: { _count: true, school: true },
       });
       const classesWithCounts = classes.map((cls) => ({
         ...cls,

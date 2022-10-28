@@ -56,6 +56,10 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "ID",
     },
     {
+      accessor: "school.name",
+      title: "Okul Adı",
+    },
+    {
       accessor: "grade",
       title: "Sınıf",
     },
