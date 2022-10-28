@@ -88,6 +88,10 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "ID",
     },
     {
+      accessor: "citizenId",
+      title: "TC Kimlik No",
+    },
+    {
       accessor: "name",
       title: "Ad",
     },
