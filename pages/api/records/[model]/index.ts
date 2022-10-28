@@ -1,4 +1,5 @@
 import {
+  DUPLICATE_CLASS,
   INTERNAL_SERVER_ERROR,
   INVALID_BODY,
   INVALID_MODEL_NAME,
@@ -150,15 +151,21 @@ const postRecord = async (context: ModelRequestContext) => {
       return res.status(200).json({ success: true, record: school });
     }
     case "class": {
+      const schoolId =
+        session.user.role === "ADMIN"
+          ? session.user.schoolId
+          : req.body.schoolId;
+
+      const existingClass = await prisma.class.findFirst({
+        where: { grade: req.body.grade, branch: req.body.branch, schoolId },
+      });
+
+      if (existingClass) {
+        return res.status(400).json(DUPLICATE_CLASS);
+      }
+
       const cls = await prisma.class.create({
-        data: {
-          ...req.body,
-          schoolId:
-            // admin can only create classes in their school
-            session.user.role === "ADMIN"
-              ? session.user.schoolId
-              : req.body.schoolId,
-        },
+        data: { ...req.body, schoolId },
       });
       return res.status(200).json({ success: true, record: cls });
     }

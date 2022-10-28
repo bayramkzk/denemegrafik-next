@@ -54,3 +54,8 @@ export const INVALID_BODY = generateError(
   "invalid_body",
   "Gönderilen HTTP isteğinin gövde yapısı geçersiz."
 );
+
+export const DUPLICATE_CLASS = generateError(
+  "duplicate_class",
+  "Bu sınıf ve şube bilgilerine sahip bir sınıf bu okulda zaten mevcut."
+);
