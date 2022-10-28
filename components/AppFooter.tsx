@@ -38,8 +38,8 @@ export function AppFooter() {
     <div className={classes.footer}>
       <Container className={classes.inner} size={CONTAINER_SIZE}>
         <Text color="dimmed" size="xs">
-          Süleyman Demirel Fen Lisesi öğrencileri tarafından yapılmıştır. Tüm
-          hakları saklıdır.
+          Edirne Süleyman Demirel Fen Lisesi öğrencileri tarafından yapılmıştır.
+          Tüm hakları saklıdır.
         </Text>
 
         <Link
