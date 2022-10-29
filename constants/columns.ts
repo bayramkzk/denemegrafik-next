@@ -1,30 +1,11 @@
 import { RecordModelName } from "@/constants/models";
+import { renderDate, renderDateTime } from "@/utils/renderLocalDate";
 import { DataTableColumn } from "mantine-datatable";
 
 export const columnDefaults: Partial<DataTableColumn<RecordModelName>> = {
   sortable: true,
   ellipsis: true,
   titleSx: { userSelect: "none" },
-};
-
-const renderDateTime = (date: Date) => {
-  return new Date(date).toLocaleString("tr", {
-    weekday: "short",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-  });
-};
-
-const renderDate = (date: Date) => {
-  return new Date(date).toLocaleString("tr", {
-    weekday: "short",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
 };
 
 export const modelToColumnMapWithoutDefaults: Record<
