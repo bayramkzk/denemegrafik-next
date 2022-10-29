@@ -59,3 +59,9 @@ export const DUPLICATE_CLASS = generateError(
   "duplicate_class",
   "Bu sınıf ve şube bilgilerine sahip bir sınıf bu okulda zaten mevcut."
 );
+
+export const REF_DELETE_ERROR = generateError(
+  "ref_delete_error",
+  `Bu kayıt başka bir kayıt tarafından kullanıldığı için silinemez.
+  Lütfen önce bu kayıtla ilişkili diğer kayıtları silin.`
+);

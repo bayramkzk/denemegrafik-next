@@ -4,6 +4,7 @@ import {
   INVALID_BODY,
   INVALID_MODEL_NAME,
   METHOD_NOT_ALLOWED,
+  REF_DELETE_ERROR,
   UNAUTHORIZED,
 } from "@/constants/errors";
 import { prisma } from "@/lib/prisma";
@@ -228,6 +229,12 @@ const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
     }
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2003") {
+        if (req.method === "DELETE") {
+          res.status(404).json(REF_DELETE_ERROR);
+        }
+      }
+
       return res.status(500).json({
         success: false,
         error: {
