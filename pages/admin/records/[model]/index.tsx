@@ -111,9 +111,11 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
               )}
 
               <DataTable
+                key={model}
                 columns={modelToColumnMap[model]}
                 records={sortedRecords}
                 fetching={isLoading}
+                loaderBackgroundBlur={5}
                 minHeight={height / 2}
                 emptyState={
                   <Stack align="center">
