@@ -44,7 +44,11 @@ export const findRecordsByModel = async (
     case "student": {
       const students = await prisma.student.findMany({
         where: constrain({ class: { schoolId: user.schoolId } }),
-        include: { class: true },
+        include: {
+          class: {
+            include: { school: true },
+          },
+        },
       });
       const studentsWithParsedNames = students.map((student) => ({
         ...student,
@@ -57,7 +61,9 @@ export const findRecordsByModel = async (
 
     case "admin": {
       if (user.role !== "SUPERADMIN") return null;
-      const users = await prisma.admin.findMany();
+      const users = await prisma.admin.findMany({
+        include: { school: true },
+      });
       return users;
     }
 

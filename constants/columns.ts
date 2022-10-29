@@ -117,6 +117,10 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "Okul Numarası",
     },
     {
+      accessor: "class.school.name",
+      title: "Okul Adı",
+    },
+    {
       accessor: "createdAt",
       title: "Oluşturulma Tarihi",
       render: (date) => renderDateTime(date.createdAt),
@@ -143,6 +147,12 @@ export const modelToColumnMapWithoutDefaults: Record<
     {
       accessor: "role",
       title: "Kullanıcı Tipi",
+      render: ({ role }) =>
+        role === "SUPERADMIN" ? "Süper Yönetici" : "Yönetici",
+    },
+    {
+      accessor: "school.name",
+      title: "Okul Adı",
     },
     {
       accessor: "createdAt",
