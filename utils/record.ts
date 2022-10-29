@@ -68,9 +68,7 @@ export const findRecordsByModel = async (
     }
 
     case "test": {
-      const tests = await prisma.test.findMany({
-        where: constrain({ schools: { some: { schoolId: user.schoolId } } }),
-      });
+      const tests = await prisma.test.findMany();
       const testsWithSchoolCounts = await prisma.$transaction(
         tests.map((test) =>
           prisma.testResult.findMany({
