@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import ProfileTable from "@/components/ProfileTable";
 import SessionGuard from "@/components/SessionGuard";
 import { prisma } from "@/lib/prisma";
-import { TestResultWithAverage, TestResultWithTest } from "@/types/test";
+import { TestResultWithAverage, TestResultWithTypedTest } from "@/types/test";
 import { Alert, Stack, Text, Title } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons";
 import type { GetServerSideProps, NextPage } from "next";
@@ -72,9 +72,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
 
-  const results: TestResultWithTest[] = await prisma.testResult.findMany({
+  const results: TestResultWithTypedTest[] = await prisma.testResult.findMany({
     where: { studentId: session.user.id },
-    include: { test: true },
+    include: { test: { include: { type: true } } },
   });
 
   const averages = await prisma.$transaction(

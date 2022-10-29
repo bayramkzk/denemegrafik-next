@@ -2,6 +2,7 @@ import { TestResultWithAverage } from "@/types/test";
 import { renderDate } from "@/utils/renderLocalDate";
 import { Card, useMantineTheme } from "@mantine/core";
 import { useElementSize } from "@mantine/hooks";
+import _ from "lodash";
 import React from "react";
 import {
   CartesianGrid,
@@ -41,12 +42,19 @@ const ResultChart: React.FC<ResultChartProps> = ({ results }) => {
       [STUDENT_SCORE_FIELD]: result.score,
       [AVERAGE_SCORE_FIELD]: result.average,
     }));
+  const yAxisMaxRange =
+    _.max(results.map((result) => result.test.type.questionCount)) || 0;
 
   return (
     <Card ref={ref} radius="md" py="lg">
-      <LineChart width={width} height={400} data={data}>
+      <LineChart width={width} height={500} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey={TEST_NAME_FIELD} tick={axisTick} xAxisId={0} />
+        <XAxis
+          dataKey={TEST_NAME_FIELD}
+          tick={axisTick}
+          capHeight={15}
+          xAxisId={0}
+        />
         <XAxis
           axisLine={false}
           tickLine={false}
@@ -55,7 +63,7 @@ const ResultChart: React.FC<ResultChartProps> = ({ results }) => {
           capHeight={8}
           xAxisId={1}
         />
-        <YAxis tick={axisTick} />
+        <YAxis domain={[0, yAxisMaxRange]} tick={axisTick} />
         <Tooltip />
         <Legend />
         <Line

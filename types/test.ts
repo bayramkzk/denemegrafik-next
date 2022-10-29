@@ -1,7 +1,11 @@
-import { Test, TestResult } from "@prisma/client";
+import { Test, TestResult, TestType } from "@prisma/client";
 
-export type TestResultWithTest = TestResult & {
-  test: Test;
+export type TestResultWithTypedTest = TestResult & {
+  test: Test & {
+    type: TestType;
+  };
 };
 
-export type TestResultWithAverage = TestResultWithTest & { average: number };
+export type TestResultWithAverage = TestResultWithTypedTest & {
+  average: number;
+};
