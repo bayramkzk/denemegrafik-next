@@ -60,7 +60,6 @@ model School {
   updatedAt DateTime @updatedAt
 
   classes Class[]
-  tests   TestOnSchool[]
   admins  Admin[]
 }
 
@@ -71,18 +70,7 @@ model Test {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  schools TestOnSchool[]
   results TestResult[]
-}
-
-model TestOnSchool {
-  testId   Int
-  schoolId Int
-
-  test   Test   @relation(fields: [testId], references: [id])
-  school School @relation(fields: [schoolId], references: [id])
-
-  @@id([testId, schoolId])
 }
 
 model TestResult {

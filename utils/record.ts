@@ -64,12 +64,31 @@ export const findRecordsByModel = async (
     case "test": {
       const tests = await prisma.test.findMany({
         where: constrain({ schools: { some: { schoolId: user.schoolId } } }),
-        include: { _count: true },
       });
-      const testsWithCounts = tests.map((test) => ({
+      const testsWithSchoolCounts = await prisma.$transaction(
+        tests.map((test) =>
+          prisma.testResult.findMany({
+            where: { testId: test.id },
+            select: {
+              student: {
+                select: {
+                  class: {
+                    select: { schoolId: true },
+                  },
+                },
+              },
+            },
+          })
+        )
+      );
+      const testsWithCounts = tests.map((test, i) => ({
         ...test,
-        studentCount: test._count.results,
-        schoolCount: test._count.schools,
+        studentCount: testsWithSchoolCounts[i].length,
+        schoolCount: new Set(
+          testsWithSchoolCounts[i].map(
+            (result) => result.student.class.schoolId
+          )
+        ).size,
       }));
       return testsWithCounts;
     }
