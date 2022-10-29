@@ -1,7 +1,14 @@
 import { RECORD_FORM_ICON_SIZE } from "@/constants/index";
 import { axiosInstance } from "@/lib/axios-instance";
 import { AuthErrorResponse } from "@/types/response";
-import { Button, NumberInput, Stack, Text, TextInput } from "@mantine/core";
+import {
+  Button,
+  NumberInput,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
@@ -11,6 +18,7 @@ import {
   IconDeviceFloppy,
   IconIdBadge2,
   IconLetterCase,
+  IconPencil,
 } from "@tabler/icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
@@ -32,6 +40,7 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ data, onSubmit }) => {
     initialValues: data || {
       id: undefined,
       name: undefined,
+      type: undefined,
       date: undefined,
       createdAt: undefined,
       updatedAt: undefined,
@@ -108,6 +117,16 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ data, onSubmit }) => {
           required
           icon={<IconLetterCase size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("name")}
+        />
+        <Select
+          label="Deneme Türü"
+          placeholder="TYT Denemesi"
+          data={[
+            { value: "TYT", label: "TYT Denemesi" },
+            { value: "AYT", label: "AYT Denemesi" },
+          ]}
+          icon={<IconPencil size={RECORD_FORM_ICON_SIZE} />}
+          {...form.getInputProps("type")}
         />
         <DatePicker
           label="Deneme Tarihi"

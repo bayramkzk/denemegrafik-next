@@ -63,13 +63,23 @@ model School {
   admins  Admin[]
 }
 
+model TestType {
+  name          String   @id
+  questionCount Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  Test          Test[]
+}
+
 model Test {
   id        Int      @id @default(autoincrement())
   name      String
+  typeName  String   @default("TYT")
   date      DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  type    TestType     @relation(fields: [typeName], references: [name])
   results TestResult[]
 }
 
