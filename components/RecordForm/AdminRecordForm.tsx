@@ -180,7 +180,7 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({
           {...form.getInputProps("role")}
         />
         <NumberInput
-          label="Okul ID"
+          label="Okul Kodu"
           placeholder="32"
           hideControls
           withAsterisk

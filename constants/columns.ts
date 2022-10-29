@@ -34,7 +34,7 @@ export const modelToColumnMapWithoutDefaults: Record<
   school: [
     {
       accessor: "id",
-      title: "ID",
+      title: "Okul Kodu",
     },
     {
       accessor: "name",

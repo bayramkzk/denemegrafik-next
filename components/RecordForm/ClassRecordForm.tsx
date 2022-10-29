@@ -133,7 +133,7 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({
           />
         </Group>
         <NumberInput
-          label="Okul ID"
+          label="Okul Kodu"
           placeholder="32"
           hideControls
           icon={<IconIdBadge2 size={RECORD_FORM_ICON_SIZE} />}
