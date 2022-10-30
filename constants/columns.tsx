@@ -1,3 +1,4 @@
+import ActionGroup from "@/components/ActionGroup";
 import { RecordModelName } from "@/constants/models";
 import { renderDate, renderDateTime } from "@/utils/renderLocalDate";
 import { DataTableColumn } from "mantine-datatable";
@@ -102,14 +103,11 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "Okul Adı",
     },
     {
-      accessor: "createdAt",
-      title: "Oluşturulma Tarihi",
-      render: (date) => renderDateTime(date.createdAt),
-    },
-    {
-      accessor: "updatedAt",
-      title: "Güncellenme Tarihi",
-      render: (date) => renderDateTime(date.updatedAt),
+      accessor: "actions",
+      title: "İşlemler",
+      render: (row) => (
+        <ActionGroup id={row.id} name={row.name} model="student" />
+      ),
     },
   ],
   admin: [

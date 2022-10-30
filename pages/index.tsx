@@ -1,27 +1,20 @@
 import Layout from "@/components/Layout";
 import ProfileTable from "@/components/ProfileTable";
+import ResultChartStack from "@/components/ResultChartStack";
 import SessionGuard from "@/components/SessionGuard";
 import { prisma } from "@/lib/prisma";
 import { TestResultWithAverage, TestResultWithTypedTest } from "@/types/test";
 import { Alert, Stack, Text, Title } from "@mantine/core";
 import { IconInfoCircle } from "@tabler/icons";
-import _ from "lodash";
 import type { GetServerSideProps, NextPage } from "next";
 import { unstable_getServerSession } from "next-auth";
-import dynamic from "next/dynamic";
 import { authOptions } from "./api/auth/[...nextauth]";
-
-const ResultChart = dynamic(() => import("@/components/ResultChart"), {
-  ssr: false,
-});
 
 export type HomeProps = {
   results: TestResultWithAverage[];
 };
 
 const HomePage: NextPage<HomeProps> = ({ results }) => {
-  const groupedResults = Object.entries(_.groupBy(results, "test.type.name"));
-
   return (
     <SessionGuard allowedRoles={["STUDENT"]}>
       {({ user }) => (
@@ -37,22 +30,12 @@ const HomePage: NextPage<HomeProps> = ({ results }) => {
             <ProfileTable />
 
             <Text>
-              Aşağıdaki {groupedResults.length === 1 ? "grafigi" : "grafikleri"}{" "}
-              inceleyerek deneme sonuçlarının zaman içinde nasıl değiştiğini
-              görebilirsin ve kendi sonuçlarını ortalama ile
-              karşılaştırabilirsin.
+              Aşağıdaki grafik değerlerini inceleyerek deneme sonuçlarının zaman
+              içinde nasıl değiştiğini görebilirsin ve kendi sonuçlarını
+              ortalama ile karşılaştırabilirsin.
             </Text>
 
-            {groupedResults.map(([testType, testResults]) => (
-              <>
-                <Title order={2}>{testType} Deneme Sınavları Sonuçları</Title>
-
-                <ResultChart
-                  key={testType}
-                  results={testResults as TestResultWithAverage[]}
-                />
-              </>
-            ))}
+            <ResultChartStack results={results} />
           </Stack>
         </Layout>
       )}

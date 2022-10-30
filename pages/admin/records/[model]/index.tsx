@@ -37,7 +37,7 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
   );
   const [selectedRecords, setSelectedRecords] = useState<ModelRecord[]>([]);
   const [query, setQuery] = useState("");
-  const [debouncedQuery] = useDebouncedValue(query, 200);
+  const [debouncedQuery] = useDebouncedValue(query, 1000);
 
   useEffect(() => setSelectedRecords([]), [model, records]);
 
