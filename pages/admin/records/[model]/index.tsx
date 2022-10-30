@@ -10,7 +10,7 @@ import {
 } from "@/constants/models";
 import { useRecords } from "@/hooks/use-records";
 import { validateModelQuery } from "@/utils/model";
-import { ModelRecord, ModelRecords } from "@/utils/record";
+import { ModelRecord } from "@/utils/record";
 import { Grid, Group, Stack, Text, TextInput, Title } from "@mantine/core";
 import { useDebouncedValue, useViewportSize } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
@@ -18,45 +18,60 @@ import { IconDatabaseOff, IconSearch } from "@tabler/icons";
 import sortBy from "lodash/sortBy";
 import { DataTable, DataTableSortStatus } from "mantine-datatable";
 import { GetServerSideProps, NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export type RecordsPageProps = {
   model: RecordModelName;
 };
 
+const PAGE_SIZE = 20;
+
 const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
   const title = RecordModelPluralDisplayNames[model];
   const { height } = useViewportSize();
-  const { records, isLoading, error } = useRecords(model);
+
+  const [query, setQuery] = useState("");
+  const [debouncedQuery] = useDebouncedValue(query, 1000);
+
+  const [page, setPage] = useState(1);
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus>({
     columnAccessor: "id",
     direction: "asc",
   });
-  const [sortedRecords, setRecords] = useState(() =>
-    sortBy(records, sortStatus.columnAccessor)
-  );
   const [selectedRecords, setSelectedRecords] = useState<ModelRecord[]>([]);
-  const [query, setQuery] = useState("");
-  const [debouncedQuery] = useDebouncedValue(query, 1000);
 
-  useEffect(() => setSelectedRecords([]), [model, records]);
+  const { records, isLoading, error } = useRecords(model);
+  const filteredRecords = useMemo(() => {
+    if (!records) return null;
+    return records
+      .map((record) => record as ModelRecord)
+      .filter((record) =>
+        debouncedQuery
+          .split(" ")
+          .filter(Boolean)
+          .every((q) =>
+            JSON.stringify(record).toLowerCase().includes(q.toLowerCase())
+          )
+      );
+  }, [records, debouncedQuery]);
+  const pageRecords = useMemo(() => {
+    if (!filteredRecords) return null;
+    return filteredRecords.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  }, [filteredRecords, page]);
+  const sortedRecords = useMemo(() => {
+    if (!pageRecords) return null;
+    const updatedRecords = sortBy(pageRecords, sortStatus.columnAccessor);
+    if (sortStatus.direction === "desc") updatedRecords.reverse();
+    return updatedRecords;
+  }, [pageRecords, sortStatus]);
 
   useEffect(() => {
-    if (records) {
-      const filtered = records
-        .map((record) => record as ModelRecord)
-        .filter((record) =>
-          Object.values(record).some((value) =>
-            String(value)
-              .toLowerCase()
-              .trim()
-              .includes(debouncedQuery.toLowerCase().trim())
-          )
-        ) as ModelRecords;
-      const sorted = sortBy(filtered, sortStatus.columnAccessor);
-      setRecords(sortStatus.direction === "desc" ? sorted.reverse() : sorted);
-    }
-  }, [sortStatus, records, debouncedQuery]);
+    setSelectedRecords([]);
+    setQuery("");
+    setPage(1);
+  }, [model, records]);
+
+  useEffect(() => setPage(1), [debouncedQuery]);
 
   useEffect(() => {
     if (error) {
@@ -113,10 +128,10 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
               <DataTable
                 key={model}
                 columns={modelToColumnMap[model]}
-                records={sortedRecords}
+                records={sortedRecords || []}
                 fetching={isLoading}
                 loaderBackgroundBlur={5}
-                minHeight={height / 2}
+                height={height - 300}
                 emptyState={
                   <Stack align="center">
                     <IconDatabaseOff size={40} />
@@ -129,6 +144,10 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
                 onSelectedRecordsChange={(records) =>
                   setSelectedRecords(records as ModelRecord[])
                 }
+                totalRecords={filteredRecords?.length}
+                recordsPerPage={PAGE_SIZE}
+                page={page}
+                onPageChange={(p) => setPage(p)}
               />
             </Stack>
           </Stack>
