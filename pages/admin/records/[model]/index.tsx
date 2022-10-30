@@ -47,7 +47,7 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
       .map((record) => record as ModelRecord)
       .filter((record) =>
         debouncedQuery
-          .split(" ")
+          .split(", ")
           .filter(Boolean)
           .every((q) =>
             JSON.stringify(record).toLowerCase().includes(q.toLowerCase())
@@ -94,7 +94,7 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
             <Grid grow gutter={8}>
               <Grid.Col span={12} sm={6} md={8}>
                 <TextInput
-                  placeholder={`${title} arasında ara...`}
+                  placeholder={`${title} arasında anahtar kelimeleri virgülle ayırarak arama yapın... (Örn: "ahmet, 9 / E")`}
                   value={query}
                   icon={<IconSearch size={16} />}
                   onChange={(event) => setQuery(event.target.value)}
