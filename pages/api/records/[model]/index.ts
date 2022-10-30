@@ -113,7 +113,7 @@ const deleteRecord = async (context: ModelRequestContext) => {
             where: {
               testId_studentId: {
                 testId: id.testId,
-                studentId: id.testId,
+                studentId: id.studentId,
               },
             },
           })
