@@ -27,17 +27,19 @@ export const readExcel = async (file: File) => {
 
 export const readResultExcel = async (
   file: File
-): Promise<PostTestResult[]> => {
+): Promise<Omit<PostTestResult, "testId">[]> => {
   const ws = await readExcel(file);
   return ws
     .getSheetValues()
     .slice(EXCELJS_MARGIN + 1) // skip header
-    .map((row) => {
+    .filter((row) => {
       if (!(row instanceof Array)) throw new Error("Invalid excel file");
-      const [testId, studentCode, score] = row
-        .slice(EXCELJS_MARGIN)
-        .map(Number);
-      return { testId, studentCode, score };
+      return row && row.filter(Boolean).length > 0;
+    })
+    .map((unknownRow) => {
+      const row = unknownRow as string[];
+      const [studentCode, score] = row.slice(EXCELJS_MARGIN).map(Number);
+      return { studentCode, score };
     });
 };
 
@@ -46,8 +48,12 @@ export const readStudentExcel = async (file: File): Promise<PostStudent[]> => {
   return ws
     .getSheetValues()
     .slice(EXCELJS_MARGIN + 1) // skip header
-    .map((row) => {
+    .filter((row) => {
       if (!(row instanceof Array)) throw new Error("Invalid excel file");
+      return row && row.filter(Boolean).length > 0;
+    })
+    .map((unknownRow) => {
+      const row = unknownRow as string[];
       const [rawName, surname, citizenId, code, rawGrade, rawBranch] = row
         .slice(EXCELJS_MARGIN)
         .map(String);
@@ -93,11 +99,16 @@ export const postStudentExcel = async (file: File) => {
   return countSettledPromiseStatuses(results);
 };
 
-export const postResultExcel = async (file: File) => {
-  const testResults = await readResultExcel(file);
-  const promises = testResults.map((testResult) =>
-    axiosInstance.post("/api/excels/testResult", testResult)
-  );
-  const promiseResults = await Promise.allSettled(promises);
-  return countSettledPromiseStatuses(promiseResults);
-};
+export const postResultExcel =
+  (testId: number | null) => async (file: File) => {
+    if (testId === null) throw new Error("Deneme ID'si boş bırakılamaz!");
+    const testResults = await readResultExcel(file);
+    const promises = testResults.map((testResult) =>
+      axiosInstance.post("/api/excels/testResult", {
+        ...testResult,
+        testId,
+      })
+    );
+    const promiseResults = await Promise.allSettled(promises);
+    return countSettledPromiseStatuses(promiseResults);
+  };

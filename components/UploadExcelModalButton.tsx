@@ -2,11 +2,13 @@ import {
   RecordModelName,
   RecordModelPluralDisplayNames,
 } from "@/constants/models";
+import { axiosInstance } from "@/lib/axios-instance";
 import { postResultExcel, postStudentExcel } from "@/utils/excel";
 import {
   Button,
   FileInput,
   Modal,
+  Select,
   Stack,
   Text,
   Title,
@@ -15,6 +17,7 @@ import {
 import { MS_EXCEL_MIME_TYPE } from "@mantine/dropzone";
 import { useDisclosure } from "@mantine/hooks";
 import { showNotification, updateNotification } from "@mantine/notifications";
+import { Test } from "@prisma/client";
 import {
   IconFileAnalytics,
   IconFileDownload,
@@ -40,16 +43,38 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
   const theme = useMantineTheme();
   const [opened, { close, open }] = useDisclosure(false);
   const [file, setFile] = useState<File | null>(null);
+  const [testId, setTestId] = useState<number | null>(null);
+  const [tests, setTests] = useState<Test[]>([]);
   const queryClient = useQueryClient();
   const mutation = useMutation(
     [model],
-    model === "student" ? postStudentExcel : postResultExcel
+    model === "student" ? postStudentExcel : postResultExcel(testId)
   );
   const [hasUploaded, setHasUploaded] = useState(false);
 
   const excelFileHref = `/example-${model}s.xlsx`;
   const modelDisplayName = RecordModelPluralDisplayNames[model];
   const excelFileDownloadName = `${APP_DISPLAY_NAME} ${modelDisplayName} Örnek Excel.xlsx`;
+
+  // get tests for testResult model
+  useEffect(() => {
+    if (model === "testResult") {
+      axiosInstance
+        .get("/api/records/test")
+        .then((res) => {
+          setTests(res.data.records);
+        })
+        .catch((err) => {
+          showNotification({
+            title: "Deneme sınavları alınamadı",
+            message: JSON.stringify(err),
+            color: "red",
+            icon: <IconFileAnalytics />,
+          });
+          console.error(err);
+        });
+    }
+  }, [model]);
 
   useEffect(() => {
     // prevent multiple notifications
@@ -193,6 +218,19 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
 
           <form onSubmit={handleSubmit}>
             <Stack>
+              {model === "testResult" && (
+                <Select
+                  label="Deneme Sınavı"
+                  placeholder="ÇAP TYT 1"
+                  data={tests.map((test) => ({
+                    label: test.name,
+                    value: String(test.id),
+                  }))}
+                  value={String(testId)}
+                  onChange={(v) => setTestId(v == null ? null : Number(v))}
+                />
+              )}
+
               <FileInput
                 accept={MS_EXCEL_MIME_TYPE.join(",")}
                 icon={<IconFileAnalytics size={20} />}
@@ -211,7 +249,7 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
                 fullWidth
                 rightIcon={!mutation.isLoading && <IconUpload size={20} />}
                 loading={mutation.isLoading}
-                disabled={mutation.isLoading || !file}
+                disabled={mutation.isLoading || !file || !testId}
               >
                 {!mutation.isLoading && "Yükle"}
               </Button>
