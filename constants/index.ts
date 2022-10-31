@@ -10,7 +10,7 @@ export const PASSWORD_SALT_OR_ROUNDS = 10;
 
 export const HEADER_HEIGHT = 60;
 
-export const CONTAINER_SIZE = "xl";
+export const CONTAINER_SIZE = 1500;
 
 export const RECORD_FORM_ICON_SIZE = 20;
 

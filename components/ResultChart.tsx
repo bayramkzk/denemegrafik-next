@@ -19,7 +19,7 @@ const TEST_DATE_FIELD = "Deneme Tarihi";
 const STUDENT_SCORE_FIELD = "Öğrenci Puanı";
 const AVERAGE_SCORE_FIELD = "Ortalama Puan";
 
-const STROKE_WIDTH = 2;
+const STROKE_WIDTH = 3;
 
 export interface ResultChartProps {
   results: TestResultWithAverage[];
@@ -69,13 +69,13 @@ const ResultChart: React.FC<ResultChartProps> = ({ results }) => {
         <Line
           type="monotone"
           dataKey={STUDENT_SCORE_FIELD}
-          stroke="#8884d8"
+          stroke="#4f3"
           strokeWidth={STROKE_WIDTH}
         />
         <Line
           type="monotone"
           dataKey={AVERAGE_SCORE_FIELD}
-          stroke="#82ca9d"
+          stroke="#f34"
           strokeWidth={STROKE_WIDTH}
         />
       </LineChart>
