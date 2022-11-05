@@ -106,7 +106,25 @@ const deleteRecord = async (context: ModelRequestContext) => {
         const [testId, studentId] = id.split("-").map((id) => parseInt(id));
         return { testId, studentId };
       });
-      // FIXME: admins can delete any test result
+
+      const testResultsToCheck = await prisma.testResult.aggregate({
+        where: {
+          AND: [
+            { testId: { in: ids.map((id) => id.testId) } },
+            { studentId: { in: ids.map((id) => id.studentId) } },
+            {
+              student: { class: { schoolId: context.session.user.schoolId } },
+            },
+          ],
+        },
+        _count: true,
+      });
+
+      // check if the user is trying to delete test results from other schools
+      if (testResultsToCheck._count !== ids.length) {
+        return context.res.status(401).json(UNAUTHORIZED);
+      }
+
       const testResults = await prisma.$transaction(
         ids.map((id) =>
           prisma.testResult.delete({
