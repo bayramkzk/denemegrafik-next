@@ -53,8 +53,8 @@ export const findRecordsByModel = async (
       const studentsWithParsedNames = students.map((student) => ({
         ...student,
         className: stringifyClass(student.class),
-        name: parseFirstName(student.name),
-        surname: parseLastName(student.name),
+        firstName: parseFirstName(student.name),
+        lastName: parseLastName(student.name),
       }));
       return studentsWithParsedNames;
     }

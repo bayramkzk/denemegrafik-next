@@ -40,6 +40,12 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "Güncellenme Tarihi",
       render: (date) => renderDateTime(date.updatedAt),
     },
+    {
+      accessor: "actions",
+      sortable: false,
+      title: "İşlemler",
+      render: (row) => <ActionGroup data={row} id={row.id} model="school" />,
+    },
   ],
   class: [
     {
@@ -72,6 +78,12 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "Güncellenme Tarihi",
       render: (date) => renderDateTime(date.updatedAt),
     },
+    {
+      accessor: "actions",
+      sortable: false,
+      title: "İşlemler",
+      render: (row) => <ActionGroup data={row} id={row.id} model="class" />,
+    },
   ],
   student: [
     {
@@ -83,11 +95,11 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "TC Kimlik No",
     },
     {
-      accessor: "name",
+      accessor: "firstName",
       title: "Ad",
     },
     {
-      accessor: "surname",
+      accessor: "lastName",
       title: "Soyad",
     },
     {
@@ -96,17 +108,28 @@ export const modelToColumnMapWithoutDefaults: Record<
     },
     {
       accessor: "code",
-      title: "Okul Numarası",
+      title: "Okul No",
     },
     {
       accessor: "class.school.name",
       title: "Okul Adı",
     },
     {
+      accessor: "createdAt",
+      title: "Oluşturulma Tarihi",
+      render: (date) => renderDateTime(date.createdAt),
+    },
+    {
+      accessor: "updatedAt",
+      title: "Güncellenme Tarihi",
+      render: (date) => renderDateTime(date.updatedAt),
+    },
+    {
       accessor: "actions",
+      sortable: false,
       title: "İşlemler",
       render: (row) => (
-        <ActionGroup id={row.id} name={row.name} model="student" />
+        <ActionGroup data={row} id={row.id} name={row.name} model="student" />
       ),
     },
   ],
@@ -142,6 +165,12 @@ export const modelToColumnMapWithoutDefaults: Record<
       accessor: "updatedAt",
       title: "Güncellenme Tarihi",
       render: (date) => renderDateTime(date.updatedAt),
+    },
+    {
+      accessor: "actions",
+      sortable: false,
+      title: "İşlemler",
+      render: (row) => <ActionGroup data={row} id={row.id} model="admin" />,
     },
   ],
   test: [
@@ -180,6 +209,12 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "Güncellenme Tarihi",
       render: (date) => renderDateTime(date.updatedAt),
     },
+    {
+      accessor: "actions",
+      sortable: false,
+      title: "İşlemler",
+      render: (row) => <ActionGroup data={row} id={row.id} model="test" />,
+    },
   ],
   testResult: [
     {
@@ -203,6 +238,14 @@ export const modelToColumnMapWithoutDefaults: Record<
       accessor: "updatedAt",
       title: "Güncellenme Tarihi",
       render: (date) => renderDateTime(date.updatedAt),
+    },
+    {
+      accessor: "actions",
+      sortable: false,
+      title: "İşlemler",
+      render: (row) => (
+        <ActionGroup data={row} id={row.id} model="testResult" />
+      ),
     },
   ],
 };
