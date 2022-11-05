@@ -45,12 +45,12 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({ edit }) => {
       id: undefined,
       name: undefined,
       username: undefined,
-      hash: undefined,
       role: undefined,
       schoolId: undefined,
       createdAt: undefined,
       updatedAt: undefined,
       ...edit?.data,
+      hash: undefined,
     } as {
       id?: number;
       name?: string;
@@ -74,7 +74,7 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({ edit }) => {
 
   React.useEffect(() => {
     if (edit && lastEdit.current !== edit) {
-      form.setValues(edit.data);
+      form.setValues({ ...edit.data, hash: undefined });
       lastEdit.current = edit;
     }
   }, [edit, form]);
@@ -94,9 +94,7 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({ edit }) => {
 
     const hashResponse = await axiosInstance.post<{ hash: string }>(
       "/api/hash",
-      {
-        password: values.hash,
-      }
+      { password: values.hash }
     );
 
     if (hashResponse.status !== 200) {
@@ -111,8 +109,6 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({ edit }) => {
       });
       return;
     }
-
-    console.log(hashResponse.data.hash, values);
 
     const res = await mutation.mutateAsync({
       ...values,
