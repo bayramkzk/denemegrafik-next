@@ -251,7 +251,11 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
                 fullWidth
                 rightIcon={!mutation.isLoading && <IconUpload size={20} />}
                 loading={mutation.isLoading}
-                disabled={mutation.isLoading || !file || !testId}
+                disabled={
+                  mutation.isLoading ||
+                  !file ||
+                  (model === "testResult" && !testId)
+                }
               >
                 {!mutation.isLoading && "Yükle"}
               </Button>
