@@ -37,6 +37,8 @@ const RecordDrawer: React.FC<RecordDrawerProps> = ({
   onClose,
   edit,
 }) => {
+  const RecordForm = RecordFormMap[model];
+
   return (
     <Drawer
       opened={opened}
@@ -50,7 +52,7 @@ const RecordDrawer: React.FC<RecordDrawerProps> = ({
       padding="xl"
       size="xl"
     >
-      {RecordFormMap[model]({ edit })}
+      <RecordForm edit={edit} />
     </Drawer>
   );
 };

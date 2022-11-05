@@ -59,8 +59,6 @@ const TestResultRecordForm: React.FC<TestResultRecordFormProps> = ({
     }
   }, [edit, form]);
 
-  // TODO: clean form state between multiple forms
-
   const handleSubmit = form.onSubmit(async (values) => {
     showNotification({
       id: TEST_RESULT_NOTIFICATION_ID,
