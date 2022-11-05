@@ -1,10 +1,18 @@
-import { INVALID_BODY } from "@/constants/errors";
+import { INVALID_BODY, UNAUTHORIZED } from "@/constants/errors";
 import { prisma } from "@/lib/prisma";
 import { TestResultWithAverage, TestResultWithTypedTest } from "@/types/test";
 import type { NextApiHandler } from "next";
+import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 const handler: NextApiHandler = async (req, res) => {
-  // FIXME: anybody can access this endpoint
+  const user = await unstable_getServerSession(req, res, authOptions);
+  if (
+    !user ||
+    (user.user.role === "STUDENT" && String(user.user.id) !== req.query.id)
+  ) {
+    return res.status(401).json(UNAUTHORIZED);
+  }
 
   const id = Number(req.query.id);
   if (!Number.isInteger(id)) return res.status(400).json(INVALID_BODY);
