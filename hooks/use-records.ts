@@ -11,7 +11,9 @@ export const useRecords = (model: string) => {
         if (res.data.success) {
           return res.data.records;
         }
-        throw new Error(res.data.error.message);
+        throw new Error(
+          res.data?.error?.message || "Bilinmeyen bir hata oluştu"
+        );
       })
   );
   return { records: data, ...query };

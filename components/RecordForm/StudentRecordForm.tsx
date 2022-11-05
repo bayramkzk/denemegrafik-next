@@ -116,7 +116,7 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({ edit }) => {
         ? res.data.error
             .map((error) => `👉 ${error.message}`)
             .map((message) => <Text key={message}>{message}</Text>)
-        : res.data.error.message;
+        : res.data?.error?.message || "Bilinmeyen bir hata oluştu";
 
     updateNotification({
       id: STUDENT_NOTIFICATION_ID,
