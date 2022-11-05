@@ -77,8 +77,8 @@ const ActionGroup: React.FC<ActionGroupProps> = ({ model, data, name, id }) => {
             gibidir:
           </Text>
 
-          {graphModal?.results ? (
-            <ResultChartStack results={graphModal.results} />
+          {graphModal?.results && name ? (
+            <ResultChartStack results={graphModal.results} studentName={name} />
           ) : (
             <Loader width="100%" my="xl" />
           )}

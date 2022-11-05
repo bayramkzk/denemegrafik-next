@@ -35,7 +35,7 @@ const HomePage: NextPage<HomeProps> = ({ results }) => {
               ortalama ile karşılaştırabilirsin.
             </Text>
 
-            <ResultChartStack results={results} />
+            <ResultChartStack results={results} studentName={user.name} />
           </Stack>
         </Layout>
       )}

@@ -13,9 +13,13 @@ const ResultChart = dynamic(() => import("@/components/ResultChart"), {
 
 export interface ResultGraphStackProps {
   results: TestResultWithAverage[];
+  studentName: string;
 }
 
-const ResultChartStack: React.FC<ResultGraphStackProps> = ({ results }) => {
+const ResultChartStack: React.FC<ResultGraphStackProps> = ({
+  results,
+  studentName,
+}) => {
   const printRef = useRef(null);
   const groupedResults = Object.entries(_.groupBy(results, "test.type.name"));
 
@@ -27,6 +31,22 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({ results }) => {
         // FIXME: this is a hack to make the chart fit the page
         sx={{ "@media print": { zoom: "70%" } }}
       >
+        <Title
+          order={2}
+          sx={{
+            display: "none",
+            "@media print": {
+              display: "block",
+              textAlign: "center",
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+              marginTop: "1rem",
+            },
+          }}
+        >
+          {studentName} Öğrencisinin Deneme Sonuçları
+        </Title>
+
         {groupedResults.map(([testType, testResults]) => (
           <Stack key={testType}>
             <Title order={3} p="md">
