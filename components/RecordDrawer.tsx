@@ -46,7 +46,7 @@ const RecordDrawer: React.FC<RecordDrawerProps> = ({
       title={
         <Title order={2}>
           {RecordModelPluralDisplayNames[model]}{" "}
-          {edit === null ? "için Kayıt Oluştur" : "içinden Kayıt Düzenle"}
+          {edit ? "içinden Kayıt Düzenle" : "için Kayıt Oluştur"}
         </Title>
       }
       padding="xl"
