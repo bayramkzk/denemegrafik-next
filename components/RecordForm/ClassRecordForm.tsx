@@ -1,5 +1,6 @@
 import { RECORD_FORM_ICON_SIZE } from "@/constants/index";
 import { axiosInstance } from "@/lib/axios-instance";
+import { RecordDrawerEditProps } from "@/types/edit";
 import { AuthErrorResponse } from "@/types/response";
 import { stringifyClass } from "@/utils/user";
 import {
@@ -30,30 +31,46 @@ export type ClassResponse =
   | AuthErrorResponse;
 
 export interface ClassRecordFormProps {
-  data?: ClassRecordData;
-  onSubmit: () => void;
+  edit?: RecordDrawerEditProps;
 }
 
 export const ADMIN_NOTIFICATION_ID = "school-record-form";
 
-const ClassRecordForm: React.FC<ClassRecordFormProps> = ({
-  data,
-  onSubmit,
-}) => {
+const ClassRecordForm: React.FC<ClassRecordFormProps> = ({ edit }) => {
   const form = useForm({
-    initialValues: data || {
+    initialValues: {
       id: undefined,
       grade: undefined,
       branch: undefined,
       schoolId: undefined,
       createdAt: undefined,
       updatedAt: undefined,
+      ...edit?.data,
+    } as {
+      id?: number;
+      grade?: number;
+      branch?: string;
+      schoolId?: number;
+      createdAt?: Date;
+      updatedAt?: Date;
     },
   });
   const mutation = useMutation(["class"], (values: ClassRecordData) =>
-    axiosInstance.post<ClassResponse>("/api/records/class", values)
+    axiosInstance.request<ClassResponse>({
+      method: edit ? "PATCH" : "POST",
+      url: "/api/records/class" + (edit ? `/${edit.data.id}` : ""),
+      data: values,
+    })
   );
   const queryClient = useQueryClient();
+  const lastEdit = React.useRef(edit);
+
+  React.useEffect(() => {
+    if (edit && lastEdit.current !== edit) {
+      form.setValues(edit.data);
+      lastEdit.current = edit;
+    }
+  }, [edit, form]);
 
   const handleSubmit = form.onSubmit(async (values) => {
     showNotification({
@@ -70,14 +87,14 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({
 
     if (res.data.success) {
       form.reset();
-      onSubmit();
+      await edit?.onSubmit(res.data);
 
       updateNotification({
         id: ADMIN_NOTIFICATION_ID,
-        title: "Kayıt Oluşturuldu",
-        message: `${stringifyClass(
-          res.data.record
-        )} sınıfı başarıyla oluşturuldu.`,
+        title: "Kayıt " + (edit ? "Düzenlendi" : "Oluşturuldu"),
+        message: `${stringifyClass(res.data.record)} sınıfı başarıyla ${
+          edit ? "düzenlendi" : "oluşturuldu"
+        }.`,
         color: "green",
         icon: <IconDeviceFloppy size={24} />,
       });
@@ -96,7 +113,7 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({
 
     updateNotification({
       id: ADMIN_NOTIFICATION_ID,
-      title: "Kayıt Oluşturulamadı",
+      title: "Kayıt " + (edit ? "Düzenlenemedi" : "Oluşturulamadı"),
       message,
       color: "red",
       icon: <IconDeviceFloppy size={24} />,

@@ -2,6 +2,7 @@ import {
   RecordModelName,
   RecordModelPluralDisplayNames,
 } from "@/constants/models";
+import { RecordDrawerEditProps } from "@/types/edit";
 import { Drawer, Title } from "@mantine/core";
 import React from "react";
 import AdminRecordForm from "./RecordForm/AdminRecordForm";
@@ -13,7 +14,7 @@ import TestResultRecordForm from "./RecordForm/TestResultRecordForm";
 
 const RecordFormMap: Record<
   RecordModelName,
-  React.FC<{ onSubmit: () => void }>
+  React.FC<{ edit?: RecordDrawerEditProps }>
 > = {
   school: SchoolRecordForm,
   class: ClassRecordForm,
@@ -27,12 +28,14 @@ export interface RecordDrawerProps {
   model: RecordModelName;
   opened: boolean;
   onClose: () => void;
+  edit?: RecordDrawerEditProps;
 }
 
 const RecordDrawer: React.FC<RecordDrawerProps> = ({
   model,
   opened,
   onClose,
+  edit,
 }) => {
   return (
     <Drawer
@@ -40,13 +43,14 @@ const RecordDrawer: React.FC<RecordDrawerProps> = ({
       onClose={onClose}
       title={
         <Title order={2}>
-          {RecordModelPluralDisplayNames[model]} için Kayıt Oluştur
+          {RecordModelPluralDisplayNames[model]}{" "}
+          {edit === null ? "için Kayıt Oluştur" : "içinden Kayıt Düzenle"}
         </Title>
       }
       padding="xl"
       size="xl"
     >
-      {RecordFormMap[model]({ onSubmit: onClose })}
+      {RecordFormMap[model]({ edit })}
     </Drawer>
   );
 };

@@ -1,5 +1,6 @@
 import { CITIZEN_ID_LENGTH, RECORD_FORM_ICON_SIZE } from "@/constants/index";
 import { axiosInstance } from "@/lib/axios-instance";
+import { RecordDrawerEditProps } from "@/types/edit";
 import { AuthErrorResponse } from "@/types/response";
 import { Button, NumberInput, Stack, Text, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -24,18 +25,14 @@ export type StudentResponse =
   | AuthErrorResponse;
 
 export interface StudentRecordFormProps {
-  data?: StudentRecordData;
-  onSubmit: () => void;
+  edit?: RecordDrawerEditProps;
 }
 
 export const STUDENT_NOTIFICATION_ID = "student-record-form";
 
-const StudentRecordForm: React.FC<StudentRecordFormProps> = ({
-  data,
-  onSubmit,
-}) => {
+const StudentRecordForm: React.FC<StudentRecordFormProps> = ({ edit }) => {
   const form = useForm({
-    initialValues: data || {
+    initialValues: {
       id: undefined,
       name: undefined,
       citizenId: undefined,
@@ -43,17 +40,41 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({
       code: undefined,
       createdAt: undefined,
       updatedAt: undefined,
+      ...edit?.data,
+    } as {
+      id?: number;
+      name?: string;
+      citizenId?: string;
+      classId?: number;
+      code?: number;
+      createdAt?: Date;
+      updatedAt?: Date;
     },
     validate: (values) => ({
       citizenId:
-        String(values.citizenId).length !== CITIZEN_ID_LENGTH &&
-        `TC Kimlik Numarası ${CITIZEN_ID_LENGTH} haneli olmalıdır!`,
+        String(values.citizenId).length !== CITIZEN_ID_LENGTH
+          ? `TC Kimlik Numarası ${CITIZEN_ID_LENGTH} haneli olmalıdır!`
+          : /\D/.test(String(values.citizenId))
+          ? "TC Kimlik Numarası sadece rakamlardan oluşmalıdır!"
+          : undefined,
     }),
   });
   const mutation = useMutation(["student"], (values: StudentRecordData) =>
-    axiosInstance.post<StudentResponse>("/api/records/student", values)
+    axiosInstance.request<StudentResponse>({
+      method: edit ? "PATCH" : "POST",
+      url: "/api/records/student" + (edit ? `/${edit.data.id}` : ""),
+      data: values,
+    })
   );
   const queryClient = useQueryClient();
+  const lastEdit = React.useRef(edit);
+
+  React.useEffect(() => {
+    if (edit && lastEdit.current !== edit) {
+      form.setValues(edit.data);
+      lastEdit.current = edit;
+    }
+  }, [edit, form]);
 
   const handleSubmit = form.onSubmit(async (values) => {
     showNotification({
@@ -73,12 +94,14 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({
 
     if (res.data.success) {
       form.reset();
-      onSubmit();
+      await edit?.onSubmit(res.data);
 
       updateNotification({
         id: STUDENT_NOTIFICATION_ID,
-        title: "Kayıt Oluşturuldu",
-        message: `${res.data.record.name} adlı öğrenci başarıyla oluşturuldu.`,
+        title: "Kayıt " + (edit ? "Düzenlendi" : "Oluşturuldu"),
+        message: `${res.data.record.name} adlı öğrenci başarıyla ${
+          edit ? "düzenlendi" : "oluşturuldu"
+        }.`,
         color: "green",
         icon: <IconDeviceFloppy size={24} />,
       });
@@ -97,7 +120,7 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({
 
     updateNotification({
       id: STUDENT_NOTIFICATION_ID,
-      title: "Kayıt Oluşturulamadı",
+      title: "Kayıt " + (edit ? "Düzenlenemedi" : "Oluşturulamadı"),
       message,
       color: "red",
       icon: <IconDeviceFloppy size={24} />,
@@ -122,16 +145,14 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({
           icon={<IconLetterCase size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("name")}
         />
-        <NumberInput
+        <TextInput
           label="Öğrenci TC Kimlik Numarası"
           placeholder="12345678901"
           withAsterisk
           required
-          hideControls
           icon={<IconIdBadge size={RECORD_FORM_ICON_SIZE} />}
           maxLength={CITIZEN_ID_LENGTH}
           minLength={CITIZEN_ID_LENGTH}
-          formatter={(value) => value?.replace(/\D/g, "")}
           {...form.getInputProps("citizenId")}
         />
         <NumberInput

@@ -228,6 +228,8 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
                   }))}
                   value={String(testId)}
                   onChange={(v) => setTestId(v == null ? null : Number(v))}
+                  required
+                  withAsterisk
                 />
               )}
 

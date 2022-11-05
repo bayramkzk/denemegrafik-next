@@ -1,5 +1,6 @@
 import { RECORD_FORM_ICON_SIZE } from "@/constants/index";
 import { axiosInstance } from "@/lib/axios-instance";
+import { RecordDrawerEditProps } from "@/types/edit";
 import { AuthErrorResponse } from "@/types/response";
 import {
   Button,
@@ -12,7 +13,7 @@ import {
 import { DatePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
-import { Test } from "@prisma/client";
+import { Test, TestType } from "@prisma/client";
 import {
   IconCalendarTime,
   IconDeviceFloppy,
@@ -29,30 +30,49 @@ export type TestRecordData = Partial<Test>;
 export type TestResponse = { record: Test; success: true } | AuthErrorResponse;
 
 export interface TestRecordFormProps {
-  data?: TestRecordData;
-  onSubmit: () => void;
+  edit?: RecordDrawerEditProps;
 }
 
 export const TEST_NOTIFICATION_ID = "test-record-form";
 
-const TestRecordForm: React.FC<TestRecordFormProps> = ({ data, onSubmit }) => {
+const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
   const form = useForm({
-    initialValues: data || {
+    initialValues: {
       id: undefined,
       name: undefined,
       type: undefined,
       date: undefined,
       createdAt: undefined,
       updatedAt: undefined,
+      ...edit?.data,
+    } as {
+      id?: number;
+      name?: string;
+      type?: TestType;
+      date?: Date;
+      createdAt?: Date;
+      updatedAt?: Date;
     },
     validate: (values) => ({
       date: !values.date && "Lütfen bir tarih seçin",
     }),
   });
   const mutation = useMutation(["test"], (values: TestRecordData) =>
-    axiosInstance.post<TestResponse>("/api/records/test", values)
+    axiosInstance.request<TestResponse>({
+      method: edit ? "PATCH" : "POST",
+      url: "/api/records/test" + (edit ? `/${edit.data.id}` : ""),
+      data: values,
+    })
   );
   const queryClient = useQueryClient();
+  const lastEdit = React.useRef(edit);
+
+  React.useEffect(() => {
+    if (edit && lastEdit.current !== edit) {
+      form.setValues(edit.data);
+      lastEdit.current = edit;
+    }
+  }, [edit, form]);
 
   const handleSubmit = form.onSubmit(async (values) => {
     showNotification({
@@ -69,12 +89,14 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ data, onSubmit }) => {
 
     if (res.data.success) {
       form.reset();
-      onSubmit();
+      await edit?.onSubmit(res.data);
 
       updateNotification({
         id: TEST_NOTIFICATION_ID,
-        title: "Kayıt Oluşturuldu",
-        message: `${res.data.record.name} denemesi başarıyla oluşturuldu.`,
+        title: "Kayıt " + (edit ? "Düzenlendi" : "Oluşturuldu"),
+        message: `${res.data.record.name} denemesi başarıyla ${
+          edit ? "düzenlendi" : "oluşturuldu"
+        }.`,
         color: "green",
         icon: <IconDeviceFloppy size={24} />,
       });
@@ -93,7 +115,7 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ data, onSubmit }) => {
 
     updateNotification({
       id: TEST_NOTIFICATION_ID,
-      title: "Kayıt Oluşturulamadı",
+      title: "Kayıt " + (edit ? "Düzenlenemedi" : "Oluşturulamadı"),
       message,
       color: "red",
       icon: <IconDeviceFloppy size={24} />,

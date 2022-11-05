@@ -1,5 +1,6 @@
 import { RECORD_FORM_ICON_SIZE } from "@/constants/index";
 import { axiosInstance } from "@/lib/axios-instance";
+import { RecordDrawerEditProps } from "@/types/edit";
 import { AuthErrorResponse } from "@/types/response";
 import { Button, NumberInput, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -17,29 +18,46 @@ export type TestResultResponse =
   | AuthErrorResponse;
 
 export interface TestResultRecordFormProps {
-  data?: TestResultRecordData;
-  onSubmit: () => void;
+  edit?: RecordDrawerEditProps;
 }
 
 export const TEST_RESULT_NOTIFICATION_ID = "testResult-record-form";
 
 const TestResultRecordForm: React.FC<TestResultRecordFormProps> = ({
-  data,
-  onSubmit,
+  edit,
 }) => {
   const form = useForm({
-    initialValues: data || {
+    initialValues: {
       testId: undefined,
       studentId: undefined,
       score: undefined,
       createdAt: undefined,
       updatedAt: undefined,
+      ...edit?.data,
+    } as {
+      testId?: number;
+      studentId?: number;
+      score?: number;
+      createdAt?: Date;
+      updatedAt?: Date;
     },
   });
   const mutation = useMutation(["testResult"], (values: TestResultRecordData) =>
-    axiosInstance.post<TestResultResponse>("/api/records/testResult", values)
+    axiosInstance.request<TestResultResponse>({
+      method: edit ? "PATCH" : "POST",
+      url: "/api/records/testResult" + (edit ? `/${edit.data.id}` : ""),
+      data: values,
+    })
   );
   const queryClient = useQueryClient();
+  const lastEdit = React.useRef(edit);
+
+  React.useEffect(() => {
+    if (edit && lastEdit.current !== edit) {
+      form.setValues(edit.data);
+      lastEdit.current = edit;
+    }
+  }, [edit, form]);
 
   // TODO: clean form state between multiple forms
 
@@ -58,12 +76,14 @@ const TestResultRecordForm: React.FC<TestResultRecordFormProps> = ({
 
     if (res.data.success) {
       form.reset();
-      onSubmit();
+      await edit?.onSubmit(res.data);
 
       updateNotification({
         id: TEST_RESULT_NOTIFICATION_ID,
-        title: "Kayıt Oluşturuldu",
-        message: `${res.data.record.score} puanlı deneme sonucu başarıyla eklendi.`,
+        title: "Kayıt " + (edit ? "Düzenlendi" : "Oluşturuldu"),
+        message: `${res.data.record.score} puanlı deneme sonucu başarıyla ${
+          edit ? "düzenlendi" : "oluşturuldu"
+        }.`,
         color: "green",
         icon: <IconDeviceFloppy size={24} />,
       });
@@ -82,7 +102,7 @@ const TestResultRecordForm: React.FC<TestResultRecordFormProps> = ({
 
     updateNotification({
       id: TEST_RESULT_NOTIFICATION_ID,
-      title: "Kayıt Oluşturulamadı",
+      title: "Kayıt " + (edit ? "Düzenlenemedi" : "Oluşturulamadı"),
       message,
       color: "red",
       icon: <IconDeviceFloppy size={24} />,

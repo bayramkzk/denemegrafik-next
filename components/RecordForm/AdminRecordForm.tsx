@@ -1,5 +1,6 @@
 import { RECORD_FORM_ICON_SIZE } from "@/constants/index";
 import { axiosInstance } from "@/lib/axios-instance";
+import { RecordDrawerEditProps } from "@/types/edit";
 import { AuthErrorResponse } from "@/types/response";
 import {
   Button,
@@ -12,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
-import { Admin } from "@prisma/client";
+import { Admin, Role } from "@prisma/client";
 import {
   IconDeviceFloppy,
   IconIdBadge2,
@@ -33,18 +34,14 @@ export type AdminResponse =
   | AuthErrorResponse;
 
 export interface AdminRecordFormProps {
-  data?: AdminRecordData;
-  onSubmit: () => void;
+  edit?: RecordDrawerEditProps;
 }
 
 export const ADMIN_NOTIFICATION_ID = "admin-record-form";
 
-const AdminRecordForm: React.FC<AdminRecordFormProps> = ({
-  data,
-  onSubmit,
-}) => {
+const AdminRecordForm: React.FC<AdminRecordFormProps> = ({ edit }) => {
   const form = useForm({
-    initialValues: data || {
+    initialValues: {
       id: undefined,
       name: undefined,
       username: undefined,
@@ -53,12 +50,34 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({
       schoolId: undefined,
       createdAt: undefined,
       updatedAt: undefined,
+      ...edit?.data,
+    } as {
+      id?: number;
+      name?: string;
+      username?: string;
+      hash?: string;
+      role?: Role;
+      schoolId?: number;
+      createdAt?: Date;
+      updatedAt?: Date;
     },
   });
   const mutation = useMutation(["admin"], (values: AdminRecordData) =>
-    axiosInstance.post<AdminResponse>("/api/records/admin", values)
+    axiosInstance.request<AdminResponse>({
+      method: edit ? "PATCH" : "POST",
+      url: "/api/records/admin" + (edit ? `/${edit.data.id}` : ""),
+      data: values,
+    })
   );
   const queryClient = useQueryClient();
+  const lastEdit = React.useRef(edit);
+
+  React.useEffect(() => {
+    if (edit && lastEdit.current !== edit) {
+      form.setValues(edit.data);
+      lastEdit.current = edit;
+    }
+  }, [edit, form]);
 
   const handleSubmit = form.onSubmit(async (values) => {
     if (!values.hash) return;
@@ -83,7 +102,7 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({
     if (hashResponse.status !== 200) {
       updateNotification({
         id: ADMIN_NOTIFICATION_ID,
-        title: "Kayıt Oluşturulamadı",
+        title: "Kayıt " + (edit ? "Düzenlenemedi" : "Oluşturulamadı"),
         message: "Şifre oluşturulurken bir hata oluştu.",
         color: "red",
         autoClose: 5000,
@@ -102,12 +121,14 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({
 
     if (res.data.success) {
       form.reset();
-      onSubmit();
+      await edit?.onSubmit(res.data);
 
       updateNotification({
         id: ADMIN_NOTIFICATION_ID,
-        title: "Kayıt Oluşturuldu",
-        message: `${res.data.record.name} adlı yönetici başarıyla oluşturuldu.`,
+        title: "Kayıt " + (edit ? "Düzenlendi" : "Oluşturuldu"),
+        message: `${res.data.record.name} adlı yönetici başarıyla ${
+          edit ? "düzenlendi" : "oluşturuldu"
+        }.`,
         color: "green",
         icon: <IconDeviceFloppy size={24} />,
       });
@@ -126,7 +147,7 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({
 
     updateNotification({
       id: ADMIN_NOTIFICATION_ID,
-      title: "Kayıt Oluşturulamadı",
+      title: "Kayıt " + (edit ? "Düzenlenemedi" : "Oluşturulamadı"),
       message,
       color: "red",
       icon: <IconDeviceFloppy size={24} />,
