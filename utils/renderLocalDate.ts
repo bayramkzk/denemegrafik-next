@@ -17,3 +17,11 @@ export const renderDate = (date: Date) => {
     day: "numeric",
   });
 };
+
+export const renderShortDate = (date: Date) => {
+  return new Date(date).toLocaleString("tr", {
+    month: "short",
+    day: "numeric",
+    year: "2-digit",
+  });
+};

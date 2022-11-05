@@ -1,4 +1,4 @@
-import { createStyles, Group, Title } from "@mantine/core";
+import { createStyles, Group, Sx, Title } from "@mantine/core";
 import { IconChartLine } from "@tabler/icons";
 import React from "react";
 import { APP_NAME } from "../constants";
@@ -27,14 +27,19 @@ const useStyles = createStyles((theme) => ({
 interface BrandLogoProps {
   size: number;
   withCaption?: boolean;
+  sx?: Sx | (Sx | undefined)[];
 }
 
-const AppLogo: React.FC<BrandLogoProps> = ({ size, withCaption = true }) => {
+const AppLogo: React.FC<BrandLogoProps> = ({
+  size,
+  withCaption = true,
+  sx,
+}) => {
   const { classes } = useStyles();
   const logoSize = size * 1.25;
 
   return (
-    <Group className={classes.root}>
+    <Group className={classes.root} sx={sx} noWrap>
       <IconChartLine className={classes.logo} size={logoSize} />
 
       {withCaption && (

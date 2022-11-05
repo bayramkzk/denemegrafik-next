@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import React, { useRef } from "react";
 import ReactToPrint from "react-to-print";
 import { RECORD_FORM_ICON_SIZE } from "../constants";
+import AppLogo from "./AppLogo";
 
 const ResultChart = dynamic(() => import("@/components/ResultChart"), {
   ssr: false,
@@ -31,21 +32,28 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
         // FIXME: this is a hack to make the chart fit the page
         sx={{ "@media print": { zoom: "70%" } }}
       >
-        <Title
-          order={2}
+        <Group
           sx={{
             display: "none",
             "@media print": {
-              display: "block",
+              display: "flex",
+              justifyContent: "space-between",
               textAlign: "center",
               fontSize: "1.5rem",
               fontWeight: "bold",
-              marginTop: "1rem",
+              padding: "1rem",
             },
           }}
         >
-          {studentName} Öğrencisinin Deneme Sonuçları
-        </Title>
+          <AppLogo
+            size={20}
+            sx={{
+              display: "none",
+              "@media print": { display: "fixed", top: 0, left: 0 },
+            }}
+          />
+          <Title order={2}>{studentName} Öğrencisinin Deneme Sonuçları</Title>
+        </Group>
 
         {groupedResults.map(([testType, testResults]) => (
           <Stack key={testType}>
@@ -56,6 +64,7 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
             <ResultChart
               key={testType}
               results={testResults as TestResultWithAverage[]}
+              slim={groupedResults.length > 1}
             />
           </Stack>
         ))}
@@ -71,7 +80,7 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
             )}
             content={() => printRef.current}
             documentTitle="DENEMEGRAFİK Deneme Sınavları Grafikleri"
-            pageStyle="@page { size: A4 landscape; }"
+            pageStyle="@page { size: A4 landscape; margin: 0; }"
           />
         </Group>
       )}

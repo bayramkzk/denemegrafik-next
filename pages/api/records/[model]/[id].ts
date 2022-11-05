@@ -21,8 +21,6 @@ interface PatchRecordRequest {
 }
 
 async function patchRecord({ model, id, body, user }: PatchRecordRequest) {
-  console.log({ model, id, body, user });
-
   switch (model) {
     case "school": {
       if (user.role !== "SUPERADMIN") {
@@ -120,7 +118,9 @@ async function patchRecord({ model, id, body, user }: PatchRecordRequest) {
       const updatedTest = await prisma.test.update({
         where: { id: Number(id) },
         data: _.pickBy(body, (_, key) =>
-          ["id", "name", "type", "date", "createdAt", "updatedAt"].includes(key)
+          ["id", "name", "typeName", "date", "createdAt", "updatedAt"].includes(
+            key
+          )
         ),
       });
       return { status: 200, data: { record: updatedTest, success: true } };

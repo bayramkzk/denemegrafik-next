@@ -13,7 +13,7 @@ import {
 import { DatePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
-import { Test, TestType } from "@prisma/client";
+import { Test } from "@prisma/client";
 import {
   IconCalendarTime,
   IconDeviceFloppy,
@@ -38,17 +38,16 @@ export const TEST_NOTIFICATION_ID = "test-record-form";
 const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
   const form = useForm({
     initialValues: {
-      id: undefined,
-      name: undefined,
-      type: undefined,
-      date: undefined,
-      createdAt: undefined,
-      updatedAt: undefined,
-      ...edit?.data,
+      id: edit?.data?.id,
+      name: edit?.data?.name,
+      typeName: edit?.data?.typeName,
+      date: new Date(edit?.data?.date as string),
+      createdAt: new Date((edit?.data?.createdAt as string) || Date.now()),
+      updatedAt: new Date((edit?.data?.updatedAt as string) || Date.now()),
     } as {
       id?: number;
       name?: string;
-      type?: TestType;
+      typeName?: string;
       date?: Date;
       createdAt?: Date;
       updatedAt?: Date;
@@ -148,7 +147,7 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
             { value: "AYT", label: "AYT Denemesi" },
           ]}
           icon={<IconPencil size={RECORD_FORM_ICON_SIZE} />}
-          {...form.getInputProps("type")}
+          {...form.getInputProps("typeName")}
         />
         <DatePicker
           label="Deneme Tarihi"
@@ -156,19 +155,24 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
           withAsterisk
           required
           icon={<IconCalendarTime size={RECORD_FORM_ICON_SIZE} />}
-          {...form.getInputProps("date")}
+          value={form.values.date}
+          onChange={(value) => form.setFieldValue("date", value || undefined)}
         />
         <DateTimePicker
           label="Oluşturulma Tarihi"
           placeholder="Ekim 26, 2022"
           value={form.values.createdAt}
-          onChange={(value) => form.setFieldValue("createdAt", value)}
+          onChange={(value) =>
+            form.setFieldValue("createdAt", value || undefined)
+          }
         />
         <DateTimePicker
           label="Güncellenme Tarihi"
           placeholder="Ekim 26, 2022"
           value={form.values.updatedAt}
-          onChange={(value) => form.setFieldValue("updatedAt", value)}
+          onChange={(value) =>
+            form.setFieldValue("updatedAt", value || undefined)
+          }
         />
         <Button
           fullWidth
