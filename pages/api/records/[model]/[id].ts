@@ -169,11 +169,16 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(401).json(UNAUTHORIZED);
   }
 
+  // replace falsey values with undefined
+  const undefinedBody = _.mapValues(req.body, (value) =>
+    !value ? undefined : value
+  );
+
   try {
     const result = await patchRecord({
       model,
       id,
-      body: req.body,
+      body: undefinedBody,
       user: session.user,
     });
     return res.status(result.status).json(result.data);
