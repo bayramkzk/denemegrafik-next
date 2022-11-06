@@ -116,8 +116,8 @@ const SchoolRecordForm: React.FC<SchoolRecordFormProps> = ({ edit }) => {
         <TextInput
           label="Okul Adı"
           placeholder="Edirne Süleyman Demirel Fen Lisesi"
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           icon={<IconLetterCase size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("name")}
         />

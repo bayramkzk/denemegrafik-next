@@ -134,8 +134,8 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
         <TextInput
           label="Deneme Adı"
           placeholder="ÇAP TYT 1"
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           icon={<IconLetterCase size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("name")}
         />
@@ -152,8 +152,8 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
         <DatePicker
           label="Deneme Tarihi"
           placeholder="Ekim 5, 2022"
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           icon={<IconCalendarTime size={RECORD_FORM_ICON_SIZE} />}
           value={form.values.date}
           onChange={(value) => form.setFieldValue("date", value || undefined)}

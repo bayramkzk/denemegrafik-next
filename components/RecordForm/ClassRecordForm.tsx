@@ -137,7 +137,7 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({ edit }) => {
             hideControls
             icon={<IconSchool size={RECORD_FORM_ICON_SIZE} />}
             withAsterisk
-            required
+            required={!edit}
             {...form.getInputProps("grade")}
           />
           <TextInput
@@ -145,7 +145,7 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({ edit }) => {
             placeholder="A"
             icon={<IconLetterA size={RECORD_FORM_ICON_SIZE} />}
             withAsterisk
-            required
+            required={!edit}
             {...form.getInputProps("branch")}
           />
         </Group>
@@ -154,8 +154,8 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({ edit }) => {
           placeholder="32"
           hideControls
           icon={<IconIdBadge2 size={RECORD_FORM_ICON_SIZE} />}
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           {...form.getInputProps("schoolId")}
         />
         <DateTimePicker

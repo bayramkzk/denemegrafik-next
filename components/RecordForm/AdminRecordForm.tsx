@@ -163,24 +163,24 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({ edit }) => {
         <TextInput
           label="Yönetici Görünen Adı Soyadı"
           placeholder="Ahmet Yılmaz"
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           icon={<IconLetterCase size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("name")}
         />
         <TextInput
           label="Yönetici Kullanıcı Adı"
           placeholder="ahmetyilmaz"
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           icon={<IconLetterCaseLower size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("username")}
         />
         <PasswordInput
           label="Yönetici Şifresi"
           placeholder="guvenli_sifre-123"
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           icon={<IconLock size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("hash")}
         />
@@ -191,8 +191,8 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({ edit }) => {
             { value: "ADMIN", label: "Yönetici" },
             { value: "SUPERADMIN", label: "Süper Yönetici" },
           ]}
-          required
-          withAsterisk
+          required={!edit}
+          withAsterisk={!edit}
           icon={<IconUserCircle size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("role")}
         />
@@ -200,8 +200,8 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({ edit }) => {
           label="Okul Kodu"
           placeholder="32"
           hideControls
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           icon={<IconSchool size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("schoolId")}
         />

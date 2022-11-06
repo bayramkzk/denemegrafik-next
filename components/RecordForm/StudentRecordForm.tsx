@@ -140,16 +140,16 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({ edit }) => {
         <TextInput
           label="Öğrenci Adı Soyadı"
           placeholder="Ahmet Yılmaz"
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           icon={<IconLetterCase size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("name")}
         />
         <TextInput
           label="Öğrenci TC Kimlik Numarası"
           placeholder="12345678901"
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           icon={<IconIdBadge size={RECORD_FORM_ICON_SIZE} />}
           maxLength={CITIZEN_ID_LENGTH}
           minLength={CITIZEN_ID_LENGTH}
@@ -159,8 +159,8 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({ edit }) => {
           label="Öğrenci Numarası"
           placeholder="37"
           hideControls
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           icon={<IconNumber size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("code")}
         />
@@ -168,8 +168,8 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({ edit }) => {
           label="Sınıf ID"
           placeholder="32"
           hideControls
-          withAsterisk
-          required
+          withAsterisk={!edit}
+          required={!edit}
           icon={<IconChalkboard size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("classId")}
         />

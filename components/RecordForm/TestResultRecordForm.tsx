@@ -114,8 +114,8 @@ const TestResultRecordForm: React.FC<TestResultRecordFormProps> = ({
           label="Deneme ID"
           placeholder="32"
           hideControls
-          required
-          withAsterisk
+          required={!edit}
+          withAsterisk={!edit}
           icon={<IconIdBadge2 size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("testId")}
         />
@@ -123,8 +123,8 @@ const TestResultRecordForm: React.FC<TestResultRecordFormProps> = ({
           label="Öğrenci ID"
           placeholder="32"
           hideControls
-          required
-          withAsterisk
+          required={!edit}
+          withAsterisk={!edit}
           icon={<IconIdBadge2 size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("studentId")}
         />
@@ -132,8 +132,8 @@ const TestResultRecordForm: React.FC<TestResultRecordFormProps> = ({
           label="Puan"
           placeholder="356.93"
           hideControls
-          required
-          withAsterisk
+          required={!edit}
+          withAsterisk={!edit}
           icon={<IconStar size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("score")}
         />
