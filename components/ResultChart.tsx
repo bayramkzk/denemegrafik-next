@@ -58,6 +58,10 @@ const ResultChart: React.FC<ResultChartProps> = ({ results, slim = false }) => {
     },
     { min: Number.POSITIVE_INFINITY, max: Number.NEGATIVE_INFINITY }
   );
+  const [domainLower, domainUpper] = [
+    roundBy(yMinMax.min, DOMAIN_PADDING) - DOMAIN_PADDING,
+    roundBy(yMinMax.max, DOMAIN_PADDING) + DOMAIN_PADDING,
+  ];
 
   return (
     <Card ref={ref} radius="md" py="lg">
@@ -89,11 +93,9 @@ const ResultChart: React.FC<ResultChartProps> = ({ results, slim = false }) => {
           xAxisId={2}
         />
         <YAxis
-          domain={[
-            roundBy(yMinMax.min, DOMAIN_PADDING) - DOMAIN_PADDING,
-            roundBy(yMinMax.max, DOMAIN_PADDING) + DOMAIN_PADDING,
-          ]}
+          domain={[domainLower, domainUpper]}
           tick={axisTick}
+          tickCount={(domainUpper - domainLower) / 5 + 1}
         />
         <Tooltip />
         <Legend />
