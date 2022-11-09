@@ -56,7 +56,7 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-const Header: React.FC = () => {
+const SessionHeader: React.FC = () => {
   const { classes } = useStyles();
   const [burgerOpened, burgerHandler] = useDisclosure(false);
 
@@ -133,4 +133,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default SessionHeader;

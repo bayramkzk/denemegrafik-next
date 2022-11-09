@@ -1,3 +1,5 @@
+import { AppFooter } from "@/components/AppFooter";
+import LandingHeader from "@/components/LandingHeader";
 import {
   CITIZEN_ID_LENGTH,
   MINIMUM_CODE_LENGTH,
@@ -6,12 +8,15 @@ import {
 } from "@/constants/index";
 import {
   Button,
+  Card,
   createStyles,
+  Group,
   NumberInput,
   PasswordInput,
   Stack,
   TextInput,
   Title,
+  Tooltip,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
@@ -23,18 +28,46 @@ import {
 } from "@tabler/icons";
 import { NextPage } from "next";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 const INPUT_SIZE = "lg";
+const LOGO_SIZE = 340;
+const LOGO_BREAKPOINT = "md";
+const LOGO_SRC = "/esdfl-logo.png";
 
 const useStyles = createStyles((theme) => ({
+  wrapper: {
+    width: "100%",
+    height: "100%",
+    padding: theme.spacing.xl,
+
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "4rem",
+
+    [theme.fn.smallerThan(LOGO_BREAKPOINT)]: {
+      padding: theme.spacing.md,
+    },
+  },
   root: {
-    paddingTop: "12vh",
     maxWidth: 420,
-    paddingInline: 16,
-    margin: "auto",
+  },
+  logo: {
+    display: "none",
+    [theme.fn.largerThan(LOGO_BREAKPOINT)]: {
+      display: "block",
+    },
+    borderRadius: "50%",
+
+    "&:hover": {
+      // rotate around
+      transform: "rotateY(360deg)",
+      transition: "transform 1s",
+    },
   },
   link: {
     marginTop: 16,
@@ -120,72 +153,91 @@ const LoginPage: NextPage = () => {
   });
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack spacing="lg" className={classes.root}>
-        <Title mb="md" order={1} size={36}>
-          {isAdmin ? "Yönetici" : "Öğrenci"} Girişi
-        </Title>
+    <>
+      <LandingHeader />
 
-        {isAdmin ? (
-          <TextInput
-            label="Kullanıcı Adı"
-            placeholder="kullanici_adi"
-            size={INPUT_SIZE}
-            icon={<IconUser />}
-            {...form.getInputProps("usernameOrCitizenId")}
-          />
-        ) : (
-          <NumberInput
-            hideControls
-            label="TC Kimlik Numarası"
-            placeholder="12345678901"
-            maxLength={CITIZEN_ID_LENGTH}
-            formatter={(value) => value?.replace(/\D/g, "")}
-            size={INPUT_SIZE}
-            icon={<IconIdBadge2 />}
-            {...form.getInputProps("usernameOrCitizenId")}
-          />
-        )}
+      <Group className={classes.wrapper}>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing="lg" className={classes.root}>
+            <Title mb="md" order={1} size={36}>
+              {isAdmin ? "Yönetici" : "Öğrenci"} Girişi
+            </Title>
 
-        {isAdmin ? (
-          <PasswordInput
-            label="Parola"
-            placeholder="parola123"
-            size={INPUT_SIZE}
-            icon={<IconLock />}
-            {...form.getInputProps("passwordOrCode")}
-          />
-        ) : (
-          <NumberInput
-            hideControls
-            label="Okul Numarası"
-            placeholder="123"
-            size={INPUT_SIZE}
-            icon={<IconListNumbers />}
-            {...form.getInputProps("passwordOrCode")}
-          />
-        )}
+            {isAdmin ? (
+              <TextInput
+                label="Kullanıcı Adı"
+                placeholder="kullanici_adi"
+                size={INPUT_SIZE}
+                icon={<IconUser />}
+                {...form.getInputProps("usernameOrCitizenId")}
+              />
+            ) : (
+              <NumberInput
+                hideControls
+                label="TC Kimlik Numarası"
+                placeholder="12345678901"
+                maxLength={CITIZEN_ID_LENGTH}
+                formatter={(value) => value?.replace(/\D/g, "")}
+                size={INPUT_SIZE}
+                icon={<IconIdBadge2 />}
+                {...form.getInputProps("usernameOrCitizenId")}
+              />
+            )}
 
-        <Button
-          size={INPUT_SIZE}
-          type="submit"
-          loading={loading}
-          color={isAdmin ? "blue" : "teal"}
-          rightIcon={
-            loading ? undefined : isAdmin ? <IconLock /> : <IconUser />
-          }
-        >
-          {!loading && "Giriş yap"}
-        </Button>
+            {isAdmin ? (
+              <PasswordInput
+                label="Parola"
+                placeholder="parola123"
+                size={INPUT_SIZE}
+                icon={<IconLock />}
+                {...form.getInputProps("passwordOrCode")}
+              />
+            ) : (
+              <NumberInput
+                hideControls
+                label="Okul Numarası"
+                placeholder="123"
+                size={INPUT_SIZE}
+                icon={<IconListNumbers />}
+                {...form.getInputProps("passwordOrCode")}
+              />
+            )}
 
-        <Link href={otherLoginHref} passHref replace>
-          <a className={classes.link} onClick={onLinkClick}>
-            {isAdmin ? "Öğrenci" : "Yönetici"} olarak giriş yapmak için
-            tıklayın!
-          </a>
-        </Link>
-      </Stack>
-    </form>
+            <Button
+              size={INPUT_SIZE}
+              type="submit"
+              loading={loading}
+              color={isAdmin ? "blue" : "teal"}
+              rightIcon={
+                loading ? undefined : isAdmin ? <IconLock /> : <IconUser />
+              }
+            >
+              {!loading && "Giriş yap"}
+            </Button>
+
+            <Link href={otherLoginHref} passHref replace>
+              <a className={classes.link} onClick={onLinkClick}>
+                {isAdmin ? "Öğrenci" : "Yönetici"} olarak giriş yapmak için
+                tıklayın!
+              </a>
+            </Link>
+          </Stack>
+        </form>
+
+        <Tooltip label="Edirne Suleyman Demirel Fen Lisesi Deneme Sınavları Grafikleri Projesi">
+          <Card className={classes.logo}>
+            <Image
+              src={LOGO_SRC}
+              alt="Edirne Suleyman Demirel Fen Lisesi Logosu"
+              width={LOGO_SIZE}
+              height={LOGO_SIZE}
+            />
+          </Card>
+        </Tooltip>
+      </Group>
+
+      <AppFooter />
+    </>
   );
 };
 

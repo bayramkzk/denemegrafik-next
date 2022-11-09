@@ -1,7 +1,7 @@
 import { AppShell, Container, createStyles } from "@mantine/core";
 import { CONTAINER_SIZE } from "../constants";
 import { AppFooter } from "./AppFooter";
-import Header from "./Header";
+import SessionHeader from "./SessionHeader";
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -25,7 +25,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <AppShell
       className={classes.root}
       footer={<AppFooter />}
-      header={<Header />}
+      header={<SessionHeader />}
     >
       <Container size={CONTAINER_SIZE} py="xl">
         {children}
