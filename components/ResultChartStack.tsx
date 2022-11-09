@@ -30,7 +30,7 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
         spacing="xl"
         ref={printRef}
         // FIXME: this is a hack to make the chart fit the page
-        sx={{ "@media print": { zoom: "70%" } }}
+        sx={{ "@media print": { zoom: "60%" } }}
       >
         <Group
           sx={{

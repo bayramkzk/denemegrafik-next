@@ -63,19 +63,30 @@ const ResultChart: React.FC<ResultChartProps> = ({ results, slim = false }) => {
     <Card ref={ref} radius="md" py="lg">
       <LineChart width={width} height={slim ? 400 : 600} data={data}>
         <CartesianGrid strokeDasharray="3 3" />
+
         <XAxis
+          dataKey={STUDENT_SCORE_FIELD}
+          tick={axisTick}
+          capHeight={20}
+          xAxisId={0}
+          fontWeight={700}
+          unit=" NET"
+        />
+        <XAxis
+          axisLine={false}
+          tickLine={false}
           dataKey={TEST_NAME_FIELD}
           tick={axisTick}
           capHeight={15}
-          xAxisId={0}
+          xAxisId={1}
         />
         <XAxis
           axisLine={false}
           tickLine={false}
           dataKey={TEST_DATE_FIELD}
           tick={axisTick}
-          capHeight={8}
-          xAxisId={1}
+          capHeight={10}
+          xAxisId={2}
         />
         <YAxis
           domain={[
