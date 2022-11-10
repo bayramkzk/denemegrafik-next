@@ -79,22 +79,12 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({ edit }) => {
     }
   }, [edit, form]);
 
-  const handleSubmit = form.onSubmit(async (values) => {
-    if (!values.hash) return;
-
-    showNotification({
-      id: ADMIN_NOTIFICATION_ID,
-      title: "Kaydediliyor...",
-      message: "Lütfen bekleyin...",
-      color: "blue",
-      autoClose: false,
-      disallowClose: true,
-      icon: <IconDeviceFloppy size={20} />,
-    });
+  const queryHash = async (hash: string | undefined) => {
+    if (!hash) return;
 
     const hashResponse = await axiosInstance.post<{ hash: string }>(
       "/api/hash",
-      { password: values.hash }
+      { password: hash }
     );
 
     if (hashResponse.status !== 200) {
@@ -107,13 +97,25 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({ edit }) => {
         disallowClose: false,
         icon: <IconLock size={20} />,
       });
-      return;
+      throw new Error("Hash error");
     }
 
-    const res = await mutation.mutateAsync({
-      ...values,
-      hash: hashResponse.data.hash,
+    return hashResponse.data.hash;
+  };
+
+  const handleSubmit = form.onSubmit(async (values) => {
+    showNotification({
+      id: ADMIN_NOTIFICATION_ID,
+      title: "Kaydediliyor...",
+      message: "Lütfen bekleyin...",
+      color: "blue",
+      autoClose: false,
+      disallowClose: true,
+      icon: <IconDeviceFloppy size={20} />,
     });
+
+    const hash = await queryHash(values.hash);
+    const res = await mutation.mutateAsync({ ...values, hash });
 
     if (res.data.success) {
       form.reset();
