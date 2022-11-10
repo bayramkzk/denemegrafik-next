@@ -135,7 +135,7 @@ const LoginPage: NextPage = () => {
         title: "Giriş başarısız",
         message:
           res.error === "CredentialsSignin"
-            ? "TC Kimlik Numarası veya şifre hatalı"
+            ? "Giriş bilgileri hatalı, lütfen kontrol edip tekrar deneyin!"
             : JSON.stringify(res.error).replaceAll("\\n", "\n"),
         color: "red",
       });
