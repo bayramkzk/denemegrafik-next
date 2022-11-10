@@ -3,7 +3,7 @@ import {
   RecordModelPluralDisplayNames,
 } from "@/constants/models";
 import { RecordDrawerEditProps } from "@/types/edit";
-import { Drawer, Title } from "@mantine/core";
+import { Drawer, Text, Title } from "@mantine/core";
 import React from "react";
 import AdminRecordForm from "./RecordForm/AdminRecordForm";
 import ClassRecordForm from "./RecordForm/ClassRecordForm";
@@ -53,6 +53,13 @@ const RecordDrawer: React.FC<RecordDrawerProps> = ({
       size="xl"
     >
       <RecordForm edit={edit} />
+
+      {!edit && (
+        <Text color="dimmed" size="sm" mt="xl">
+          <span style={{ color: "red" }}>*</span> ile işaretlenmiş alanların
+          doldurulması zorunludur.
+        </Text>
+      )}
     </Drawer>
   );
 };
