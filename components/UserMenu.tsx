@@ -7,7 +7,12 @@ import {
   UnstyledButton,
   useMantineColorScheme,
 } from "@mantine/core";
-import { IconChevronDown, IconLogout } from "@tabler/icons";
+import {
+  IconChevronDown,
+  IconLogout,
+  IconMoon,
+  IconSunHigh,
+} from "@tabler/icons";
 import { signOut } from "next-auth/react";
 import React, { useState } from "react";
 import SessionGuard from "./SessionGuard";
@@ -102,7 +107,13 @@ const UserMenu: React.FC = () => {
           <Menu.Dropdown>
             <Menu.Label>Ayarlar</Menu.Label>
             <Menu.Item
-              icon={<IconLogout size={MENU_ICON_SIZE} />}
+              icon={
+                colorScheme === "dark" ? (
+                  <IconSunHigh size={MENU_ICON_SIZE} />
+                ) : (
+                  <IconMoon size={MENU_ICON_SIZE} />
+                )
+              }
               rightSection={
                 <Text size="xs" color="dimmed">
                   ⌘+J
