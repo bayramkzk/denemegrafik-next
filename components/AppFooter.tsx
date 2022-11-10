@@ -44,10 +44,7 @@ const useStyles = createStyles((theme) => ({
     animation: "rainbow 2s ease-in-out infinite",
     backgroundClip: "text",
     WebkitBackgroundClip: "text",
-    color: "rgba(0,0,0,1)",
     transition: "color .2s ease-in-out",
-    fontWeight: 900,
-    fontSize: "1rem",
     marginBottom: "0.25rem",
 
     "&:hover": {
