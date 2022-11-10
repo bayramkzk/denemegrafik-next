@@ -9,6 +9,7 @@ import {
 } from "@/constants/errors";
 import { prisma } from "@/lib/prisma";
 import { deleteRecordsSchema } from "@/schemas/record";
+import { AdminUser } from "@/types/auth";
 import { FetchRecordsResponse, ModelRequestContext } from "@/types/response";
 import { validateModelQuery } from "@/utils/model";
 import { findRecordsByModel } from "@/utils/record";
@@ -173,7 +174,7 @@ const postRecord = async (context: ModelRequestContext) => {
       const schoolId =
         session.user.role === "ADMIN"
           ? session.user.schoolId
-          : req.body.schoolId;
+          : req.body.schoolId || (session.user as AdminUser).schoolId;
 
       const existingClass = await prisma.class.findFirst({
         where: { grade: req.body.grade, branch: req.body.branch, schoolId },

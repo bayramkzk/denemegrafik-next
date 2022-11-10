@@ -139,16 +139,12 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
                 key={model}
                 columns={(() => {
                   const columns = modelToColumnMap[model];
-                  const roleIdColumns =
-                    user.role === "SUPERADMIN"
-                      ? columns
-                      : columns.filter((column) => column.accessor !== "id");
                   if (model === "test" && user.role !== "SUPERADMIN") {
-                    return roleIdColumns.filter(
+                    return columns.filter(
                       (column) => column.accessor !== "actions"
                     );
                   }
-                  return roleIdColumns;
+                  return columns;
                 })()}
                 records={sortedRecords || []}
                 fetching={isLoading}
