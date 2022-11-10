@@ -21,6 +21,7 @@ import {
   IconSchool,
 } from "@tabler/icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import React from "react";
 import DateTimePicker from "../DateTimePicker";
 
@@ -37,6 +38,7 @@ export interface ClassRecordFormProps {
 export const ADMIN_NOTIFICATION_ID = "school-record-form";
 
 const ClassRecordForm: React.FC<ClassRecordFormProps> = ({ edit }) => {
+  const { data: session } = useSession();
   const form = useForm({
     initialValues: {
       id: undefined,
@@ -120,6 +122,10 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({ edit }) => {
     });
   });
 
+  if (!session) {
+    return null;
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <Stack>
@@ -136,7 +142,7 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({ edit }) => {
             placeholder="12"
             hideControls
             icon={<IconSchool size={RECORD_FORM_ICON_SIZE} />}
-            withAsterisk
+            withAsterisk={!edit}
             required={!edit}
             {...form.getInputProps("grade")}
           />
@@ -144,20 +150,22 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({ edit }) => {
             label="Şube"
             placeholder="A"
             icon={<IconLetterA size={RECORD_FORM_ICON_SIZE} />}
-            withAsterisk
+            withAsterisk={!edit}
             required={!edit}
             {...form.getInputProps("branch")}
           />
         </Group>
-        <NumberInput
-          label="Okul Kodu"
-          placeholder="32"
-          hideControls
-          icon={<IconIdBadge2 size={RECORD_FORM_ICON_SIZE} />}
-          withAsterisk={!edit}
-          required={!edit}
-          {...form.getInputProps("schoolId")}
-        />
+        {session.user.role === "SUPERADMIN" && (
+          <NumberInput
+            label="Okul Kodu"
+            placeholder="32"
+            hideControls
+            icon={<IconIdBadge2 size={RECORD_FORM_ICON_SIZE} />}
+            withAsterisk={!edit}
+            required={!edit}
+            {...form.getInputProps("schoolId")}
+          />
+        )}
         <DateTimePicker
           label="Oluşturulma Tarihi"
           placeholder="Ekim 26, 2022"

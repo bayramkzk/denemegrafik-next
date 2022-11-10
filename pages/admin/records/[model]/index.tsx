@@ -86,33 +86,43 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
 
   return (
     <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN"]}>
-      {() => (
+      {({ user }) => (
         <Layout>
           <Stack spacing="xl">
             <Title mb="lg">{title}</Title>
 
-            <Grid grow gutter={8}>
-              <Grid.Col span={12} sm={6} md={8}>
-                <TextInput
-                  placeholder={`${title} arasında anahtar kelimeleri virgülle ayırarak arama yapın... (Örn: "ahmet, 9 / E")`}
-                  value={query}
-                  icon={<IconSearch size={16} />}
-                  onChange={(event) => setQuery(event.target.value)}
-                  sx={{ flexGrow: 1, flexShrink: 1 }}
-                />
-              </Grid.Col>
-
-              <Grid.Col span={12} sm={6} md={4}>
-                <Group noWrap spacing={4}>
-                  <DeleteRecordModalButton
-                    model={model}
-                    records={selectedRecords}
+            {user.role === "SUPERADMIN" || model !== "test" ? (
+              <Grid grow gutter={8}>
+                <Grid.Col span={12} sm={6} md={8}>
+                  <TextInput
+                    placeholder={`${title} arasında anahtar kelimeleri virgülle ayırarak arama yapın... (Örn: "ahmet, 9 / E")`}
+                    value={query}
+                    icon={<IconSearch size={16} />}
+                    onChange={(event) => setQuery(event.target.value)}
+                    sx={{ flexGrow: 1, flexShrink: 1 }}
                   />
-                  <UploadExcelModalButton model={model} />
-                  <CreateRecordDrawerButton model={model} />
-                </Group>
-              </Grid.Col>
-            </Grid>
+                </Grid.Col>
+
+                <Grid.Col span={12} sm={6} md={4}>
+                  <Group noWrap spacing={4}>
+                    <DeleteRecordModalButton
+                      model={model}
+                      records={selectedRecords}
+                    />
+                    <UploadExcelModalButton model={model} />
+                    <CreateRecordDrawerButton model={model} />
+                  </Group>
+                </Grid.Col>
+              </Grid>
+            ) : (
+              <TextInput
+                placeholder={`${title} arasında anahtar kelimeleri virgülle ayırarak arama yapın... (Örn: "ahmet, 9 / E")`}
+                value={query}
+                icon={<IconSearch size={16} />}
+                onChange={(event) => setQuery(event.target.value)}
+                sx={{ flexGrow: 1, flexShrink: 1 }}
+              />
+            )}
 
             <Stack spacing="xs">
               {records && !isLoading ? (
@@ -127,7 +137,19 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
 
               <DataTable
                 key={model}
-                columns={modelToColumnMap[model]}
+                columns={(() => {
+                  const columns = modelToColumnMap[model];
+                  const roleIdColumns =
+                    user.role === "SUPERADMIN"
+                      ? columns
+                      : columns.filter((column) => column.accessor !== "id");
+                  if (model === "test" && user.role !== "SUPERADMIN") {
+                    return roleIdColumns.filter(
+                      (column) => column.accessor !== "actions"
+                    );
+                  }
+                  return roleIdColumns;
+                })()}
                 records={sortedRecords || []}
                 fetching={isLoading}
                 loaderBackgroundBlur={5}
