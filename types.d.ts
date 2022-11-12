@@ -8,4 +8,6 @@ declare module "next-auth" {
   interface Session {
     user: SessionUser;
   }
+
+  let User: SessionUser;
 }
