@@ -8,6 +8,7 @@ import {
 import { useHotkeys } from "@mantine/hooks";
 import { NotificationsProvider } from "@mantine/notifications";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Analytics } from "@vercel/analytics/react";
 import { getCookie, setCookie } from "cookies-next";
 import "dayjs/locale/tr";
 import type { GetServerSidePropsContext } from "next";
@@ -86,6 +87,8 @@ export default function App(props: AppProps) {
           </MantineProvider>
         </ColorSchemeProvider>
       </SessionProvider>
+
+      <Analytics />
     </>
   );
 }
