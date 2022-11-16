@@ -65,6 +65,7 @@ model School {
 
 model TestType {
   name          String   @id
+  description   String?
   questionCount Int
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
