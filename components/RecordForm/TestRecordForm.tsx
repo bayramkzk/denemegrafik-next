@@ -13,7 +13,7 @@ import {
 import { DatePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
-import { Test } from "@prisma/client";
+import { Test, TestType } from "@prisma/client";
 import {
   IconCalendarTime,
   IconDeviceFloppy,
@@ -21,7 +21,7 @@ import {
   IconLetterCase,
   IconPencil,
 } from "@tabler/icons";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import DateTimePicker from "../DateTimePicker";
 
@@ -41,7 +41,7 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
       id: edit?.data?.id,
       name: edit?.data?.name,
       typeName: edit?.data?.typeName,
-      date: new Date(edit?.data?.date as string),
+      date: new Date((edit?.data?.date as string) || new Date()),
       createdAt: new Date((edit?.data?.createdAt as string) || Date.now()),
       updatedAt: new Date((edit?.data?.updatedAt as string) || Date.now()),
     } as {
@@ -56,6 +56,15 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
       date: !values.date && "Lütfen bir tarih seçin",
     }),
   });
+  const { data: testTypes } = useQuery(["testType"], () =>
+    axiosInstance.get<TestType[]>("/api/test-types").then((res) => res.data)
+  );
+  const testTypeData = testTypes
+    ? testTypes.map((testType) => ({
+        label: testType.description,
+        value: testType.name,
+      }))
+    : [];
   const mutation = useMutation(["test"], (values: TestRecordData) =>
     axiosInstance.request<TestResponse>({
       method: edit ? "PATCH" : "POST",
@@ -142,10 +151,7 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
         <Select
           label="Deneme Türü"
           placeholder="TYT Denemesi"
-          data={[
-            { value: "TYT", label: "TYT Denemesi" },
-            { value: "AYT", label: "AYT Denemesi" },
-          ]}
+          data={testTypeData}
           icon={<IconPencil size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("typeName")}
         />
