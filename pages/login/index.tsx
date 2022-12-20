@@ -62,12 +62,6 @@ const useStyles = createStyles((theme) => ({
       display: "block",
     },
     borderRadius: "50%",
-
-    "&:hover": {
-      // rotate around
-      transform: "rotateY(360deg)",
-      transition: "transform 1s",
-    },
   },
   link: {
     marginTop: 16,
