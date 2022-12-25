@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,6 +10,7 @@ datasource db {
 enum Role {
   SUPERADMIN
   ADMIN
+  VIEWER
 }
 
 model Admin {
@@ -33,9 +31,9 @@ model Student {
   citizenId String   @unique
   name      String
   code      Int
-  classId   Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  classId   Int
 
   class   Class        @relation(fields: [classId], references: [id])
   results TestResult[]
@@ -45,9 +43,9 @@ model Class {
   id        Int      @id @default(autoincrement())
   grade     Int
   branch    String
-  schoolId  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  schoolId  Int
 
   school   School    @relation(fields: [schoolId], references: [id])
   students Student[]
@@ -59,26 +57,27 @@ model School {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  classes Class[]
   admins  Admin[]
+  classes Class[]
 }
 
 model TestType {
   name          String   @id
-  description   String?
   questionCount Int
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  Test          Test[]
+  description   String?
+
+  Test Test[]
 }
 
 model Test {
   id        Int      @id @default(autoincrement())
   name      String
-  typeName  String   @default("TYT")
   date      DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  typeName  String   @default("TYT")
 
   type    TestType     @relation(fields: [typeName], references: [name])
   results TestResult[]
@@ -86,13 +85,13 @@ model Test {
 
 model TestResult {
   testId    Int
-  studentId Int
   score     Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  studentId Int
 
-  test    Test    @relation(fields: [testId], references: [id])
   student Student @relation(fields: [studentId], references: [id])
+  test    Test    @relation(fields: [testId], references: [id])
 
   @@id([testId, studentId])
 }
