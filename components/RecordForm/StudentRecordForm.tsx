@@ -44,11 +44,11 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({ edit }) => {
       id: undefined,
       name: undefined,
       citizenId: undefined,
-      classId: undefined,
       code: undefined,
       createdAt: undefined,
       updatedAt: undefined,
       ...edit?.data,
+      classId: edit?.data?.classId?.toString(),
     } as {
       id?: number;
       name?: string;
