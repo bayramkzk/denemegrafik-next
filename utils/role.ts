@@ -9,7 +9,8 @@ export const checkEnforcedRole = (role: Role, enforcedRole: Role | undefined) =>
   enforcedRole === role;
 
 export const roleDisplayNameMap: Record<UserRole, string> = {
-  [Role.SUPERADMIN]: "Süper Yönetici",
-  [Role.ADMIN]: "Yönetici",
+  SUPERADMIN: "Süper Yönetici",
+  ADMIN: "Yönetici",
+  VIEWER: "İzleyici",
   STUDENT: "Öğrenci",
 };

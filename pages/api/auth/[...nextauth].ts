@@ -1,7 +1,7 @@
 import { Routes } from "@/constants/routes";
 import { prisma } from "@/lib/prisma";
 import { loginSchema } from "@/schemas/login";
-import { SessionUser } from "@/types/auth";
+import { AdminUser, SessionUser, StudentUser } from "@/types/auth";
 import bcrypt from "bcrypt";
 import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -26,6 +26,8 @@ export const authOptions: NextAuthOptions = {
           type: "checkbox",
         },
       },
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore: next-auth doesn't accept thetype and complains meaninglessly
       async authorize(credentials): Promise<SessionUser | null> {
         const body = loginSchema.safeParse(credentials);
         if (!body.success) return null;
@@ -43,8 +45,11 @@ export const authOptions: NextAuthOptions = {
           );
           if (!isPasswordValid) return null;
 
-          const { hash: _, ...adminWithoutHash } = admin;
-          return adminWithoutHash;
+          const { hash: _, ...adminWithoutHash } = {
+            ...admin,
+            canMutate: ["ADMIN", "SUPERADMIN"].includes(admin.role),
+          };
+          return adminWithoutHash as AdminUser;
         }
 
         const student = await prisma.student.findUnique({
@@ -56,7 +61,11 @@ export const authOptions: NextAuthOptions = {
         const isCodeValid = body.data.passwordOrCode === String(student.code);
         if (!isCodeValid) return null;
 
-        const studentUser = { ...student, role: "STUDENT" as const };
+        const studentUser = {
+          ...student,
+          role: "STUDENT" as const,
+          canMutate: false,
+        } as StudentUser;
         return studentUser;
       },
     }),

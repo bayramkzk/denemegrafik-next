@@ -61,7 +61,7 @@ const SessionHeader: React.FC = () => {
   const [burgerOpened, burgerHandler] = useDisclosure(false);
 
   return (
-    <SessionGuard>
+    <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN", "VIEWER"]}>
       {({ user }) => {
         const links = getLinkDataBasedOnRole(user.role);
         const items = links.map((link) => (
@@ -73,60 +73,52 @@ const SessionHeader: React.FC = () => {
         ));
 
         return (
-          <SessionGuard>
-            {({ user }) => (
-              <MantineHeader
-                height={HEADER_HEIGHT}
-                p="sm"
-                className={classes.header}
+          <MantineHeader
+            height={HEADER_HEIGHT}
+            p="sm"
+            className={classes.header}
+          >
+            {user.role !== "STUDENT" && (
+              <MediaQuery
+                largerThan={HAMBURGER_BREAKPOINT}
+                styles={{ display: "none" }}
               >
-                {user.role !== "STUDENT" && (
-                  <MediaQuery
-                    largerThan={HAMBURGER_BREAKPOINT}
-                    styles={{ display: "none" }}
-                  >
-                    <Burger
-                      className={classes.burger}
-                      opened={burgerOpened}
-                      onClick={burgerHandler.toggle}
-                      size="sm"
-                      mr="xl"
-                    />
-                  </MediaQuery>
-                )}
-
-                <Group noWrap>
-                  <Link href="/" passHref>
-                    <a>
-                      <AppLogo size={20} />
-                    </a>
-                  </Link>
-
-                  <Group spacing="xs" className={classes.links} noWrap>
-                    {items}
-                  </Group>
-                </Group>
-
-                <UserMenu />
-
-                <Transition
-                  transition="pop-top-right"
-                  duration={200}
-                  mounted={burgerOpened}
-                >
-                  {(styles) => (
-                    <Paper
-                      className={classes.dropdown}
-                      withBorder
-                      style={styles}
-                    >
-                      {items}
-                    </Paper>
-                  )}
-                </Transition>
-              </MantineHeader>
+                <Burger
+                  className={classes.burger}
+                  opened={burgerOpened}
+                  onClick={burgerHandler.toggle}
+                  size="sm"
+                  mr="xl"
+                />
+              </MediaQuery>
             )}
-          </SessionGuard>
+
+            <Group noWrap>
+              <Link href="/" passHref>
+                <a>
+                  <AppLogo size={20} />
+                </a>
+              </Link>
+
+              <Group spacing="xs" className={classes.links} noWrap>
+                {items}
+              </Group>
+            </Group>
+
+            <UserMenu />
+
+            <Transition
+              transition="pop-top-right"
+              duration={200}
+              mounted={burgerOpened}
+            >
+              {(styles) => (
+                <Paper className={classes.dropdown} withBorder style={styles}>
+                  {items}
+                </Paper>
+              )}
+            </Transition>
+          </MantineHeader>
         );
       }}
     </SessionGuard>

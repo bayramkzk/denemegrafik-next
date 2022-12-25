@@ -2,6 +2,7 @@ import { RECORD_FORM_ICON_SIZE } from "@/constants/index";
 import { axiosInstance } from "@/lib/axios-instance";
 import { RecordDrawerEditProps } from "@/types/edit";
 import { AuthErrorResponse } from "@/types/response";
+import { roleDisplayNameMap } from "@/utils/role";
 import {
   Button,
   NumberInput,
@@ -189,10 +190,12 @@ const AdminRecordForm: React.FC<AdminRecordFormProps> = ({ edit }) => {
         <Select
           label="Yönetici Tipi"
           placeholder="Yönetici"
-          data={[
-            { value: "ADMIN", label: "Yönetici" },
-            { value: "SUPERADMIN", label: "Süper Yönetici" },
-          ]}
+          data={Object.entries(roleDisplayNameMap)
+            .filter(([key]) => key !== "STUDENT")
+            .map(([value, label]) => ({
+              value,
+              label,
+            }))}
           required={!edit}
           withAsterisk={!edit}
           icon={<IconUserCircle size={RECORD_FORM_ICON_SIZE} />}

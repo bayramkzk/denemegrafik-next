@@ -225,7 +225,11 @@ const postRecord = async (context: ModelRequestContext) => {
 
 const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
   const session = await unstable_getServerSession(req, res, authOptions);
-  if (!session || session.user.role === "STUDENT") {
+  if (
+    !session ||
+    session.user.role === "STUDENT" ||
+    (session.user.role === "VIEWER" && req.method != "GET")
+  ) {
     return res.status(401).json(UNAUTHORIZED);
   }
   const model = validateModelQuery(req.query.model);

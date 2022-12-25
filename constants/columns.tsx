@@ -1,6 +1,8 @@
 import ActionGroup from "@/components/ActionGroup";
 import { RecordModelName } from "@/constants/models";
+import { UserRole } from "@/types/auth";
 import { renderDate, renderDateTime } from "@/utils/renderLocalDate";
+import { roleDisplayNameMap } from "@/utils/role";
 import { DataTableColumn } from "mantine-datatable";
 
 export const columnDefaults: Partial<DataTableColumn<RecordModelName>> = {
@@ -149,8 +151,7 @@ export const modelToColumnMapWithoutDefaults: Record<
     {
       accessor: "role",
       title: "Kullanıcı Tipi",
-      render: ({ role }) =>
-        role === "SUPERADMIN" ? "Süper Yönetici" : "Yönetici",
+      render: ({ role }) => roleDisplayNameMap[role as UserRole],
     },
     {
       accessor: "school.name",

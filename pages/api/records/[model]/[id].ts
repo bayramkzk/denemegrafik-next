@@ -165,7 +165,7 @@ const handler: NextApiHandler = async (req, res) => {
   }
 
   const session = await unstable_getServerSession(req, res, authOptions);
-  if (!session || session.user.role === "STUDENT") {
+  if (!session || !session.user.canMutate) {
     return res.status(401).json(UNAUTHORIZED);
   }
 

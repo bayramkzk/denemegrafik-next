@@ -8,7 +8,7 @@ import { HeaderLinkData } from "@/types/header";
 
 export const getLinkDataBasedOnRole = (role: UserRole): HeaderLinkData[] => {
   const links: HeaderLinkData[] = [];
-  const isAtLeastAdmin = ["ADMIN", "SUPERADMIN"].includes(role);
+  const isAtLeastAdmin = ["ADMIN", "SUPERADMIN", "VIEWER"].includes(role);
   const superadminLinks: RecordModelName[] = ["school", "admin"];
 
   if (isAtLeastAdmin) {

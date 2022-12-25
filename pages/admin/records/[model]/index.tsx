@@ -85,92 +85,98 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
   }, [error]);
 
   return (
-    <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN"]}>
-      {({ user }) => (
-        <Layout>
-          <Stack spacing="xl">
-            <Title mb="lg">{title}</Title>
+    <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN", "VIEWER"]}>
+      {({ user }) => {
+        const actionsEnabled =
+          user.role === "SUPERADMIN" ||
+          (model !== "test" && user.role !== "VIEWER");
 
-            {user.role === "SUPERADMIN" || model !== "test" ? (
-              <Grid grow gutter={8}>
-                <Grid.Col span={12} sm={6} md={8}>
-                  <TextInput
-                    placeholder={`${title} arasında anahtar kelimeleri virgülle ayırarak arama yapın... (Örn: "ahmet, 9 / E")`}
-                    value={query}
-                    icon={<IconSearch size={16} />}
-                    onChange={(event) => setQuery(event.target.value)}
-                    sx={{ flexGrow: 1, flexShrink: 1 }}
-                  />
-                </Grid.Col>
+        return (
+          <Layout>
+            <Stack spacing="xl">
+              <Title mb="lg">{title}</Title>
 
-                <Grid.Col span={12} sm={6} md={4}>
-                  <Group noWrap spacing={4}>
-                    <DeleteRecordModalButton
-                      model={model}
-                      records={selectedRecords}
+              {actionsEnabled ? (
+                <Grid grow gutter={8}>
+                  <Grid.Col span={12} sm={6} md={8}>
+                    <TextInput
+                      placeholder={`${title} arasında anahtar kelimeleri virgülle ayırarak arama yapın... (Örn: "ahmet, 9 / E")`}
+                      value={query}
+                      icon={<IconSearch size={16} />}
+                      onChange={(event) => setQuery(event.target.value)}
+                      sx={{ flexGrow: 1, flexShrink: 1 }}
                     />
-                    <UploadExcelModalButton model={model} />
-                    <CreateRecordDrawerButton model={model} />
-                  </Group>
-                </Grid.Col>
-              </Grid>
-            ) : (
-              <TextInput
-                placeholder={`${title} arasında anahtar kelimeleri virgülle ayırarak arama yapın... (Örn: "ahmet, 9 / E")`}
-                value={query}
-                icon={<IconSearch size={16} />}
-                onChange={(event) => setQuery(event.target.value)}
-                sx={{ flexGrow: 1, flexShrink: 1 }}
-              />
-            )}
+                  </Grid.Col>
 
-            <Stack spacing="xs">
-              {records && !isLoading ? (
-                <Text align="right" size="sm">
-                  {selectedRecords.length || records.length} kayıt
-                </Text>
+                  <Grid.Col span={12} sm={6} md={4}>
+                    <Group noWrap spacing={4}>
+                      <DeleteRecordModalButton
+                        model={model}
+                        records={selectedRecords}
+                      />
+                      <UploadExcelModalButton model={model} />
+                      <CreateRecordDrawerButton model={model} />
+                    </Group>
+                  </Grid.Col>
+                </Grid>
               ) : (
-                <Text align="right" size="sm" color="dimmed">
-                  {isLoading ? "Yükleniyor..." : "Veri yok"}
-                </Text>
+                <TextInput
+                  placeholder={`${title} arasında anahtar kelimeleri virgülle ayırarak arama yapın... (Örn: "ahmet, 9 / E")`}
+                  value={query}
+                  icon={<IconSearch size={16} />}
+                  onChange={(event) => setQuery(event.target.value)}
+                  sx={{ flexGrow: 1, flexShrink: 1 }}
+                />
               )}
 
-              <DataTable
-                key={model}
-                columns={(() => {
-                  const columns = modelToColumnMap[model];
-                  if (model === "test" && user.role !== "SUPERADMIN") {
-                    return columns.filter(
-                      (column) => column.accessor !== "actions"
-                    );
+              <Stack spacing="xs">
+                {records && !isLoading ? (
+                  <Text align="right" size="sm">
+                    {selectedRecords.length || records.length} kayıt
+                  </Text>
+                ) : (
+                  <Text align="right" size="sm" color="dimmed">
+                    {isLoading ? "Yükleniyor..." : "Veri yok"}
+                  </Text>
+                )}
+
+                <DataTable
+                  key={model}
+                  columns={(() => {
+                    const columns = modelToColumnMap[model];
+                    if (!actionsEnabled) {
+                      return columns.filter(
+                        (column) => column.accessor !== "actions"
+                      );
+                    }
+                    return columns;
+                  })()}
+                  records={sortedRecords || []}
+                  fetching={isLoading}
+                  loaderBackgroundBlur={5}
+                  height={height - 300}
+                  emptyState={
+                    <Stack align="center">
+                      <IconDatabaseOff size={40} />
+                      <Text>{title} için veri bulunamadı</Text>
+                    </Stack>
                   }
-                  return columns;
-                })()}
-                records={sortedRecords || []}
-                fetching={isLoading}
-                loaderBackgroundBlur={5}
-                height={height - 300}
-                emptyState={
-                  <Stack align="center">
-                    <IconDatabaseOff size={40} />
-                    <Text>{title} için veri bulunamadı</Text>
-                  </Stack>
-                }
-                sortStatus={sortStatus}
-                onSortStatusChange={setSortStatus}
-                selectedRecords={selectedRecords}
-                onSelectedRecordsChange={(records) =>
-                  setSelectedRecords(records as ModelRecord[])
-                }
-                totalRecords={filteredRecords?.length}
-                recordsPerPage={PAGE_SIZE}
-                page={page}
-                onPageChange={(p) => setPage(p)}
-              />
+                  sortStatus={sortStatus}
+                  onSortStatusChange={setSortStatus}
+                  selectedRecords={selectedRecords}
+                  onSelectedRecordsChange={(records) =>
+                    setSelectedRecords(records as ModelRecord[])
+                  }
+                  totalRecords={filteredRecords?.length}
+                  recordsPerPage={PAGE_SIZE}
+                  page={page}
+                  onPageChange={(p) => setPage(p)}
+                />
+              </Stack>
             </Stack>
-          </Stack>
-        </Layout>
-      )}
+          </Layout>
+        );
+      }}
     </SessionGuard>
   );
 };

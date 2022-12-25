@@ -6,7 +6,7 @@ import { NextPage } from "next";
 
 const AdminPage: NextPage = () => {
   return (
-    <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN"]}>
+    <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN", "VIEWER"]}>
       {({ user }) => (
         <Layout>
           <Stack spacing="xl">
