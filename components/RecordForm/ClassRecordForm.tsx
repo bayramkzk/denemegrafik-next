@@ -158,7 +158,7 @@ const ClassRecordForm: React.FC<ClassRecordFormProps> = ({ edit }) => {
         {session.user.role === "SUPERADMIN" && (
           <NumberInput
             label="Okul Kodu"
-            placeholder="32"
+            placeholder="349664"
             hideControls
             icon={<IconIdBadge2 size={RECORD_FORM_ICON_SIZE} />}
             withAsterisk={!edit}

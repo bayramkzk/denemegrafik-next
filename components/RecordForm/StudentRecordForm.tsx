@@ -1,8 +1,16 @@
 import { CITIZEN_ID_LENGTH, RECORD_FORM_ICON_SIZE } from "@/constants/index";
+import { useRecords } from "@/hooks/use-records";
 import { axiosInstance } from "@/lib/axios-instance";
 import { RecordDrawerEditProps } from "@/types/edit";
 import { AuthErrorResponse } from "@/types/response";
-import { Button, NumberInput, Stack, Text, TextInput } from "@mantine/core";
+import {
+  Button,
+  NumberInput,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import { Student } from "@prisma/client";
@@ -58,7 +66,13 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({ edit }) => {
           ? "TC Kimlik Numarası sadece rakamlardan oluşmalıdır!"
           : undefined,
     }),
+    transformValues: (values) => ({
+      ...values,
+      classId: Number(values.classId),
+    }),
   });
+  const { records: classes } = useRecords<"class">("class");
+
   const mutation = useMutation(["student"], (values: StudentRecordData) =>
     axiosInstance.request<StudentResponse>({
       method: edit ? "PATCH" : "POST",
@@ -164,12 +178,17 @@ const StudentRecordForm: React.FC<StudentRecordFormProps> = ({ edit }) => {
           icon={<IconNumber size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("code")}
         />
-        <NumberInput
-          label="Sınıf ID"
-          placeholder="32"
-          hideControls
+        <Select
+          label="Sınıf"
+          placeholder="Seçiniz"
           withAsterisk={!edit}
-          required={!edit}
+          data={
+            classes?.map((class_) => ({
+              label: `${class_.school.name} ${class_.grade} / ${class_.branch}`,
+              value: class_.id.toString(),
+            })) || []
+          }
+          disabled={!classes || classes.length === 0}
           icon={<IconChalkboard size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("classId")}
         />
