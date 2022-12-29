@@ -14,6 +14,7 @@ import {
 } from "@mantine/core";
 import { useSetState } from "@mantine/hooks";
 import { IconChartBar, IconEdit } from "@tabler/icons";
+import { useSession } from "next-auth/react";
 import React from "react";
 import { RECORD_FORM_ICON_SIZE } from "../constants";
 import RecordDrawer from "./RecordDrawer";
@@ -27,6 +28,7 @@ export interface ActionGroupProps {
 }
 
 const ActionGroup: React.FC<ActionGroupProps> = ({ model, data, name, id }) => {
+  const { data: session } = useSession();
   const [graphModal, setGraphModal] = useSetState({
     open: false,
     results: null as TestResultWithAverage[] | null,
@@ -58,11 +60,13 @@ const ActionGroup: React.FC<ActionGroupProps> = ({ model, data, name, id }) => {
           </Tooltip>
         )}
 
-        <Tooltip label="Kaydı Düzenle">
-          <ActionIcon color="blue" onClick={openEditDrawer}>
-            <IconEdit size={RECORD_FORM_ICON_SIZE} />
-          </ActionIcon>
-        </Tooltip>
+        {session?.user?.role !== "VIEWER" && (
+          <Tooltip label="Kaydı Düzenle">
+            <ActionIcon color="blue" onClick={openEditDrawer}>
+              <IconEdit size={RECORD_FORM_ICON_SIZE} />
+            </ActionIcon>
+          </Tooltip>
+        )}
       </Group>
 
       <Modal
