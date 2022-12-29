@@ -89,7 +89,7 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
       {({ user }) => {
         const actionsEnabled =
           user.role === "SUPERADMIN" ||
-          (model !== "test" && user.role !== "VIEWER");
+          (model !== "test" && (user.role !== "VIEWER" || model === "student"));
 
         return (
           <Layout>
