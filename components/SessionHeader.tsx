@@ -61,7 +61,7 @@ const SessionHeader: React.FC = () => {
   const [burgerOpened, burgerHandler] = useDisclosure(false);
 
   return (
-    <SessionGuard allowedRoles={["ADMIN", "SUPERADMIN", "VIEWER"]}>
+    <SessionGuard>
       {({ user }) => {
         const links = getLinkDataBasedOnRole(user.role);
         const items = links.map((link) => (
