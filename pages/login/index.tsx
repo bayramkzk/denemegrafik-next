@@ -17,6 +17,7 @@ import {
   TextInput,
   Title,
   Tooltip,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
@@ -37,6 +38,7 @@ const INPUT_SIZE = "lg";
 const LOGO_SIZE = 340;
 const LOGO_BREAKPOINT = "md";
 const LOGO_SRC = "/esdfl-logo.png";
+const DARK_LOGO_SRC = "/esdfl-logo-dark.webp";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -74,6 +76,8 @@ const useStyles = createStyles((theme) => ({
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
+  const { colorScheme } = useMantineColorScheme();
+
   const isAdmin = router.query.admin !== undefined;
   const otherLoginHref = isAdmin ? "/login" : "/login?admin";
 
@@ -221,7 +225,7 @@ const LoginPage: NextPage = () => {
         <Tooltip label="Edirne Suleyman Demirel Fen Lisesi Deneme Sınavları Grafikleri Projesi">
           <Card className={classes.logo}>
             <Image
-              src={LOGO_SRC}
+              src={colorScheme == "dark" ? DARK_LOGO_SRC : LOGO_SRC}
               alt="Edirne Suleyman Demirel Fen Lisesi Logosu"
               width={LOGO_SIZE}
               height={LOGO_SIZE}
