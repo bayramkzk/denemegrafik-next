@@ -90,7 +90,7 @@ model TestResult {
   updatedAt DateTime @updatedAt
   studentId Int
 
-  student Student @relation(fields: [studentId], references: [id])
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
   test    Test    @relation(fields: [testId], references: [id])
 
   @@id([testId, studentId])
