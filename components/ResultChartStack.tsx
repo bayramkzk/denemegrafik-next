@@ -1,5 +1,5 @@
 import { TestResultWithAverage } from "@/types/test";
-import { Alert, Button, Group, Stack, Title } from "@mantine/core";
+import { Alert, Button, Group, Stack, Text, Title } from "@mantine/core";
 import { IconPrinter } from "@tabler/icons";
 import _ from "lodash";
 import dynamic from "next/dynamic";
@@ -69,10 +69,10 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
             />
 
             <Group position="right">
-              <Title order={4} p="md">
-                {testResults[0].test.type.name} Deneme Sınavları Ortalaması:
+              <Text>
+                Öğrenci {testResults[0].test.type.name} Ortalaması:{" "}
                 {totalAverage.toFixed(2)}
-              </Title>
+              </Text>
             </Group>
           </Stack>
         ))}
