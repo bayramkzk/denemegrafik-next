@@ -23,7 +23,10 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
 }) => {
   const printRef = useRef(null);
   const groupedResults = Object.entries(_.groupBy(results, "test.type.name"));
-  const totalAverage = _.meanBy(results, "score");
+  const studentAverageByTestType = _.mapValues(
+    Object.fromEntries(groupedResults),
+    (testResults) => _.meanBy(testResults, "score")
+  );
 
   return (
     <Stack>
@@ -71,7 +74,7 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
             <Group position="right">
               <Text>
                 Öğrenci {testResults[0].test.type.name} Ortalaması:{" "}
-                {totalAverage.toFixed(2)}
+                {studentAverageByTestType[testType].toFixed(2)}
               </Text>
             </Group>
           </Stack>
