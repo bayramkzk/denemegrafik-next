@@ -24,7 +24,7 @@ export type RecordsPageProps = {
   model: RecordModelName;
 };
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 100;
 
 const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
   const title = RecordModelPluralDisplayNames[model];
