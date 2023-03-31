@@ -12,7 +12,7 @@ import { useRecords } from "@/hooks/use-records";
 import { validateModelQuery } from "@/utils/model";
 import { ModelRecord } from "@/utils/record";
 import { Grid, Group, Stack, Text, TextInput, Title } from "@mantine/core";
-import { useDebouncedValue, useViewportSize } from "@mantine/hooks";
+import { useDebouncedValue } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
 import { IconDatabaseOff, IconSearch } from "@tabler/icons";
 import sortBy from "lodash/sortBy";
@@ -28,7 +28,6 @@ const PAGE_SIZE = 100;
 
 const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
   const title = RecordModelPluralDisplayNames[model];
-  const { height } = useViewportSize();
 
   const [query, setQuery] = useState("");
   const [debouncedQuery] = useDebouncedValue(query, 1000);

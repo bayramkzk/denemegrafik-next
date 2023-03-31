@@ -61,7 +61,7 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
   );
   const testTypeData = testTypes
     ? testTypes.map((testType) => ({
-        label: testType.description,
+        label: testType.description || undefined,
         value: testType.name,
       }))
     : [];

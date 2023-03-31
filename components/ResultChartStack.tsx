@@ -22,7 +22,9 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
   studentName,
 }) => {
   const printRef = useRef(null);
-  const groupedResults = _.groupBy(results, "test.type.name");
+  const groupedResults = _.groupBy(results, "test.type.name") as {
+    [key: string]: TestResultWithAverage[];
+  };
   const studentAverageByTestType = _.mapValues(groupedResults, (testResults) =>
     _.meanBy(testResults, "score")
   );
@@ -72,7 +74,7 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
 
             <ResultChart
               key={testType}
-              results={testResults as TestResultWithAverage[]}
+              results={testResults}
               slim={Object.keys(groupedResults).length > 1}
             />
 

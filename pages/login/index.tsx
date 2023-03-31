@@ -175,7 +175,7 @@ const LoginPage: NextPage = () => {
                 label="TC Kimlik Numarası"
                 placeholder="12345678901"
                 maxLength={CITIZEN_ID_LENGTH}
-                formatter={(value) => value?.replace(/\D/g, "")}
+                formatter={(value) => value?.replace(/\D/g, "") || ""}
                 size={INPUT_SIZE}
                 icon={<IconIdBadge2 />}
                 {...form.getInputProps("usernameOrCitizenId")}
