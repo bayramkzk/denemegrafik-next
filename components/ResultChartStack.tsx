@@ -38,8 +38,8 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
         sx={{
           "@media print": {
             zoom: "60%",
-            "-webkit-print-color-adjust": "exact",
-            "color-adjust": "exact",
+            WebkitPrintColorAdjust: "exact",
+            colorAdjust: "exact",
           },
         }}
       >
