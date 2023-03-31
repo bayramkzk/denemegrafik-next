@@ -73,7 +73,7 @@ const ActionGroup: React.FC<ActionGroupProps> = ({ model, data, name, id }) => {
         opened={graphModal.open}
         onClose={() => setGraphModal({ open: false })}
         title={<Title order={2}>Öğrenci Deneme Grafiği</Title>}
-        size={1500}
+        size="100%"
       >
         <Stack>
           <Text>
