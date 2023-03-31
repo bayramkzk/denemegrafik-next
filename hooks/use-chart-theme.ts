@@ -37,9 +37,14 @@ export const useChartTheme = () => {
   };
 };
 
-export const useChartSize = (dataSize: number, slim: boolean) => {
+export const useChartSize = (dataSize: number, slim: boolean = false) => {
   const { ref: containerRef, width: cardWidth } = useElementSize();
   const width = Math.max(cardWidth, dataSize * WIDTH_PER_RESULT);
   const height = slim ? 400 : 600;
-  return { containerRef, width, height, style: { paddingRight: "10rem" } };
+  return {
+    containerRef,
+    width,
+    height,
+    style: { paddingRight: "10rem" },
+  };
 };

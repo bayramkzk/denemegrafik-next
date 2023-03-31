@@ -22,10 +22,9 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
   studentName,
 }) => {
   const printRef = useRef(null);
-  const groupedResults = Object.entries(_.groupBy(results, "test.type.name"));
-  const studentAverageByTestType = _.mapValues(
-    Object.fromEntries(groupedResults),
-    (testResults) => _.meanBy(testResults, "score")
+  const groupedResults = _.groupBy(results, "test.type.name");
+  const studentAverageByTestType = _.mapValues(groupedResults, (testResults) =>
+    _.meanBy(testResults, "score")
   );
 
   return (
@@ -34,7 +33,13 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
         spacing="xl"
         ref={printRef}
         // FIXME: this is a hack to make the chart fit the page
-        sx={{ "@media print": { zoom: "60%" } }}
+        sx={{
+          "@media print": {
+            zoom: "60%",
+            "-webkit-print-color-adjust": "exact",
+            "color-adjust": "exact",
+          },
+        }}
       >
         <Group
           sx={{
@@ -59,7 +64,7 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
           <Title order={2}>{studentName} Öğrencisinin Deneme Sonuçları</Title>
         </Group>
 
-        {groupedResults.map(([testType, testResults]) => (
+        {Object.entries(groupedResults).map(([testType, testResults]) => (
           <Stack key={testType}>
             <Title order={3} p="md">
               {testType} Deneme Sınavları Sonuçları
@@ -68,7 +73,7 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
             <ResultChart
               key={testType}
               results={testResults as TestResultWithAverage[]}
-              slim={groupedResults.length > 1}
+              slim={Object.keys(groupedResults).length > 1}
             />
 
             <Group position="right">
@@ -81,7 +86,7 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
         ))}
       </Stack>
 
-      {groupedResults.length > 0 && (
+      {Object.keys(groupedResults).length > 0 && (
         <Group position="right">
           <ReactToPrint
             trigger={() => (
@@ -96,7 +101,7 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
         </Group>
       )}
 
-      {groupedResults.length === 0 && (
+      {Object.keys(groupedResults).length === 0 && (
         <Alert color="orange">Bu öğrenciye ait deneme sonucu bulunamadı.</Alert>
       )}
     </Stack>

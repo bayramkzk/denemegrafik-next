@@ -154,7 +154,7 @@ const RecordsPage: NextPage<RecordsPageProps> = ({ model }) => {
                   records={sortedRecords || []}
                   fetching={isLoading}
                   loaderBackgroundBlur={5}
-                  height={height - 300}
+                  height="50rem"
                   emptyState={
                     <Stack align="center">
                       <IconDatabaseOff size={40} />
