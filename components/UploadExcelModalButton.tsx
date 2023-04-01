@@ -44,7 +44,7 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
   const [opened, { close, open }] = useDisclosure(false);
   const [file, setFile] = useState<File | null>(null);
   const [testId, setTestId] = useState<number | null>(null);
-  const [tests, setTests] = useState<Test[]>([]);
+  const [tests, setTests] = useState<Test[] | null>([]);
   const queryClient = useQueryClient();
   const mutation = useMutation(
     [model],
@@ -222,10 +222,12 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
                 <Select
                   label="Deneme Sınavı"
                   placeholder="ÇAP TYT 1"
-                  data={tests.map((test) => ({
-                    label: test.name,
-                    value: String(test.id),
-                  }))}
+                  data={
+                    tests?.map((test) => ({
+                      label: test.name,
+                      value: String(test.id),
+                    })) || []
+                  }
                   value={String(testId)}
                   onChange={(v) => setTestId(v == null ? null : Number(v))}
                   required

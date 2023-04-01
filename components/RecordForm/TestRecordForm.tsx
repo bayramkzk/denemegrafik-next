@@ -59,12 +59,11 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
   const { data: testTypes } = useQuery(["testType"], () =>
     axiosInstance.get<TestType[]>("/api/test-types").then((res) => res.data)
   );
-  const testTypeData = testTypes
-    ? testTypes.map((testType) => ({
-        label: testType.description || undefined,
-        value: testType.name,
-      }))
-    : [];
+  const testTypeData =
+    testTypes?.map((testType) => ({
+      label: testType.description || undefined,
+      value: testType.name,
+    })) || [];
   const mutation = useMutation(["test"], (values: TestRecordData) =>
     axiosInstance.request<TestResponse>({
       method: edit ? "PATCH" : "POST",
