@@ -1,6 +1,6 @@
 import { TestResultWithAverage } from "@/types/test";
 import { Alert, Button, Group, Stack, Text, Title } from "@mantine/core";
-import { IconPrinter } from "@tabler/icons";
+import { IconInfoCircle, IconPrinter } from "@tabler/icons";
 import _ from "lodash";
 import dynamic from "next/dynamic";
 import React, { useRef } from "react";
@@ -32,14 +32,15 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
   return (
     <Stack>
       <Stack
-        spacing="xl"
         ref={printRef}
-        // FIXME: this is a hack to make the chart fit the page
         sx={{
+          padding: "1rem",
           "@media print": {
-            zoom: "60%",
+            zoom: "80%",
+            MozTransform: "scale(0.75)",
             WebkitPrintColorAdjust: "exact",
             colorAdjust: "exact",
+            padding: 0,
           },
         }}
       >
@@ -78,7 +79,7 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
               slim={Object.keys(groupedResults).length > 1}
             />
 
-            <Group position="right">
+            <Group position="right" pr="xl">
               <Text>
                 Öğrenci {testResults[0].test.type.name} Ortalaması:{" "}
                 {studentAverageByTestType[testType].toFixed(2)}
@@ -86,6 +87,20 @@ const ResultChartStack: React.FC<ResultGraphStackProps> = ({
             </Group>
           </Stack>
         ))}
+
+        <Group
+          px="xl"
+          mt="lg"
+          sx={{ display: "none", "@media print": { display: "block" } }}
+        >
+          <Alert
+            icon={<IconInfoCircle size={RECORD_FORM_ICON_SIZE} />}
+            color="teal"
+          >
+            Sınav ortalamaları noktalı çizgiler halinde, öğrencinin aldığı
+            puanlar ise düz çizgiler halinde gösterilmektedir.
+          </Alert>
+        </Group>
       </Stack>
 
       {Object.keys(groupedResults).length > 0 && (

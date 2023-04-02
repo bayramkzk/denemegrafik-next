@@ -33,3 +33,25 @@ a {
     background: black;
   }
 }
+
+@media print {
+  .recharts-wrapper,
+  .recharts-surface {
+    width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .recharts-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .recharts-wrapper,
+  .recharts-surface {
+    height: 100% !important;
+  }
+
+  .recharts-legend-wrapper {
+    display: none !important;
+  }
+}

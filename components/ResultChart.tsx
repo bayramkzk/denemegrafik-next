@@ -74,6 +74,7 @@ const ResultChart: React.FC<ResultChartProps> = ({ results, slim = false }) => {
         <Line
           dataKey={AVERAGE_SCORE_FIELD}
           stroke="#f34"
+          strokeDasharray="4"
           unit=" NET"
           {...theme.line}
         />
