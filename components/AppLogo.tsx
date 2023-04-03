@@ -28,18 +28,20 @@ interface BrandLogoProps {
   size: number;
   withCaption?: boolean;
   sx?: Sx | (Sx | undefined)[];
+  className?: string;
 }
 
 const AppLogo: React.FC<BrandLogoProps> = ({
   size,
   withCaption = true,
   sx,
+  className,
 }) => {
-  const { classes } = useStyles();
+  const { classes, cx } = useStyles();
   const logoSize = size * 1.25;
 
   return (
-    <Group className={classes.root} sx={sx} noWrap>
+    <Group className={cx(classes.root, className)} sx={sx} noWrap>
       <IconChartLine className={classes.logo} size={logoSize} />
 
       {withCaption && (
