@@ -18,8 +18,13 @@ import { NextApiHandler } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
 
-const getRecords = async ({ res, model, session }: ModelRequestContext) => {
-  const records = await findRecordsByModel(model, session.user);
+const getRecords = async ({
+  res,
+  model,
+  session,
+  onlymeta,
+}: ModelRequestContext) => {
+  const records = await findRecordsByModel(model, session.user, onlymeta);
   if (records === null) {
     return res.status(401).json(UNAUTHORIZED);
   }
@@ -236,7 +241,15 @@ const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
   if (!model) {
     return res.status(400).json(INVALID_MODEL_NAME);
   }
-  const context = { req, res, model, session };
+
+  console.log(req.url, req.query);
+  const context: ModelRequestContext = {
+    req,
+    res,
+    model,
+    session,
+    onlymeta: !!req.query.onlymeta,
+  };
 
   try {
     switch (req.method) {

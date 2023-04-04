@@ -58,22 +58,22 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
 
   // get tests for testResult model
   useEffect(() => {
-    if (model === "testResult") {
-      axiosInstance
-        .get("/api/records/test")
-        .then((res) => {
-          setTests(res.data.records);
-        })
-        .catch((err) => {
-          showNotification({
-            title: "Deneme sınavları alınamadı",
-            message: JSON.stringify(err),
-            color: "red",
-            icon: <IconFileAnalytics />,
-          });
-          console.error(err);
+    if (model !== "testResult") return;
+    axiosInstance
+      .get("/api/records/test?onlymeta=1")
+      .then((res) => {
+        if (!res.data?.records) throw "Beklenmeyen deneme sınavları bilgisi";
+        setTests(res.data.records);
+      })
+      .catch((err) => {
+        showNotification({
+          title: "Deneme sınavları alınamadı",
+          message: JSON.stringify(err),
+          color: "red",
+          icon: <IconFileAnalytics />,
         });
-    }
+        console.error(err);
+      });
   }, [model]);
 
   useEffect(() => {
@@ -221,7 +221,7 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
               {model === "testResult" && (
                 <Select
                   label="Deneme Sınavı"
-                  placeholder="ÇAP TYT 1"
+                  placeholder={tests?.length ? "ÇAP TYT 1" : "Yükleniyor..."}
                   data={
                     tests?.map((test) => ({
                       label: test.name,

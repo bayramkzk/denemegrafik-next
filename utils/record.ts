@@ -7,7 +7,8 @@ export const sumArray = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
 
 export const findRecordsByModel = async (
   model: RecordModelName,
-  user: SessionUser
+  user: SessionUser,
+  onlymeta: boolean = false
 ) => {
   if (user.role === "STUDENT") return null;
   const constrain = <T>(obj: T) =>
@@ -69,6 +70,7 @@ export const findRecordsByModel = async (
 
     case "test": {
       const tests = await prisma.test.findMany();
+      if (onlymeta) return tests;
       const testsWithSchoolCounts = await prisma.$transaction(
         tests.map((test) =>
           prisma.testResult.findMany({

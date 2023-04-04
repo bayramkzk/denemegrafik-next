@@ -51,4 +51,5 @@ export type ModelRequestContext = {
   res: NextApiResponse;
   model: RecordModelName;
   session: Session;
+  onlymeta: boolean;
 };
