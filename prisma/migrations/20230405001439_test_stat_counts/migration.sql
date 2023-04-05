@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Test" ADD COLUMN     "schoolCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "studentCount" INTEGER NOT NULL DEFAULT 0;

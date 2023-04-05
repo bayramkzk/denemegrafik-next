@@ -72,12 +72,14 @@ model TestType {
 }
 
 model Test {
-  id        Int      @id @default(autoincrement())
-  name      String
-  date      DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  typeName  String   @default("TYT")
+  id           Int      @id @default(autoincrement())
+  name         String
+  date         DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  typeName     String   @default("TYT")
+  studentCount Int      @default(0)
+  schoolCount  Int      @default(0)
 
   type    TestType     @relation(fields: [typeName], references: [name])
   results TestResult[]
