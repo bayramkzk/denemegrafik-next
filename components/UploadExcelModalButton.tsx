@@ -60,7 +60,7 @@ const UploadExcelModalButton: React.FC<UploadExcelModalButtonProps> = ({
   useEffect(() => {
     if (model !== "testResult") return;
     axiosInstance
-      .get("/api/records/test?onlymeta=1")
+      .get("/api/records/test")
       .then((res) => {
         if (!res.data?.records) throw "Beklenmeyen deneme sınavları bilgisi";
         setTests(res.data.records);

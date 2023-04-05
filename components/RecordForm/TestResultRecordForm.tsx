@@ -76,6 +76,8 @@ const TestResultRecordForm: React.FC<TestResultRecordFormProps> = ({
       form.reset();
       await edit?.onSubmit(res.data);
 
+      console.log(res.data.record);
+
       updateNotification({
         id: TEST_RESULT_NOTIFICATION_ID,
         title: "Kayıt " + (edit ? "Düzenlendi" : "Oluşturuldu"),

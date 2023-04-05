@@ -14,17 +14,13 @@ import { FetchRecordsResponse, ModelRequestContext } from "@/types/response";
 import { validateModelQuery } from "@/utils/model";
 import { findRecordsByModel } from "@/utils/record";
 import { Prisma } from "@prisma/client";
+import _ from "lodash";
 import { NextApiHandler } from "next";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
 
-const getRecords = async ({
-  res,
-  model,
-  session,
-  onlymeta,
-}: ModelRequestContext) => {
-  const records = await findRecordsByModel(model, session.user, onlymeta);
+const getRecords = async ({ res, model, session }: ModelRequestContext) => {
+  const records = await findRecordsByModel(model, session.user);
   if (records === null) {
     return res.status(401).json(UNAUTHORIZED);
   }
@@ -131,8 +127,13 @@ const deleteRecord = async (context: ModelRequestContext) => {
         return context.res.status(401).json(UNAUTHORIZED);
       }
 
-      const testResults = await prisma.$transaction(
-        ids.map((id) =>
+      const studentCountChange = _.mapValues(
+        _.groupBy(ids, (id) => id.testId),
+        (v) => v.length
+      );
+
+      const testResults = await prisma.$transaction([
+        ...ids.map((id) =>
           prisma.testResult.delete({
             where: {
               testId_studentId: {
@@ -141,8 +142,19 @@ const deleteRecord = async (context: ModelRequestContext) => {
               },
             },
           })
-        )
+        ),
+        ...Object.entries(studentCountChange).map(([testId, count]) =>
+          prisma.test.update({
+            where: { id: parseInt(testId) },
+            data: { studentCount: { decrement: count } },
+          })
+        ),
+      ]);
+
+      await prisma.$transaction(
+        await recountTestSchools(ids.map((id) => id.testId))
       );
+
       return context.res
         .status(200)
         .json({ success: true, records: testResults });
@@ -211,9 +223,17 @@ const postRecord = async (context: ModelRequestContext) => {
       return res.status(200).json({ success: true, record: test });
     }
     case "testResult": {
-      const testResult = await prisma.testResult.create({
-        data: req.body,
-      });
+      if (!req.body.testId) {
+        return res.status(400).json(INVALID_BODY);
+      }
+      const [testResult] = await prisma.$transaction([
+        prisma.testResult.create({ data: req.body }),
+        prisma.test.update({
+          where: { id: req.body.testId },
+          data: { studentCount: { increment: 1 } },
+        }),
+      ]);
+      await prisma.$transaction(await recountTestSchools([req.body.testId]));
       return res.status(200).json({ success: true, record: testResult });
     }
     case "admin": {
@@ -242,14 +262,7 @@ const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
     return res.status(400).json(INVALID_MODEL_NAME);
   }
 
-  console.log(req.url, req.query);
-  const context: ModelRequestContext = {
-    req,
-    res,
-    model,
-    session,
-    onlymeta: !!req.query.onlymeta,
-  };
+  const context = { req, res, model, session };
 
   try {
     switch (req.method) {
@@ -287,3 +300,25 @@ const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
 };
 
 export default handler;
+
+async function recountTestSchools(idsToCheck?: number[]) {
+  const testResults = await prisma.testResult.findMany({
+    where: idsToCheck ? { testId: { in: idsToCheck } } : undefined,
+    select: {
+      testId: true,
+      student: { select: { class: { select: { schoolId: true } } } },
+    },
+  });
+
+  const testSchoolCount = _.mapValues(
+    _.groupBy(testResults, (r) => r.testId),
+    (v) => _.uniqBy(v, (r) => r.student.class.schoolId).length
+  );
+
+  return Object.entries(testSchoolCount).map(([testId, count]) =>
+    prisma.test.update({
+      where: { id: parseInt(testId) },
+      data: { schoolCount: { set: count } },
+    })
+  );
+}
