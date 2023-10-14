@@ -75,24 +75,24 @@ export function AppFooter() {
           öğrencileri tarafından yapılmıştır. Tüm hakları saklıdır.
         </Text>
 
-        <Group spacing="sm" align="center">
+        <Group spacing="sm" align="center" noWrap>
           <Text color="dimmed" size="xs" className={classes.author}>
             Bayram Kazık
           </Text>
 
-          <Link href="https://www.linkedin.com/in/bayram-kazik" passHref>
+          <Link href="https://www.linkedin.com/in/bayramkazik" passHref>
             <a target="_blank" rel="noopener noreferrer">
               <IconBrandLinkedin size={20} color="#0072b1" />
             </a>
           </Link>
 
-          <Link href="mailto:bayramkazik@pm.me" passHref>
+          <Link href="mailto:bayram.kazik@proton.me" passHref>
             <a target="_blank" rel="noopener noreferrer">
               <IconMail size={20} color="#c71610" />
             </a>
           </Link>
 
-          <Link href="https://github.com/highberg/denemegrafik-next" passHref>
+          <Link href="https://github.com/bayramkzk/denemegrafik-next" passHref>
             <a target="_blank">
               <IconBrandGithub size={20} color="#6e5494" />
             </a>
