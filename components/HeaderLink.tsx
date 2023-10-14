@@ -2,7 +2,7 @@ import { HeaderLinkData } from "@/types/header";
 import { createStyles } from "@mantine/core";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useMemo } from "react";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -50,15 +50,18 @@ export interface HeaderLinkProps {
 const HeaderLink: React.FC<HeaderLinkProps> = ({ link, closeMenu }) => {
   const router = useRouter();
   const { classes, cx } = useStyles();
+  const isActive = useMemo(() => {
+    const path = router.asPath;
+    const index = path.indexOf("?");
+    const slicedPath = path.slice(0, index !== -1 ? index : undefined);
+    return slicedPath === link.href;
+  }, [router.asPath, link.href]);
 
   return (
     <Link href={link.href} key={link.href}>
       <a
         onClick={() => closeMenu()}
-        className={cx(
-          classes.link,
-          router.asPath === link.href && classes.linkActive
-        )}
+        className={cx(classes.link, isActive && classes.linkActive)}
       >
         {link.label}
       </a>
