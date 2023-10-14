@@ -9,15 +9,13 @@ import {
 import {
   Button,
   Card,
-  createStyles,
   Group,
   NumberInput,
   PasswordInput,
   Stack,
   TextInput,
   Title,
-  Tooltip,
-  useMantineColorScheme,
+  createStyles,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { showNotification } from "@mantine/notifications";
@@ -37,8 +35,8 @@ import { useState } from "react";
 const INPUT_SIZE = "lg";
 const LOGO_SIZE = 340;
 const LOGO_BREAKPOINT = "md";
-const LOGO_SRC = "/esdfl-logo.png";
-const DARK_LOGO_SRC = "/esdfl-logo-dark.webp";
+const ADMIN_LOGO_SRC = "/login-admin.png";
+const STUDENT_LOGO_SRC = "/login-student.png";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -63,7 +61,12 @@ const useStyles = createStyles((theme) => ({
     [theme.fn.largerThan(LOGO_BREAKPOINT)]: {
       display: "block",
     },
-    borderRadius: "50%",
+    borderRadius: "1rem",
+  },
+  logoImage: {
+    borderRadius: "1rem",
+    filter:
+      theme.colorScheme === "dark" ? "brightness(70%)" : "brightness(90%)",
   },
   link: {
     marginTop: 16,
@@ -76,7 +79,6 @@ const useStyles = createStyles((theme) => ({
 
 const LoginPage: NextPage = () => {
   const router = useRouter();
-  const { colorScheme } = useMantineColorScheme();
 
   const isAdmin = router.query.admin !== undefined;
   const otherLoginHref = isAdmin ? "/login" : "/login?admin";
@@ -222,16 +224,15 @@ const LoginPage: NextPage = () => {
           </Stack>
         </form>
 
-        <Tooltip label="Edirne Suleyman Demirel Fen Lisesi Deneme Sınavları Grafikleri Projesi">
-          <Card className={classes.logo}>
-            <Image
-              src={colorScheme == "dark" ? DARK_LOGO_SRC : LOGO_SRC}
-              alt="Edirne Suleyman Demirel Fen Lisesi Logosu"
-              width={LOGO_SIZE}
-              height={LOGO_SIZE}
-            />
-          </Card>
-        </Tooltip>
+        <Card className={classes.logo}>
+          <Image
+            src={isAdmin ? ADMIN_LOGO_SRC : STUDENT_LOGO_SRC}
+            className={classes.logoImage}
+            alt="Edirne Suleyman Demirel Fen Lisesi Logosu"
+            width={LOGO_SIZE}
+            height={LOGO_SIZE}
+          />
+        </Card>
       </Group>
 
       <AppFooter />
