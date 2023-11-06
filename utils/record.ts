@@ -68,7 +68,10 @@ export const findRecordsByModel = async (
     }
 
     case "test": {
-      const tests = await prisma.test.findMany();
+      const tests = await prisma.test.findMany({
+        include: { school: true },
+        where: constrain({ schoolId: user.schoolId }),
+      });
       return tests;
     }
 

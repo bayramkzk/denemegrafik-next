@@ -184,16 +184,16 @@ export const modelToColumnMapWithoutDefaults: Record<
       title: "Deneme Sınavı Adı",
     },
     {
+      accessor: "school.name",
+      title: "Okul Adı",
+    },
+    {
       accessor: "typeName",
       title: "Deneme Türü",
     },
     {
       accessor: "studentCount",
       title: "Öğrenci Sayısı",
-    },
-    {
-      accessor: "schoolCount",
-      title: "Okul Sayısı",
     },
     {
       accessor: "date",

@@ -95,11 +95,12 @@ const deleteRecord = async (context: ModelRequestContext) => {
       return context.res.status(200).json({ success: true, records: students });
     }
     case "test": {
-      if (context.session.user.role !== "SUPERADMIN") {
-        return context.res.status(401).json(UNAUTHORIZED);
-      }
+      const schoolAdminFilter =
+        context.session.user.role === "SUPERADMIN"
+          ? {} // no condition
+          : { schoolId: context.session.user.schoolId }; // admin
       const tests = await prisma.test.deleteMany({
-        where: { id: { in: numberIds } },
+        where: { id: { in: numberIds }, ...schoolAdminFilter },
       });
       return context.res.status(200).json({ success: true, records: tests });
     }
@@ -150,10 +151,6 @@ const deleteRecord = async (context: ModelRequestContext) => {
           })
         ),
       ]);
-
-      await prisma.$transaction(
-        await recountTestSchools(ids.map((id) => id.testId))
-      );
 
       return context.res
         .status(200)
@@ -214,7 +211,9 @@ const postRecord = async (context: ModelRequestContext) => {
       return res.status(200).json({ success: true, record: student });
     }
     case "test": {
-      if (session.user.role !== "SUPERADMIN") {
+      console.log(req.body);
+      const admin = session.user as AdminUser;
+      if (admin.schoolId !== req.body.schoolId && admin.role !== "SUPERADMIN") {
         return res.status(401).json(UNAUTHORIZED);
       }
       const test = await prisma.test.create({
@@ -233,7 +232,6 @@ const postRecord = async (context: ModelRequestContext) => {
           data: { studentCount: { increment: 1 } },
         }),
       ]);
-      await prisma.$transaction(await recountTestSchools([req.body.testId]));
       return res.status(200).json({ success: true, record: testResult });
     }
     case "admin": {
@@ -300,25 +298,3 @@ const handler: NextApiHandler<FetchRecordsResponse> = async (req, res) => {
 };
 
 export default handler;
-
-async function recountTestSchools(idsToCheck?: number[]) {
-  const testResults = await prisma.testResult.findMany({
-    where: idsToCheck ? { testId: { in: idsToCheck } } : undefined,
-    select: {
-      testId: true,
-      student: { select: { class: { select: { schoolId: true } } } },
-    },
-  });
-
-  const testSchoolCount = _.mapValues(
-    _.groupBy(testResults, (r) => r.testId),
-    (v) => _.uniqBy(v, (r) => r.student.class.schoolId).length
-  );
-
-  return Object.entries(testSchoolCount).map(([testId, count]) =>
-    prisma.test.update({
-      where: { id: parseInt(testId) },
-      data: { schoolCount: { set: count } },
-    })
-  );
-}

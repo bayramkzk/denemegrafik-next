@@ -13,17 +13,21 @@ import {
 import { DatePicker } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
-import { Test, TestType } from "@prisma/client";
+import { Test } from "@prisma/client";
 import {
   IconCalendarTime,
   IconDeviceFloppy,
   IconIdBadge2,
   IconLetterCase,
   IconPencil,
+  IconSchool,
 } from "@tabler/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import DateTimePicker from "../DateTimePicker";
+import type { TestOptions } from "@/pages/api/test-options";
+import { useSession } from "next-auth/react";
+import { AdminUser } from "@/types/auth";
 
 export type TestRecordData = Partial<Test>;
 
@@ -36,11 +40,14 @@ export interface TestRecordFormProps {
 export const TEST_NOTIFICATION_ID = "test-record-form";
 
 const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
+  const { data: session } = useSession();
+  const userSchoolId = (session?.user as AdminUser)?.schoolId.toString();
   const form = useForm({
     initialValues: {
       id: edit?.data?.id,
       name: edit?.data?.name,
       typeName: edit?.data?.typeName,
+      schoolId: edit?.data?.schoolId || userSchoolId,
       date: new Date((edit?.data?.date as string) || new Date()),
       createdAt: new Date((edit?.data?.createdAt as string) || Date.now()),
       updatedAt: new Date((edit?.data?.updatedAt as string) || Date.now()),
@@ -48,6 +55,7 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
       id?: number;
       name?: string;
       typeName?: string;
+      schoolId?: number;
       date?: Date;
       createdAt?: Date;
       updatedAt?: Date;
@@ -56,21 +64,29 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
       date: !values.date && "Lütfen bir tarih seçin",
     }),
   });
-  const { data: testTypes } = useQuery(["testType"], () =>
-    axiosInstance.get<TestType[]>("/api/test-types").then((res) => res.data)
+  console.log(edit?.data, userSchoolId, form.values.schoolId);
+
+  const { data: testOptions } = useQuery(["testOptions"], () =>
+    axiosInstance.get<TestOptions>("/api/test-options").then((res) => res.data)
   );
+  const testSchoolData =
+    testOptions?.schools.map((school) => ({
+      label: school.name || undefined,
+      value: school.id.toString(),
+    })) || [];
   const testTypeData =
-    testTypes?.map((testType) => ({
+    testOptions?.types.map((testType) => ({
       label: testType.description || undefined,
       value: testType.name,
     })) || [];
-  const mutation = useMutation(["test"], (values: TestRecordData) =>
-    axiosInstance.request<TestResponse>({
+  const mutation = useMutation(["test"], (values: TestRecordData) => {
+    const intSchoolId = Number.parseInt(values.schoolId as unknown as string);
+    return axiosInstance.request<TestResponse>({
       method: edit ? "PATCH" : "POST",
       url: "/api/records/test" + (edit ? `/${edit.data.id}` : ""),
-      data: values,
-    })
-  );
+      data: { ...values, schoolId: intSchoolId },
+    });
+  });
   const queryClient = useQueryClient();
   const lastEdit = React.useRef(edit);
 
@@ -153,6 +169,14 @@ const TestRecordForm: React.FC<TestRecordFormProps> = ({ edit }) => {
           data={testTypeData}
           icon={<IconPencil size={RECORD_FORM_ICON_SIZE} />}
           {...form.getInputProps("typeName")}
+        />
+        <Select
+          label="Uygulanan Okul"
+          placeholder="Edirne Süleyman Demirel Fen Lisesi"
+          data={testSchoolData}
+          icon={<IconSchool size={RECORD_FORM_ICON_SIZE} />}
+          readOnly={session?.user.role !== "SUPERADMIN"}
+          {...form.getInputProps("schoolId")}
         />
         <DatePicker
           label="Deneme Tarihi"

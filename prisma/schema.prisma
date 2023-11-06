@@ -59,6 +59,7 @@ model School {
 
   admins  Admin[]
   classes Class[]
+  Test    Test[]
 }
 
 model TestType {
@@ -73,15 +74,16 @@ model TestType {
 
 model Test {
   id           Int      @id @default(autoincrement())
+  schoolId     Int      @default(349664)
   name         String
   date         DateTime
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   typeName     String   @default("TYT")
   studentCount Int      @default(0)
-  schoolCount  Int      @default(0)
 
   type    TestType     @relation(fields: [typeName], references: [name])
+  school  School       @relation(fields: [schoolId], references: [id])
   results TestResult[]
 }
 
